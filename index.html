@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <style>
+        #mindmap-canvas {
+            width: 1000px;
+            height: 1000px;
+            border: #eeeeee solid 1px;
+            background-color: #f2f2f2;
+        }
+        .toolbar {
+            width: 108px;
+            height: 35px;
+            line-height: 35px;
+            background-color: #808080;
+            position: absolute;
+
+            border: 1px #aaa solid;
+            border-radius: 4px;
+            padding: 3px;
+            z-index: 100;
+
+        }
+
+        .toolbar {
+            display: none;
+        }
+
+        .toolbar span.glyphicon {
+            border-radius: 3px;
+            color: #ffffff;
+            font-size: 18px;
+            padding: 2px;
+            /*background-color: #aaa;*/
+
+        }
+        .toolbar span.glyphicon:hover {
+            background-color: #aaa;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<div class="toolbar">
+    <span class="glyphicon glyphicon-plus active"></span>
+    <span class="glyphicon glyphicon-pencil"></span>
+    <span class="glyphicon glyphicon-resize-full"></span>
+    <span class="glyphicon glyphicon-remove"></span>
+</div>
+
+
+<div id="mindmap-canvas">
+
+</div>
+
+
+
+
+<script src="js/packages/bower/requirejs/require.js" data-main="js/main"></script>
+
+</body>
+</html>
