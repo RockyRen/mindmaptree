@@ -4,26 +4,22 @@
  */
 
 
-define(['jquery','Raphael'],function($){
+define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolBar','Raphael'],function($, shapeStrategyFactory, DragHandle, ToolBar){
 
-    function Renderer() {
+    function Renderer(toolBar) {
         this.paper = new Raphael(document.getElementById('mindmap-canvas'));
         this._nodePadding = 40;
-        this.lastdx = 0;
-        this.lastdy = 0;
 
-        this.$toolbar = $('.toolbar');
+        //var $toolbar = $('.toolbar');
+        //this.toolBar = ToolBar($toolBar);
 
-
-
+        this.toolBar = toolBar;
     }
 
 
     Renderer.prototype = {
         constructor: Renderer,
         drawGraph: function(graph) {
-
-
             for(var i in graph.nodes) {
                 graph.nodes[i].render();
             }
@@ -82,67 +78,29 @@ define(['jquery','Raphael'],function($){
             }
             return shape;
         },
+        setShape: function(shape,options){
+            var shapeStrategy = shapeStrategyFactory.createStrategy(shape,options);
+            shapeStrategy.setShape();
+        },
 
         setDrag: function(node) {
-            var selfRenderer = this;
-            var moveFnc = function(dx,dy) {
-
-                node.translate(dx - selfRenderer.lastdx,dy - selfRenderer.lastdy);
-                selfRenderer.lastdx = dx;
-                selfRenderer.lastdy = dy;
-
-                selfRenderer.setToolBarPosition(node);
-
-
-
-            };
-            var startFnc = function() {
-                node.graph.setSelected(node);
-                selfRenderer.lastdx = 0;
-                selfRenderer.lastdy = 0;
-
-            };
-            var endFnc = function() {
-            };
-
-            node.shape.drag(moveFnc,startFnc,endFnc);
-
-
+            var dragHandle = DragHandle(node, this.toolBar);
+            dragHandle.setDrag(node);
         },
-        //将points设置为null不可见
-        setToolBar: function(points) {
-            var $toolbar = $('.toolbar');
+        setCanvasClick: function(graph) {
+            $(this.paper.canvas).mousedown(function(event){
+                if(event.target.nodeName == 'svg') {
+                    //如果点击的不是背景图片,取消seleted
+                    graph.setSelected(null);
 
-            if(points) {
-                $toolbar.css({
-                    left: points.x,
-                    top: points.y - 38,
-                    display: 'block'
-                });
-            }else {
-                $toolbar.css({
-
-                    display: 'none'
-                });
-            }
-        },
-
-        setToolBarPosition: function(node) {
-            if(node.shape) {
-                var rect = node.shape[1];
-                var rectX = rect.attr('x');
-                var rectY = rect.attr('y');
-
-
-                this.$toolbar.css({
-                    left: rectX,
-                    top: rectY - 38
-                });
-
-            }
+                }
+            });
         }
 
     };
+
+
+
 
     return Renderer;
 });

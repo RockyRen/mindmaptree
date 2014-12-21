@@ -17,7 +17,7 @@ define(['jquery'],function($){
 
 
         //@workaround: 将svg点击事件放在这里
-        this._addClickEvent();
+        this.gRenderer.setCanvasClick(this);
 
 
     };
@@ -27,7 +27,6 @@ define(['jquery'],function($){
         addNode: function(attr) {
             var node = new Node(this,attr);
             this.nodes[node.id] = node;
-            console.log(node.id);
             return node;
         },
         addEdge: function(source,target,attr) {
@@ -43,9 +42,8 @@ define(['jquery'],function($){
 
             //将原来的被选择点重置为原来的attr
             if(this.selected && this.selected.shape) {
-                this.selected.shape[1].attr({
-                    stroke: '#000',
-                    'stroke-width': 2.5
+                this.gRenderer.setShape(this.selected.shape, {
+                    shapeType: 'normal'
                 });
             }
 
@@ -53,25 +51,26 @@ define(['jquery'],function($){
 
             //设置选择点的attr
             if(this.selected && this.selected.shape) {
-                this.selected.shape[1].attr({
-                    stroke: '#ff0033',
-                    'stroke-width': 3.5
+                this.gRenderer.setShape(this.selected.shape, {
+                   shapeType: 'selected'
                 });
+
             }
 
 
+
             if(this.selected) {
-                this.gRenderer.setToolBar({
+                this.gRenderer.toolBar.setToolBarPosition({
                     x: this.selected.x,
                     y: this.selected.y
                 });
             }else {
-                this.gRenderer.setToolBar(null);
+                this.gRenderer.toolBar.setToolBarPosition(null);
             }
 
 
         },
-
+/*
         _addClickEvent: function() {
             var selfGraph = this;
             $(this.gRenderer.paper.canvas).mousedown(function(event){
@@ -81,7 +80,7 @@ define(['jquery'],function($){
 
                 }
             });
-        },
+        },*/
         fromJsonObj: function(nodeObjs) {
             /**
              * { id:{parent:node,children:[node]} }
@@ -189,6 +188,7 @@ define(['jquery'],function($){
 
             //shape调用transfrom函数
             if(this.shape) {
+
                 //矩形移动
                 var rect = this.shape[1];
                 var posX = rect.attr('x');

@@ -15,8 +15,11 @@ require.config({
     }
 });
 
-require(['module/Graph','module/Renderer','jquery','bootstrap'],function(Graph,Renderer){
-    var gRenderer = new Renderer();
+require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap'],function(Graph, Renderer, ToolBar){
+    var $toolBar = $('.toolbar');
+    var toolBar = ToolBar($toolBar);
+
+    var gRenderer = new Renderer(toolBar);
     var g = new Graph(gRenderer);
 
 
