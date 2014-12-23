@@ -47,6 +47,7 @@ require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap']
 
 
 
+/*
     var modules = [obj1,obj2,obj3,
         {
             id: 4,
@@ -58,12 +59,25 @@ require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap']
             parentId: 9,
             x: 400,
             y: 500
-        }];
+        }];*/
+    var modules = [{
+        id: 1,
+        parentId: null,
+        x: 200,
+        y: 200
+    }];
 
     g.fromJsonObj(modules);
 
     gRenderer.drawGraph(g);
 
+    $('span.glyphicon-plus').click(function(event){
+        //g.nodes[1].translate(100, 100);
+        var node = g.addNode({x:400, y:400});
+        node.setParent(g.selected);
+        node.render();
+    });
+    /*
     $('span.glyphicon-plus').click(function(event){
 
 
@@ -105,11 +119,7 @@ require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap']
             $(this).unbind('mouseup');
         });
 
-
-
-
-
-    });
+    });*/
 
     $('span.glyphicon-remove').click(function(event){
         if(g.selected) {

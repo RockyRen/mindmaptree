@@ -156,6 +156,8 @@ define(['jquery'],function($){
                 return this.connectFather;
             }
 
+
+
             //如果已经存在父节点,则删除在父节点children,connectChildren上的该节点
             if(this.father) {
                 delete this.father.children[this.id];
@@ -168,8 +170,16 @@ define(['jquery'],function($){
             //将该节点的父节点设置为parent
             this.father = parent;
 
+
+
+
+
+
             //设置父节点的children和connectChildren
             this.father.children[this.id] = this;
+
+            //@v2: 重新设置父结点中子节点的位置
+            //this.gRenderer.resetChildrenPosition(this.father);
 
             //创建与父节点的边
             this.connectFather = this.graph.addEdge(this.father,this,attr);
@@ -231,17 +241,25 @@ define(['jquery'],function($){
 
 
         },
-        renderImp: function() {
+
+        renderImp: function(position) {
             //画节点
-            this.shape = this.gRenderer.drawNode(this);
+            this.shape = this.gRenderer.drawNode(this, position);
 
             //添加拖动事件
             this.gRenderer.setDrag(this);
         },
         render: function() {
-            if(!this.shape) {
+
+            if(this.father){
+                this.gRenderer.renderNode(this);
+            }else{
                 this.renderImp();
             }
+
+            //只有一个点时不用移
+            if(this.father && this.gRenderer.childrenCount(this.father) > 1)
+                this.gRenderer.resetFrontPosition(this);
 
 
             //如果有父边,且其父边还未画出来时,将边画出来
@@ -249,11 +267,12 @@ define(['jquery'],function($){
                 this.connectFather.render();
             }
 
+            /*
             for(var i in this.connectChildren) {
                 if(!this.connectChildren.shape) {
                     this.connectChildren[i].render();
                 }
-            }
+            }*/
 
 
             for(var i in this.children) {
