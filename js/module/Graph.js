@@ -252,14 +252,15 @@ define(['jquery'],function($){
         render: function() {
 
             if(this.father){
-                this.gRenderer.renderNode(this);
+                this.gRenderer.reRenderChildrenNode(this.father);
             }else{
                 this.renderImp();
             }
 
+
             //只有一个点时不用移
             if(this.father && this.gRenderer.childrenCount(this.father) > 1)
-                this.gRenderer.resetFrontPosition(this);
+                this.gRenderer.resetFrontPosition(this.father, this.gRenderer.getNodeAreaHeight(this));
 
 
             //如果有父边,且其父边还未画出来时,将边画出来
@@ -282,7 +283,8 @@ define(['jquery'],function($){
                 }
             }
         },
-        remove: function() {
+        //删除视图和数据结构相关
+        removeNode: function(){
             //删除视图
             if(this.shape) {
                 this.shape.remove();
@@ -307,8 +309,29 @@ define(['jquery'],function($){
 
             //递归删除子节点
             for(var i in this.children) {
-                this.children[i].remove();
+                this.children[i].removeNode();
             }
+
+            if(this.graph.nodes[this.id]) {
+                delete this.graph.nodes[this.id];
+            }
+        },
+        remove: function() {
+            var nodeFather = null;
+            var nodeAreaHeight = this.gRenderer.getNodeAreaHeight(this);
+            if(this.father) {
+                nodeFather = this.father;
+            }
+
+            this.removeNode();
+            //重新调整位置
+            if(nodeFather){
+                this.gRenderer.reRenderChildrenNode(nodeFather);
+                if(this.gRenderer.childrenCount(nodeFather) > 0)
+                this.gRenderer.resetFrontPosition(nodeFather, -nodeAreaHeight);
+            }
+
+
         }
     };
 
@@ -349,7 +372,7 @@ define(['jquery'],function($){
             }
 
             if(this.graph.edges[this.id]) {
-                this.graph.edges[this.id] = null;
+                delete this.graph.edges[this.id];
             }
         }
     };

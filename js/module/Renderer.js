@@ -13,8 +13,10 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
         //var $toolbar = $('.toolbar');
         //this.toolBar = ToolBar($toolBar);
 
-        this._nHeight = 90;
-        this._nWidth = 120;
+        //this._nHeight = 90;
+        //this._nWidth = 120;
+        this._nodeYInterval = 20;
+        this._nodeXInterval = 120;
 
         this.toolBar = toolBar;
     }
@@ -115,87 +117,173 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
             }
 
         },
-        renderNode: function(node){
-            //重新计算同级节点的坐标
-            var nx = node.father.shape[1].attr('x');
-            var ny = node.father.shape[1].attr('y');
-            var childrenCount = this.childrenCount(node.father);
-            var startY = ny - (childrenCount * this._nHeight)/2;
-            var extraHeight, moduleHeight;
+        reRenderChildrenNode: function(node){
+            //获取节点高度一半的坐标
+            var hnx = node.shape[1].attr('x'),
+                hny = node.shape[1].attr('y') + this.getSingleNodeHeight(node)/2;
 
-            for(var i in node.father.children) {
-                var child = node.father.children[i];
-                moduleHeight = node.father.shape[1].attr('height');
+            var childrenAreaHeight = 0,     //节点的子节点所占区域的高度
+                startY,                     //子节点区域的起始高度
+                childX = hnx + this._nodeXInterval,     //子节点x坐标
+                childY;                     //子节点的y坐标
 
-                //计算离startY距离
-                //extraHeight = (this._nHeight - moduleHeight) * 1.5;
-                //@workaround
-                extraHeight = (this._nHeight - moduleHeight) * this.getNodeHeight(child) * 1.5;
+            for(var i in node.children){
+                var child = node.children[i];
+                //节点保存区域高度
+                child.areaHeight = this.getNodeAreaHeight(child);
+                childrenAreaHeight += child.areaHeight;
+            }
+            startY = hny - childrenAreaHeight/2;
 
-
-                var position = {
-                    x: nx + this._nWidth,
-                    y: startY + extraHeight
-                };
-
+            //设置子节点的位置
+            for(var i in node.children) {
+                var child = node.children[i];
+                console.log(child);
+                //计算子节点y坐标
+                childY = startY + child.areaHeight/2 - this.getSingleNodeHeight(child)/2;
                 //累加
-                console.log(this.getNodeHeight(child));
-                startY += this._nHeight * this.getNodeHeight(child);
-
+                startY += child.areaHeight;
 
                 if(!child.shape){
-                    child.renderImp(position)
+                    child.renderImp({x: childX, y:childY});
 
                 }else{
-                    var dy = position.y - child.shape[1].attr('y');
+                    var dy = childY - child.shape[1].attr('y');
                     child.translate(0, dy);
                 }
 
-                //index++;
             }
 
+
+            /*
+            //获取节点高度一半的坐标
+            var hnx = node.father.shape[1].attr('x'),
+                hny = node.father.shape[1].attr('y') + this.getSingleNodeHeight(node)/2;
+
+            var childrenAreaHeight = 0,     //节点的子节点所占区域的高度
+                startY,                     //子节点区域的起始高度
+                childX = hnx + this._nodeXInterval,     //子节点x坐标
+                childY;                     //子节点的y坐标
+            for(var i in node.father.children){
+                var child = node.father.children[i];
+                //节点保存区域高度
+                child.areaHeight = this.getNodeAreaHeight(child);
+                childrenAreaHeight += child.areaHeight;
+            }
+            startY = hny - childrenAreaHeight/2;
+
+            //设置子节点的位置
+            for(var i in node.father.children) {
+                var child = node.father.children[i];
+                console.log(child);
+                //计算子节点y坐标
+                childY = startY + child.areaHeight/2 - this.getSingleNodeHeight(child)/2;
+                //累加
+                startY += child.areaHeight;
+
+                if(!child.shape){
+                    child.renderImp({x: childX, y:childY});
+
+                }else{
+                    var dy = childY - child.shape[1].attr('y');
+                    child.translate(0, dy);
+                }
+
+            }*/
+
+
         },
-        resetFrontPosition: function(node){
+        resetFrontPosition: function(node, nodeAreaHeight){
+            console.log(nodeAreaHeight);
+            var brother, childY,
+                moveY = nodeAreaHeight/ 2,
+                curY = node.shape[1].attr('y');
+
+
+            //遍历同级结点
+            if(node.father) {
+                for (var i in node.father.children) {
+
+                    brother = node.father.children[i];
+                    if (brother != node) {
+
+                        childY = brother.shape[1].attr('y');
+                        //moveY = (this.getSingleNodeHeight(node) + this._nodeYInterval * 2) /2;
+                        //如果在curNode上面则向上移动
+                        if (childY < curY) {
+                            brother.translate(0, -moveY);
+                        }
+                        //如果在curNode下面则向下移动
+                        else {
+                            brother.translate(0, moveY);
+                        }
+                    }
+                }
+                if(node.father){
+                    this.resetFrontPosition(node.father, nodeAreaHeight);
+                }
+            }
+
+
+
+
+            /*
             //上级的同级结点位置向上向下移动
             if(node.father){
                 var curNode = node.father;
                 var curY = curNode.shape[1].attr('y');
+                var child, childY, moveY;
 
                 //遍历同级结点
                 if(curNode.father){
                     for(var i in curNode.father.children){
 
-                        var child = curNode.father.children[i];
+                        child = curNode.father.children[i];
                         if(child != curNode){
 
-                            var childY = child.shape[1].attr('y');
+                            childY = child.shape[1].attr('y');
+                            moveY = (this.getSingleNodeHeight(node) + this._nodeYInterval*2)/2
                             //如果在curNode上面则向上移动
                             if(childY < curY) {
-                                child.translate(0, -this._nHeight/2);
-                            }
-                            else{
-                                child.translate(0, this._nHeight/2);
+                                child.translate(0, -moveY);
                             }
                             //如果在curNode下面则向下移动
+                            else{
+                                child.translate(0, moveY);
+                            }
                         }
                     }
 
                     this.resetFrontPosition(curNode);
                 }
 
+            }*/
+        },
+        //取得单个节点的高度
+        getSingleNodeHeight: function(node){
+            if(node.shape){
+                return node.shape[1].attr('height');
+
+            }
+            //如果为新节点则返回默认高度
+            else{
+                //@workaround:暂用绝对
+                return 56;
             }
         },
-        //取得节点的高度
-        getNodeHeight: function(node){
-            if(this.childrenCount(node) > 0){
-                var count = 0;
-                for(var i in node.children){
-                    count += this.getNodeHeight(node.children[i]);
+        //取得节点所占区域的高度
+        getNodeAreaHeight: function(node){
+            if(this.childrenCount(node) > 0) {
+                var height = 0;
+                for(var i in node.children) {
+                   height += this.getNodeAreaHeight(node.children[i]);
                 }
-                return count;
+
+                return height;
             }else{
-                return 1;
+                return this.getSingleNodeHeight(node) + this._nodeYInterval * 2;
             }
+
         },
         childrenCount: function(obj) {
             var count = 0;
