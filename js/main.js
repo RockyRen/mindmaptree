@@ -63,8 +63,8 @@ require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap']
     var modules = [{
         id: 1,
         parentId: null,
-        x: 200,
-        y: 200
+        x: 400,
+        y: 300
     }];
 
     g.fromJsonObj(modules);
@@ -76,6 +76,7 @@ require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap']
         var node = g.addNode({x:400, y:400});
         node.setParent(g.selected);
         node.render();
+
     });
     /*
     $('span.glyphicon-plus').click(function(event){

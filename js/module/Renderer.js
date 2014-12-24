@@ -4,7 +4,7 @@
  */
 
 
-define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolBar','Raphael'],function($, shapeStrategyFactory, DragHandle, ToolBar){
+define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolBar','module/ChildrenRenderer','Raphael'],function($, shapeStrategyFactory, DragHandle, ToolBar, ChildrenRendererFactory){
 
     function Renderer(toolBar) {
         this.paper = new Raphael(document.getElementById('mindmap-canvas'));
@@ -19,6 +19,9 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
         this._nodeXInterval = 120;
 
         this.toolBar = toolBar;
+
+        this.LEFT = -1;
+        this.RIGHT = 1;
     }
 
 
@@ -117,7 +120,57 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
             }
 
         },
+        //设置node的位置属性
+        setNodeDirectionFlag: function(node) {
+            //如果节点为第一层节点,则根据左右节点数赋位置值
+            if(node.father && node.father == node.getRootNode()) {
+                var childCount = this.getRootDirectionNodeCount(node);
+                //如果左边数量大于或等于右边数量,,则设为右
+                if(childCount.leftCount >= childCount.rightCount) {
+                    node.direction = this.RIGHT;
+                }else{
+                    node.direction = this.LEFT;
+                }
+
+            }else if(node.father &&  node.father != node.getRootNode()) {
+                //获取该节点第一层节点的direction
+                var firstLevelNode = node.getFirstLevelNode();
+                node.direction = firstLevelNode.direction;
+
+            }
+        },
+        getRootDirectionNodeCount: function(node) {
+            var root = node.getRootNode();
+            var leftCount = 0,
+                rightCount = 0;
+            for(var i in root.children) {
+                var rootChild = root.children[i];
+                if(rootChild.direction == this.LEFT){
+                    leftCount++;
+                }else if(rootChild.direction == this.RIGHT){
+                    rightCount++;
+                }
+            }
+            return {
+                leftCount: leftCount,
+                rightCount: rightCount
+            }
+        },
+
+
         reRenderChildrenNode: function(node){
+
+
+            var childrenRenderStrategy = ChildrenRendererFactory.createRendererStrategy(node);
+            childrenRenderStrategy.renderChildren(node);
+
+            /*
+            //如果是根节点
+            if(!node.father) {
+
+            }else {
+
+            }
             //获取节点高度一半的坐标
             var hnx = node.shape[1].attr('x'),
                 hny = node.shape[1].attr('y') + this.getSingleNodeHeight(node)/2;
@@ -152,52 +205,18 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
                     child.translate(0, dy);
                 }
 
-            }
-
-
-            /*
-            //获取节点高度一半的坐标
-            var hnx = node.father.shape[1].attr('x'),
-                hny = node.father.shape[1].attr('y') + this.getSingleNodeHeight(node)/2;
-
-            var childrenAreaHeight = 0,     //节点的子节点所占区域的高度
-                startY,                     //子节点区域的起始高度
-                childX = hnx + this._nodeXInterval,     //子节点x坐标
-                childY;                     //子节点的y坐标
-            for(var i in node.father.children){
-                var child = node.father.children[i];
-                //节点保存区域高度
-                child.areaHeight = this.getNodeAreaHeight(child);
-                childrenAreaHeight += child.areaHeight;
-            }
-            startY = hny - childrenAreaHeight/2;
-
-            //设置子节点的位置
-            for(var i in node.father.children) {
-                var child = node.father.children[i];
-                console.log(child);
-                //计算子节点y坐标
-                childY = startY + child.areaHeight/2 - this.getSingleNodeHeight(child)/2;
-                //累加
-                startY += child.areaHeight;
-
-                if(!child.shape){
-                    child.renderImp({x: childX, y:childY});
-
-                }else{
-                    var dy = childY - child.shape[1].attr('y');
-                    child.translate(0, dy);
-                }
-
             }*/
+
+
+
 
 
         },
         resetFrontPosition: function(node, nodeAreaHeight){
-            console.log(nodeAreaHeight);
             var brother, childY,
                 moveY = nodeAreaHeight/ 2,
                 curY = node.shape[1].attr('y');
+
 
 
             //遍历同级结点
@@ -205,19 +224,23 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
                 for (var i in node.father.children) {
 
                     brother = node.father.children[i];
-                    if (brother != node) {
+                    //当同级节点与当前节点同向时才上下移动
+                    if(brother.direction == node.direction) {
+                        if (brother != node) {
 
-                        childY = brother.shape[1].attr('y');
-                        //moveY = (this.getSingleNodeHeight(node) + this._nodeYInterval * 2) /2;
-                        //如果在curNode上面则向上移动
-                        if (childY < curY) {
-                            brother.translate(0, -moveY);
-                        }
-                        //如果在curNode下面则向下移动
-                        else {
-                            brother.translate(0, moveY);
+                            childY = brother.shape[1].attr('y');
+                            //moveY = (this.getSingleNodeHeight(node) + this._nodeYInterval * 2) /2;
+                            //如果在curNode上面则向上移动
+                            if (childY < curY) {
+                                brother.translate(0, -moveY);
+                            }
+                            //如果在curNode下面则向下移动
+                            else {
+                                brother.translate(0, moveY);
+                            }
                         }
                     }
+
                 }
                 if(node.father){
                     this.resetFrontPosition(node.father, nodeAreaHeight);

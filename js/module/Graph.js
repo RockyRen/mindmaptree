@@ -252,6 +252,7 @@ define(['jquery'],function($){
         render: function() {
 
             if(this.father){
+                this.gRenderer.setNodeDirectionFlag(this);
                 this.gRenderer.reRenderChildrenNode(this.father);
             }else{
                 this.renderImp();
@@ -332,6 +333,30 @@ define(['jquery'],function($){
             }
 
 
+        },
+        getRootNode: function() {
+            if(!this.father) {
+                return this;
+            }else{
+                var fatherNode = this.father;
+                while(fatherNode.father) {
+                    fatherNode = fatherNode.father;
+                }
+                return fatherNode;
+
+            }
+        },
+        getFirstLevelNode: function(){
+            //如果是根节点,则返回null
+            var root = this.getRootNode();
+            if(this == root) {
+                return null;
+            }
+            var curNode = this;
+            while(curNode.father != root) {
+                curNode = curNode.father;
+            }
+            return curNode;
         }
     };
 
