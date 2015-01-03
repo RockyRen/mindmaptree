@@ -60,27 +60,18 @@ define(['jquery'],function($){
 
 
             if(this.selected) {
+/*
                 this.gRenderer.toolBar.setToolBarPosition({
                     x: this.selected.x,
                     y: this.selected.y
-                });
+                });*/
             }else {
                 this.gRenderer.toolBar.setToolBarPosition(null);
             }
 
 
         },
-/*
-        _addClickEvent: function() {
-            var selfGraph = this;
-            $(this.gRenderer.paper.canvas).mousedown(function(event){
-                if(event.target.nodeName == 'svg') {
-                    //如果点击的不是背景图片,取消seleted
-                    selfGraph.setSelected(null);
 
-                }
-            });
-        },*/
         fromJsonObj: function(nodeObjs) {
             /**
              * { id:{parent:node,children:[node]} }
@@ -124,6 +115,7 @@ define(['jquery'],function($){
     };
 
     var Node = function(g,attr) {
+        if(!attr) attr = {};
         this.graph = g;
         this.gRenderer = g.gRenderer;
         //var nodeSelf = this;
@@ -137,11 +129,14 @@ define(['jquery'],function($){
         this.connectChildren = {};
 
         //属性值
-        this.x = attr.x || 0;
-        this.y = attr.y || 0;
+        if(attr.hasOwnProperty('x') && attr.hasOwnProperty('y')) {
+            this.x = attr.x || 0;
+            this.y = attr.y || 0;
+
+        }
 
         //节点的文本,默认为text
-        this.label = "text";
+        this.label = "text23";
 
         this.shape = null;
 
@@ -178,6 +173,7 @@ define(['jquery'],function($){
             //设置父节点的children和connectChildren
             this.father.children[this.id] = this;
 
+
             //@v2: 重新设置父结点中子节点的位置
             //this.gRenderer.resetChildrenPosition(this.father);
 
@@ -193,8 +189,8 @@ define(['jquery'],function($){
         },
         //移动节点
         translate: function(dx ,dy) {
-            this.x += dx;
-            this.y += dy;
+            //this.x += dx;
+            //this.y += dy;
 
             //shape调用transfrom函数
             if(this.shape) {
@@ -241,7 +237,7 @@ define(['jquery'],function($){
 
 
         },
-
+        /*创建的具体实现*/
         renderImp: function(position) {
             //画节点
             this.shape = this.gRenderer.drawNode(this, position);
@@ -252,11 +248,18 @@ define(['jquery'],function($){
         render: function() {
 
             if(this.father){
-                this.gRenderer.setNodeDirectionFlag(this);
+                if(!this.direction){
+                    this.gRenderer.setNodeDirectionFlag(this);
+
+                }
                 this.gRenderer.reRenderChildrenNode(this.father);
             }else{
                 this.renderImp();
             }
+
+            //@workaround:重新设置label?需判断是否有变化?
+            this.gRenderer.resetLabel(this);
+
 
 
             //只有一个点时不用移
@@ -277,12 +280,19 @@ define(['jquery'],function($){
             }*/
 
 
-            for(var i in this.children) {
-                if(!this.children[i].shape) {
 
-                    this.children[i].render();
+
+            if(this.father) {
+                console.log(this.father.children);
+                for(var i in this.father.children) {
+                    var child = this.father.children[i];
+                    if(!child.shape) {
+
+                        child.render();
+                    }
                 }
             }
+
         },
         //删除视图和数据结构相关
         removeNode: function(){

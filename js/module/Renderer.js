@@ -45,6 +45,7 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
 
             var label = paper.text(px,py,node.label)
                 .attr({'font-size': 16});
+            /*
             var textBox = label.getBBox();
             //得到举行的长度
             var rectWidth = textBox.width + this._nodePadding;
@@ -53,71 +54,69 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
             label.attr({
                 x: px + rectWidth * 0.5,
                 y: py + rectHeight * 0.5
-            });
+            });*/
 
-            var nodeRect = paper.rect(px,py,rectWidth,rectHeight,7);
+            //var nodeRect = paper.rect(px,py,rectWidth,rectHeight,7);
+            var nodeRect = paper.rect(px, py, 50, 50, 7);
             nodeRect.attr({fill: 'white', stroke: 'black', 'stroke-width': 2.5});
             label.toFront();
 
+
+
+
             var shape = paper.set().push(label).push(nodeRect);
+            this.setNodeShape(shape, {
+                x: px,
+                y: py
+            });
             return shape;
         },
-        //重新设置node的位置,其子节点的位置也改变
-        /*
-        setNodePosition: function(node,position){
-            var shape = node.shape;
+        setNodeShape: function(shape, position){
+            var px = position.x, py = position.y;
             var label = shape[0];
-
+            var rect = shape[1];
             var textBox = label.getBBox();
             //得到举行的长度
             var rectWidth = textBox.width + this._nodePadding;
             var rectHeight = textBox.height + this._nodePadding;
-
-
-            shape.attr({
-                x: position.x,
-                y: position.y
-            });
             label.attr({
-                x: position.x + rectWidth * 0.5,
-                y: position.y + rectHeight * 0.5
+                x: px + rectWidth * 0.5,
+                y: py + rectHeight * 0.5
             });
 
-            if(node.connectFather) {
-                node.connectFather.render();
-            }
-
-            for(var i in node.children) {
-                var child = node.children[i];
-
-                this.setNodePosition(child, position);
-            }
+            rect.attr({
+                width: rectWidth,
+                height: rectHeight
+            });
 
 
-        },*/
-        setChildrenPosition: function(node) {
-            console.log(node);
+
+        },
+        resetLabel: function(node) {
             var shape = node.shape;
-            var nx = shape[1].attr('x');
-            var ny = shape[1].attr('y');
-            var childrenCount = this.childrenCount(node);
-            var startY = ny - (childrenCount * this._nHeight)/2;
+            shape[0].attr({
+                text: node.label
+            });
 
-            console.log(nx,ny);
-            var index = 0;
-            for(var i in node.children){
-                var child = node.children[i];
+            //取得本来的长度
+            var oldWidth = shape[1].attr('width');
 
-                //var extraHeight = (this._nHeight - child.shape[1].attr('height'))/2;
-                var extraHeight = 45;
+            this.setNodeShape(shape, {
+                x: shape[1].attr('x'),
+                y: shape[1].attr('y')
+            });
+            var newWidth = shape[1].attr('width');
 
-                var x = nx + this._nWidth;
-                var y = startY + this._nHeight * index + extraHeight;
-                child.x = x;
-                child.y = y;
-                index++;
+            if(node.direction == this.RIGHT) {
+                for(var i in node.children) {
+                    node.children[i].translate(newWidth - oldWidth,0);
+                }
 
+            }else if(node.direction == this.LEFT) {
+                node.translate(-(newWidth - oldWidth), 0);
             }
+
+
 
         },
         //设置node的位置属性
@@ -130,7 +129,7 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
                     node.direction = this.RIGHT;
                 }else{
                     node.direction = this.LEFT;
-                }
+                };
 
             }else if(node.father &&  node.father != node.getRootNode()) {
                 //获取该节点第一层节点的direction
@@ -347,11 +346,18 @@ define(['jquery','module/shapeStrategyFactory','module/DragHandle','module/ToolB
             }
             return shape;
         },
+
         setShape: function(shape,options){
             var shapeStrategy = shapeStrategyFactory.createStrategy(shape,options);
             shapeStrategy.setShape();
         },
+        setLabel: function(node, label) {
+            node.label = label;
+            node.shape[0].attr({
+                text: label
+            });
 
+        },
         setDrag: function(node) {
             var dragHandle = DragHandle(node, this.toolBar);
             dragHandle.setDrag(node);

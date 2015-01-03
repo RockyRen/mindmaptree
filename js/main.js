@@ -15,7 +15,7 @@ require.config({
     }
 });
 
-require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap'],function(Graph, Renderer, ToolBar){
+require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap', 'Raphael'],function(Graph, Renderer, ToolBar){
     var $toolBar = $('.toolbar');
     var toolBar = ToolBar($toolBar);
 
@@ -73,9 +73,18 @@ require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap']
 
     $('span.glyphicon-plus').click(function(event){
         //g.nodes[1].translate(100, 100);
-        var node = g.addNode({x:400, y:400});
+        var node = g.addNode();
         node.setParent(g.selected);
         node.render();
+        //node.label = 'cc4324234';
+        //node.render();
+        //console.log(node.direction);
+
+    });
+    $('.node-edit button').click(function(){
+        var text = $('.node-edit input').val();
+        g.selected.label = text;
+        g.selected.render();
 
     });
     /*

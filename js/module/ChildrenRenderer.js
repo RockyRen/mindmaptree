@@ -32,10 +32,10 @@ define([], function(){
      */
    function AbstractRender() {
         this._nodeYInterval = 20;
-        this._nodeXInterval = 120;
+        this._nodeXInterval = 50;
 
         this.LEFT = -1;
-        this.RIGTH = 1;
+        this.RIGHT = 1;
     }
 
    AbstractRender.prototype.getSingleNodeHeight = function(node) {
@@ -75,13 +75,18 @@ define([], function(){
    };
 
    AbstractRender.prototype.commonRender = function(father, children, direction) {
-       var hnx = father.shape[1].attr('x');
+       var hnx = father.shape[1].attr('x') + father.shape[1].attr('width')/2;
        var hny = father.shape[1].attr('y') + this.getSingleNodeHeight(father)/2;
+
 
        var childrenAreaHeight = 0,     //节点的子节点所占区域的高度
            startY,                     //子节点区域的起始高度
-           childX = hnx + direction * this._nodeXInterval,     //子节点x坐标
+           childX,                     //子节点x坐标
            childY;                     //子节点的y坐标
+
+
+       childX = hnx + direction * (this._nodeXInterval + father.shape[1].attr('width')/2);
+
 
        for(var i in children) {
            var child = children[i];
@@ -101,6 +106,11 @@ define([], function(){
 
            if(!child.shape){
                child.renderImp({x: childX, y:childY});
+
+               if(direction == this.LEFT) {
+                   child.translate(-child.shape[1].attr('width'), 0);
+               }
+                //console.log(child.shape[1].attr('width'));
 
            }else{
                var dy = childY - child.shape[1].attr('y');
@@ -124,7 +134,7 @@ define([], function(){
    FirstRender.prototype.doRender = function(node) {
        var children = this.getDirectionChildren(node);
        this.commonRender(node, children.leftChildren, this.LEFT);
-       this.commonRender(node, children.rightChildren, this.RIGTH);
+       this.commonRender(node, children.rightChildren, this.RIGHT);
 
 
 
@@ -171,11 +181,9 @@ define([], function(){
             rightChildren = {};
         for(var i in node.children) {
             var child = node.children[i];
-            console.log(child.direction, this.RIGTH);
             if(child.direction == this.LEFT) {
                 leftChildren[i] = child;
-            }else if(child.direction == this.RIGTH) {
-                console.log(child);
+            }else if(child.direction == this.RIGHT) {
                 rightChildren[i] = child;
             }
         }
@@ -203,41 +211,6 @@ define([], function(){
    NormalRender.prototype.doRender = function(node) {
        this.commonRender(node, node.children, node.direction);
 
-       /*
-       //获取节点高度一半的坐标
-       var hnx = node.shape[1].attr('x'),
-           hny = node.shape[1].attr('y') + this.getSingleNodeHeight(node)/2;
-
-       var childrenAreaHeight = 0,     //节点的子节点所占区域的高度
-           startY,                     //子节点区域的起始高度
-           childX = hnx + this._nodeXInterval,     //子节点x坐标
-           childY;                     //子节点的y坐标
-
-       for(var i in node.children){
-           var child = node.children[i];
-           //节点保存区域高度
-           child.areaHeight = this.getNodeAreaHeight(child);
-           childrenAreaHeight += child.areaHeight;
-       }
-       startY = hny - childrenAreaHeight/2;
-
-       //设置子节点的位置
-       for(var i in node.children) {
-           var child = node.children[i];
-           //计算子节点y坐标
-           childY = startY + child.areaHeight/2 - this.getSingleNodeHeight(child)/2;
-           //累加
-           startY += child.areaHeight;
-
-           if(!child.shape){
-               child.renderImp({x: childX, y:childY});
-
-           }else{
-               var dy = childY - child.shape[1].attr('y');
-               child.translate(0, dy);
-           }
-
-       }*/
    };
 
    return ChildrenRendererFactory;

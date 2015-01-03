@@ -25,6 +25,14 @@ define([],function(){
 
         function startFnc(){
             node.graph.setSelected(node);
+            var rect = node.shape[1];
+            var rectX = rect.attr('x');
+            var rectY = rect.attr('y');
+            toolBar.setToolBarPosition({
+                x: rectX,
+                y: rectY
+            });
+
             lastdx = 0;
             lastdy = 0;
         }
