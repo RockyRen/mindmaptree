@@ -5,6 +5,10 @@
     <title></title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <style>
+        #mindmap-main {
+            position: relative;
+        }
+
         #mindmap-canvas {
             width: 1000px;
             height: 1000px;
@@ -44,17 +48,17 @@
 </head>
 <body>
 
+<div id="mindmap-main">
+    <div id="toolbar">
+        <span id="node-add" class="glyphicon glyphicon-plus active"></span>
+        <span id="node-edit" class="glyphicon glyphicon-pencil root-hide"></span>
+        <span id="node-cancel" class="glyphicon glyphicon-remove root-hide"></span>
+    </div>
 
-<div id="toolbar">
-    <span id="node-plus" class="glyphicon glyphicon-plus active"></span>
-    <span id="node-edit" class="glyphicon glyphicon-pencil root-hide"></span>
-    <span id="node-cancel" class="glyphicon glyphicon-remove root-hide"></span>
+
+    <div id="mindmap-canvas"></div>
 </div>
 
-
-<div id="mindmap-canvas">
-
-</div>
 
 
 

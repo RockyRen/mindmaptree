@@ -168,7 +168,7 @@ define(['imp/renderModule/nodeShapeRelative'], function(nodeShapeRelative){
 
 
         //结点的文本
-        this.label = "任务" + this.id;
+        this.label = "主题" + this.id;
 
         //结点的图形,其类型为Raphael的element或set对象
         this.shape = null;

@@ -32,6 +32,28 @@ require(['imp/Graph', 'imp/Renderer', 'jquery', 'bootstrap', 'Raphael'],function
     gRenderer.setShape(rootNode, {shapeType: 'root'});
 
 
-    var nodeAdd = document.getElementById()
+    var nodeAdd = document.getElementById('node-add');
+    nodeAdd.onclick = function(){
+        var node = graph.addNode();
+        node.setParent(graph.selected);
+        node.render();
+    };
+
+    var nodeEdit = document.getElementById('node-edit');
+    nodeEdit.onclick = function(){
+        alert('edit');
+    };
+
+    var nodeCancel = document.getElementById('node-cancel');
+    nodeCancel.onclick = function(){
+        if(graph.selected){
+            if(graph.selected.isRootNode()){
+                console.log('cannot cancel root node');
+            }else{
+                graph.selected.remove();
+                graph.setSelected(null);
+            }
+        }
+    }
 
 });
