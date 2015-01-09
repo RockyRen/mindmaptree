@@ -11,8 +11,7 @@
             border: #eeeeee solid 1px;
             background-color: #f2f2f2;
         }
-        .toolbar {
-            width: 108px;
+        #toolbar {
             height: 35px;
             line-height: 35px;
             background-color: #808080;
@@ -25,11 +24,11 @@
 
         }
 
-        .toolbar {
+        #toolbar {
             display: none;
         }
 
-        .toolbar span.glyphicon {
+        #toolbar span.glyphicon {
             border-radius: 3px;
             color: #ffffff;
             font-size: 18px;
@@ -37,26 +36,19 @@
             /*background-color: #aaa;*/
 
         }
-        .toolbar span.glyphicon:hover {
+        #toolbar span.glyphicon:hover {
             background-color: #aaa;
-        }
-        .node-edit {
-            float: right;
         }
 
     </style>
 </head>
 <body>
 
-<div class="node-edit">
-    <input type="text"/>
-    <button>确定</button>
-</div>
-<div class="toolbar">
-    <span class="glyphicon glyphicon-plus active"></span>
-    <span class="glyphicon glyphicon-pencil"></span>
-    <span class="glyphicon glyphicon-resize-full"></span>
-    <span class="glyphicon glyphicon-remove"></span>
+
+<div id="toolbar">
+    <span id="node-plus" class="glyphicon glyphicon-plus active"></span>
+    <span id="node-edit" class="glyphicon glyphicon-pencil root-hide"></span>
+    <span id="node-cancel" class="glyphicon glyphicon-remove root-hide"></span>
 </div>
 
 
