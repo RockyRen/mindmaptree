@@ -3,7 +3,7 @@
  */
 require.config({
     paths: {
-        'Raphael': 'packages/bower/raphael/raphael',
+        'raphael': 'packages/bower/raphael/raphael',
         'jquery': 'packages/bower/jquery/dist/jquery',
         'bootstrap': '../bootstrap/js/bootstrap.min'
     },
@@ -15,134 +15,34 @@ require.config({
     }
 });
 
-require(['module/Graph','module/Renderer','module/ToolBar','jquery','bootstrap', 'Raphael'],function(Graph, Renderer, ToolBar){
-    var $toolBar = $('.toolbar');
-    var toolBar = ToolBar($toolBar);
 
-    var gRenderer = new Renderer(toolBar);
-    var g = new Graph(gRenderer);
-
-
-
-    var obj1 = {
-        id: 1,
-        parentId: null,
-        x: 100,
-        y: 100
-    };
-
-    var obj2 = {
-        id: 8,
-        parentId: 1,
-        x: 200,
-        y: 200
-    };
-
-    var obj3 = {
-        id: 9,
-        parentId: 1,
-        x: 200,
-        y: 300
-    };
-
-
-
-/*
-    var modules = [obj1,obj2,obj3,
-        {
-            id: 4,
-            parentId: 8,
-            x: 400,
-            y: 400
-        },{
-            id: 5,
-            parentId: 9,
-            x: 400,
-            y: 500
-        }];*/
-    var modules = [{
-        id: 1,
-        parentId: null,
-        x: 400,
-        y: 300
-    }];
-
-    g.fromJsonObj(modules);
-
-    gRenderer.drawGraph(g);
-
-    $('span.glyphicon-plus').click(function(event){
-        //g.nodes[1].translate(100, 100);
-        var node = g.addNode();
-        node.setParent(g.selected);
-        node.render();
-        //node.label = 'cc4324234';
-        //node.render();
-        //console.log(node.direction);
-
+require(['imp/Graph', 'imp/Renderer', 'jquery', 'bootstrap', 'raphael'],function(Graph, Renderer,$){
+    var renderer = new Renderer({
+        canvasId: 'mindmap-canvas'
     });
-    $('.node-edit button').click(function(){
-        var text = $('.node-edit input').val();
-        g.selected.label = text;
-        g.selected.render();
+    var graph = new Graph(renderer);
 
+    $('#node-plus').click(function(){
+        graph.addNode(graph.selected, {});
     });
-    /*
-    $('span.glyphicon-plus').click(function(event){
 
-
-        var node = g.addNode({
-            x: event.clientX,
-            y: event.clientY
-        });
-
-
-        node.setParent(g.selected);
-
-
-        node.render();
-
-
-        //e.page相对于文档
-        var lastX = event.pageX;
-        var lastY = event.pageY;
-        var dragging = true;
-
-        $('#mindmap-canvas').mousemove(function(event){
-
-            if(dragging) {
-                var dX = event.pageX - lastX;
-                var dY = event.pageY - lastY;
-
-                node.translate(dX,dY);
-
-                lastX = event.pageX;
-                lastY = event.pageY;
+    $('#node-cancel').click(function(){
+        if(graph.selected){
+            if(graph.selected.isRootNode()){
+                console.log('cannot cancel root node');
+            }else{
+                graph.removeNode(graph.selected);
+                graph.setSelected(null);
             }
-
-
-        });
-
-        $('#mindmap-canvas').bind('mouseup',function(event){
-            dragging = false;
-            g.setSelected(node);
-            $(this).unbind('mouseup');
-        });
-
-    });*/
-
-    $('span.glyphicon-remove').click(function(event){
-        if(g.selected) {
-            g.selected.remove();
-            g.setSelected(null);
         }
     });
 
-
-
-
-
-
+    $('#label-group button').click(function(){
+        var text = $('#label-group input').val();
+        if(graph.selected){
+            graph.setLabel(graph.selected, text);
+        }
+    });
 
 
 });
