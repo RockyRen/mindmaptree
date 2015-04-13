@@ -1,48 +1,91 @@
 /**
- * Created by rockyren on 14/12/25.
+ * Created by rockyren on 15/3/7.
  */
-define([], function(){
-    var Toolbar = function(aToolbar, aViewBox) {
-        var toolbar = document.getElementById(aToolbar);
-        var viewBox = aViewBox;
-        return {
-            setToolbarPosition: function(points, isRoot) {
-                //@workaround:是否隐藏部分键
-                var rootHideButton = document.getElementsByClassName('root-hide');
-                console.log(rootHideButton);
-                //console.log(isRoot);
-                if(isRoot) {
-                    for(var i=0;i<rootHideButton.length;i++){
+define(['jquery'], function($){
 
-                        rootHideButton[i].style.display = 'none';
-                    }
-                }else{
-                    for(var i=0;i<rootHideButton.length;i++){
 
-                        rootHideButton[i].style.display = 'inline';
-                    }
-                }
-                if(points) {
-                    var left = points.x - viewBox.x;
-                    var top = points.y - 38 - viewBox.y;
-                    toolbar.style.left = left + 'px';
-                    toolbar.style.top = top + 'px';
-                    toolbar.style.display = 'block';
-                }else{
-                    toolbar.style.display = 'none';
-                }
+    var Toolbar = function(){
+        var $toolbarBtns = $('.toolbar-btn');
+        var $tipBox = $('#tip-box');
+        var $tipTriangle = $tipBox.find('.tip-triangle');
+        var $tipLabel = $tipBox.find('.tip-label');
+        var tipInfoSet = {
+            'node-plus': '添加任务',
+            'node-more': '跳转到子任务',
+            'node-info': '查看任务具体信息',
+            'node-cancel': '删除任务'
+        };
+
+        $('.toolbar-btn').hover(function(){
+                $tipBox.show();
+                _adjustTipBox(this);
+
+
             },
-            translateToolbar: function(dPoints){
-                if(dPoints){
-                    var left = parseInt(toolbar.style.left);
-                    var top = parseInt(toolbar.style.top);
-                    left += dPoints.x;
-                    top += dPoints.y;
-                    toolbar.style.left = left + 'px';
-                    toolbar.style.top = top + 'px';
+            function(){
+                $tipBox.hide();
+            });
+
+        function _adjustTipBox(btn){
+            //改变tip box的标签值
+            var btnId = $(btn).attr('id');
+            $tipLabel.html(tipInfoSet[btnId]);
+
+            var btnOffsetLeft = $(btn).get(0).offsetLeft;
+            var toolbarMargin = parseInt($('#toolbar').css('margin-left'));
+            //功能键离function-bar最左边的距离
+            var btnLeft = btnOffsetLeft + toolbarMargin;
+
+            var btnHalfWidth = parseInt($(btn).css('width')) / 2;
+            var tipBoxLabelHalfWidth = $tipBox.find('.tip-label').outerWidth() / 2;
+            //tipBox应该向左偏移的量
+            var tipBoxLeft = btnLeft - tipBoxLabelHalfWidth + btnHalfWidth;
+
+            $tipBox.css('left', tipBoxLeft + 'px');
+            $tipTriangle.css('left', tipBoxLabelHalfWidth - 10 + 'px');
+
+            //如果有设active类则不透明，否则透明
+            if($(btn).hasClass('active')){
+                $tipBox.css('opacity', 1);
+            }else{
+                $tipBox.css('opacity', 0.6);
+            }
+
+        }
+
+        function setActive(className){
+
+
+            if(className){
+                $toolbarBtns.each(function(){
+                    if($(this).hasClass(className)){
+                        $(this).addClass('active');
+                    }else{
+                        $(this).removeClass('active');
+                    }
+                });
+            }else{
+                $toolbarBtns.addClass('active');
+            }
+
+
+        }
+
+        return {
+            setActive: function(node){
+                if(node.isRootNode()){
+                    setActive('plus-active');
+                }else{
+                    setActive();
                 }
+
+            },
+            setAllUnactive: function(){
+                $toolbarBtns.removeClass('active');
             }
         }
     };
+
+
     return Toolbar;
 });

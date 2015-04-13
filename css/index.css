@@ -1,0 +1,93 @@
+#mindmap-main {
+    position: relative;
+    width: 700px;
+}
+
+#mindmap-canvas {
+    width: 100%;
+    height: 1000px;
+    border: #eee solid 1px;
+    background-color: #f2f2f2;
+}
+
+#function-bar {
+
+    height: 37px;
+    position: relative;
+    background-color: #aaa;
+}
+
+
+/*---------------------------提示框---------------------------*/
+#tip-box {
+    position: absolute;
+    top: 50px;
+    display: none;
+    z-index: 150;
+    border-color: #aaa87b;
+}
+
+#tip-box .tip-wrapper {
+    /*position: relative*/
+}
+
+#tip-box .tip-label {
+    color: white;
+    background-color: #303030;
+    padding: 7px 9px 7px 9px;
+    border-radius: 3px;
+}
+
+#tip-box .tip-triangle {
+    position: absolute;
+    top: -25px;
+
+    width:0;
+    height:0;
+    border-width: 10px;
+    border-style: dashed dashed solid dashed;
+    border-color: transparent transparent #303030 transparent ;
+}
+
+
+
+
+
+/*--------------------------工具栏---------------------------*/
+#toolbar {
+    margin-left: 14px;
+    height: 37px;
+    line-height: 37px;
+    /*background-color: #aaa;*/
+    position: absolute;
+
+    /*border: 1px #aaa solid;
+    border-radius: 4px;*/
+    padding: 3px;
+    z-index: 100;
+
+    /*display: none;*/
+}
+
+
+#toolbar span.glyphicon {
+    border-radius: 3px;
+    /*color: #dedfdf;*/
+    color: #ccc;
+    font-size: 20px;
+    padding: 2px;
+    /*background-color: #aaa;*/
+
+}
+#toolbar span.glyphicon.active:hover {
+    background-color: #ccc;
+}
+
+#toolbar span.glyphicon.active {
+    color: #ffffff;
+}
+
+#label-box {
+    display: none;
+}
+

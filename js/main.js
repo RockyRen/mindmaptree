@@ -3,7 +3,7 @@
  */
 require.config({
     paths: {
-        'Raphael': 'packages/bower/raphael/raphael',
+        'raphael': 'packages/bower/raphael/raphael',
         'jquery': 'packages/bower/jquery/dist/jquery',
         'bootstrap': '../bootstrap/js/bootstrap.min'
     },
@@ -15,45 +15,27 @@ require.config({
     }
 });
 
-require(['imp/Graph', 'imp/Renderer', 'jquery', 'bootstrap', 'Raphael'],function(Graph, Renderer){
-    var gRenderer = new Renderer('mindmap-canvas', 'toolbar');
-    var graph = new Graph(gRenderer);
 
-    //初始化根结点
+require(['imp/Graph', 'imp/Renderer', 'jquery', 'bootstrap', 'raphael'],function(Graph, Renderer,$){
+    var renderer = new Renderer({
+        canvasId: 'mindmap-canvas'
+    });
+    var graph = new Graph(renderer);
 
-    var rootNode = graph.addNode({
-        x: gRenderer.canvasWidth/2 - 50,
-        y: 200
+    $('#node-plus').click(function(){
+        graph.addNode(graph.selected, {});
     });
 
-    rootNode.label = '中心主题';
-    graph.setRootNode(rootNode);
-    graph.root.render();
-    gRenderer.setShape(rootNode, {shapeType: 'root'});
-
-
-    var nodeAdd = document.getElementById('node-add');
-    nodeAdd.onclick = function(){
-        var node = graph.addNode();
-        node.setParent(graph.selected);
-        node.render();
-    };
-
-    var nodeEdit = document.getElementById('node-edit');
-    nodeEdit.onclick = function(){
-        alert('edit');
-    };
-
-    var nodeCancel = document.getElementById('node-cancel');
-    nodeCancel.onclick = function(){
+    $('#node-cancel').click(function(){
         if(graph.selected){
             if(graph.selected.isRootNode()){
                 console.log('cannot cancel root node');
             }else{
-                graph.selected.remove();
+                graph.removeNode(graph.selected);
                 graph.setSelected(null);
             }
         }
-    }
+    });
+
 
 });

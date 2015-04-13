@@ -1,6 +1,4 @@
-/**
- * Created by rockyren on 14/12/25.
- */
+
 define([], function(){
     /**
      * 结点外形相关
@@ -8,20 +6,27 @@ define([], function(){
     var nodeShapeRelative = (function(){
 
         return {
-            nodeDefaultWidth: 80,
-            nodeDefaultHeight: 60,
-            LEFT: -1,
-            RIGHT: 1,
-            nodeXInterval: 50,
-            nodeYInterval: 20,
+            nodeDefaultWidth: 70,
+            nodeDefaultHeight: 38,
+            littleNodeDefaultHeight: 26,
+            nodeXInterval: 40,
+            nodeYInterval: 16,
             getSingleNodeHeight: function(node){
                 if(node.shape){
                     return node.shape[1].attr('height');
                 }
                 //如果为新结点则返回默认高度
                 else{
-                    //@workaround:暂用绝对
-                    return this.nodeDefaultHeight;
+
+                    if(node.isFirstLevelNode()){
+                        return this.nodeDefaultHeight;
+                    }
+                    //@workaround:如果为第三层或以上层节点
+                    else{
+                        return this.littleNodeDefaultHeight;
+                    }
+
+
                 }
             },
             getSingleNodeWidth: function(node){
