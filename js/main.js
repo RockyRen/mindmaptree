@@ -37,5 +37,12 @@ require(['imp/Graph', 'imp/Renderer', 'jquery', 'bootstrap', 'raphael'],function
         }
     });
 
+    $('#label-group button').click(function(){
+        var text = $('#label-group input').val();
+        if(graph.selected){
+            graph.setLabel(graph.selected, text);
+        }
+    });
+
 
 });

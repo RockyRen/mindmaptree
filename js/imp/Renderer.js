@@ -1,8 +1,8 @@
 
 define(['imp/otherModule/DataHelper', 'imp/renderModule/shapeCustomAttr',  'imp/renderModule/nodeShapeRelative',
         'imp/renderModule/ChildrenRenderFactory', 'imp/renderModule/Drag',
-        'imp/renderModule/Viewport', 'imp/renderModule/EdgeDraw', 'imp/renderModule/Toolbar', 'raphael'],
-    function(DataHelper, shapeCustomAttr, nodeShapeRelative, ChildrenRenderFactory, Drag, Viewport, EdgeDraw, Toolbar){
+        'imp/renderModule/Viewport', 'imp/renderModule/EdgeDraw', 'imp/renderModule/Toolbar','jquery', 'raphael' ],
+    function(DataHelper, shapeCustomAttr, nodeShapeRelative, ChildrenRenderFactory, Drag, Viewport, EdgeDraw, Toolbar, $){
 
 
         function Renderer(options){
@@ -60,6 +60,10 @@ define(['imp/otherModule/DataHelper', 'imp/renderModule/shapeCustomAttr',  'imp/
                 }
 
                 this._setDrag(node);
+
+                node.shape.mousedown(function(){
+                    $('#label-group input').val(node.label);
+                });
 
 
             },
@@ -256,6 +260,7 @@ define(['imp/otherModule/DataHelper', 'imp/renderModule/shapeCustomAttr',  'imp/
                     if(event.target.nodeName === 'svg'){
                         graph.setSelected(null);
                         selfRen.toolbar.setAllUnactive();
+                        $('#label-group input').val('');
                     }
                 });
 
