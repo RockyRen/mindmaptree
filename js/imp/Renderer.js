@@ -191,6 +191,17 @@ define(['imp/otherModule/DataHelper', 'imp/renderModule/shapeCustomAttr',  'imp/
                     node.translate(-gap, 0);
 
                 }
+                //如果节点为根结点
+                else if(node.isRootNode()){
+                  node.translate(-gap/2, 0);
+                  DataHelper.forEach(node.children, function(child){
+                    if(child.direction === 1){
+                      child.translate(gap, 0);
+                    }else if(child.direction === -1){
+                      child.translate(-gap/2, 0);
+                    }
+                  });
+                }
 
             },
 
