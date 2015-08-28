@@ -185,6 +185,11 @@ define(['imp/otherModule/DataHelper', 'imp/renderModule/shapeCustomAttr',  'imp/
                         child.translate(gap, 0);
                     });
 
+                    //右节点的边需要重画
+                    if(node.shape && node.connectFather){
+                      this._drawEdge(node.connectFather);
+                    }
+
                 }
                 //如果改变label的节点为左方向节点,则向左移动该节点(translate回递归)和toolbar
                 else if(node.direction === -1){

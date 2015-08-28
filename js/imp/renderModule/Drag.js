@@ -108,7 +108,7 @@ define(['imp/otherModule/DataHelper'], function(DataHelper){
             //如果不可渲染，则不可调用move
             if(!enableRender.canRender) { return false; }
 
-            //移动节点时讲鼠标的样式设为move
+            //移动节点时将鼠标的样式设为move
             node.shape[1].node.style.cursor = 'move';
 
             node.shape.transform('t' + dx + ',' + dy);
@@ -162,12 +162,15 @@ define(['imp/otherModule/DataHelper'], function(DataHelper){
 
             //@workaround：将节点设为被选择样式
             node.shape.selectedShape(node);
+
             _setChildrenNormal(node.children);
 
             if(lastOverlapId){
-                graph.nodes[lastOverlapId].shape[1].attr({
-                    'stroke': 'black'
-                });
+//                graph.nodes[lastOverlapId].shape[1].attr({
+//                    'stroke': 'black'
+//                });
+                var lastOverlapNode = graph.nodes[lastOverlapId];
+                lastOverlapNode.shape.nodeShape(lastOverlapNode);
             }
 
             overlapNodeId = _getOverlapNodeId();
