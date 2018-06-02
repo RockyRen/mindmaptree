@@ -33,6 +33,6 @@ npm run dist
 
 ## License
 
-MIT
+[MIT](https://github.com/RockyRen/mindmaptree/blob/master/LICENSE)
 
 Copyright (c) 2018 - present, RockyRen
