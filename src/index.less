@@ -1,0 +1,140 @@
+body {
+    margin: 0;
+}
+
+.mindmap {
+    margin-top: 2px;
+    text-align: center;
+}
+
+.mindmap-main {
+    margin-right: auto;
+    margin-left: auto;
+    position: relative;
+    text-align: left;
+    width: 85%;
+    border: 1px #ccc solid;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+
+#mindmapCanvas {
+    height: 1000px;
+    border: #eee solid 1px;
+    background-color: #f2f2f2;
+}
+
+.form-control {
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 14px;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+}
+
+.btn {
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+
+    &:focus {
+        outline: none;
+    }
+
+    &.disabled {
+        opacity: .5;
+    }
+}
+
+.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 18px;
+    border-radius: 3px;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.function-bar {
+    height: 37px;
+    position: relative;
+    background-color: #aaa;
+    .toolbar {
+        padding-top: 4px;
+        margin-left: 10px;
+        .toolbar-btn {
+
+        }
+        .node-plus {
+
+        }
+        .node-cancel {
+            
+        }
+    }
+    .tip-box {
+        position: absolute;
+        top: 50px;
+        display: none;
+        z-index: 150;
+        border-color: #aaa87b;
+        .tip-wrapepr {
+            .tip-triangle {
+                position: absolute;
+                top: -25px;
+
+                width:0;
+                height:0;
+                border-width: 10px;
+                border-style: dashed dashed solid dashed;
+                border-color: transparent transparent #303030 transparent;
+            }
+            .tip-label {
+                color: white;
+                background-color: #303030;
+                padding: 7px 9px 7px 9px;
+                border-radius: 3px;
+            }
+        }
+    }
+    .label-group {
+        position: absolute;
+        top: 2px;
+        left: 169px;
+        input {
+            display: inline-block;
+            width: 100px;
+            height: 18px;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+}
