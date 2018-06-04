@@ -1,6 +1,7 @@
 # Mindmap Tree
 一个基于[Raphael.js](http://dmitrybaranovskiy.github.io/raphael/)图形库实现的思维导图
 
+[Demo](https://rockyren.github.io/mindmaptree/index.html)
 ## 开始
 安装依赖包：
 
@@ -30,6 +31,7 @@ npm run dist
 
 ## 其他
 * 仅供学习使用，问题比较多，请勿直接运用到生产环境上
+* 如要查看旧版本，就点击[这里](https://github.com/RockyRen/mindmaptree/tree/v1)
 
 ## License
 
