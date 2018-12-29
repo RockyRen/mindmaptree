@@ -11,7 +11,7 @@ npm install
 
 ## 开发
 ```sh
-npm run dev
+npm start
 ```
 
 启动后访问 **http://127.0.0.1:8201/index.html**
