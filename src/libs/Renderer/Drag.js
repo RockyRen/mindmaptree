@@ -25,10 +25,6 @@ let Drag = function(aNode, options={}){
         canRender: options.canRender || true
     }
 
-    
-
-
-
     /**
      * 取得克隆的shape：用于占位
      * @param node

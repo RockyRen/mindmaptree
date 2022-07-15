@@ -150,20 +150,14 @@ Raphael.st.unSelectedShape = function (node) {
   }
 };
 
-/**
- * 重叠时节点的外形
- * @param node
- */
+// 重叠时节点的外形
 Raphael.st.overlapShape = function (node) {
   this[1].attr({
     stroke: 'blue'
   })
 };
 
-/**
- * 取消重叠时，节点的外形：设置根据节点的类型不同而不同
- * @param node
- */
+// 取消重叠时，节点的外形：设置根据节点的类型不同而不同
 Raphael.st.unOverlapShape = function (node) {
   if (node.isSecondMoreNode()) {
     this[1].attr({
@@ -182,11 +176,7 @@ Raphael.st.setLabel = function (node) {
   })
 };
 
-
-/**
- * 透明样式：用于拖动节点时的透明显示
- * @param node
- */
+// 透明样式：用于拖动节点时的透明显示
 Raphael.st.dragNodeOpacityShape = function (node) {
   Raphael.st.unSelectedShape.call(this, node);
 
