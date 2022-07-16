@@ -62,7 +62,6 @@ const EdgeDraw = function (edge: any) {
     const yt2 = yt1;
 
     //@workaround:当为第二层节点时，短边出发点稍下
-
     if (source.isSecondMoreNode()) {
       ys = sourceBox.y2 - 3;
     } else {
@@ -105,7 +104,6 @@ const EdgeDraw = function (edge: any) {
       } else {
         drawThreePath();
       }
-
       return shape;
     }
   }

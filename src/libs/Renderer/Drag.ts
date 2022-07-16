@@ -145,7 +145,6 @@ const Drag = function (aNode: any, options: any = {}) {
 
     if (overlapNodeId) {
       // 节点改变父节点后的操作
-      let nodes = graph.getNodes();
       graph.setParent(parseInt(overlapNodeId), node.id);
     }
 

@@ -70,7 +70,6 @@ const App = (): JSX.Element => {
             <button className="btn btn-default btn-sm" onClick={commitText}>确定</button>
           </div>
         </div>
-
         <div id="mindmapCanvas"></div>
       </div>
     </div>

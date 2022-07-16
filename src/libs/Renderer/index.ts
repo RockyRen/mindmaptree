@@ -1,15 +1,9 @@
 import Raphael, { RaphaelPaper } from 'raphael';
-// @ts-ignore
 import shapeCustomAttr from './shapeCustomAttr';
-// @ts-ignore
 import Viewport from './Viewport';
-// @ts-ignore
 import nodeShapeRelative from './nodeShapeRelative';
-// @ts-ignore
 import ChildrenRenderFactory from './ChildrenRenderFactory';
-// @ts-ignore
 import EdgeDraw from './EdgeDraw';
-// @ts-ignore
 import Drag from './Drag';
 import { LEFT, RIGHT } from '../constants';
 import { forEach } from '../utils';
@@ -63,7 +57,6 @@ class Renderer {
     if (node.connectFather) {
       this._drawEdge(node.connectFather);
     }
-
     // 设置拖动
     this._setDrag(node);
 
@@ -102,7 +95,6 @@ class Renderer {
       let labelY = label.attr('y');
       label.attr({ x: labelX + dx, y: labelY + dy });
     }
-
 
     //移动节点后,边重画
     if (node.shape && node.connectFather) {

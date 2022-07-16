@@ -51,7 +51,7 @@ class Graph {
   }
 
   // 设置节点的文本
-  setLabel(label: string) {
+  public setLabel(label: string) {
     if (this.selected) {
       this.selected.label = label;
 
@@ -61,7 +61,7 @@ class Graph {
 
   }
 
-  setSelected(node: any): void {
+  public setSelected(node: any): void {
     if (this.selected === node) {
       return;
     }
