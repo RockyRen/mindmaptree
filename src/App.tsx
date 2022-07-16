@@ -7,7 +7,7 @@ import './index.less';
 
 // todo 重构
 const App = (): JSX.Element => {
-  const [graph, setGraph] = useState(null);
+  const [graph, setGraph] = useState<any>(null);
   const [inputText, setInputText] = useState<string>('');
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const App = (): JSX.Element => {
       getSelected: graph.getSelected.bind(graph),
       getNodes: graph.getNodes.bind(graph),
       setParent: graph.setParent.bind(graph)
-    });
+    } as any);
     graph.init(renderer);
 
     setGraph(graph);
