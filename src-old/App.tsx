@@ -1,53 +1,45 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import MindemapTree from './mindmap-tree/index';
+// @ts-ignore
+import Graph from './libs/Graph/index';
+// @ts-ignore
+import Renderer from './libs/Renderer/index';
 import './index.less';
-
-// todo
-let hasMindmapTree = false;
 
 // todo 重构
 const App = (): JSX.Element => {
-  const [mindmapTree, setMindmapTree] = useState<any>(null);
+  const [graph, setGraph] = useState<any>(null);
   const [inputText, setInputText] = useState<string>('');
 
   useEffect(() => {
-    if (!hasMindmapTree) {
-      const mindmapTreeTemp = new MindemapTree({
-        container: '#mindmap-container',
-      });
-      setMindmapTree(mindmapTreeTemp);
-      hasMindmapTree = true;
-    }
+    const graph = new Graph();
+    const renderer = new Renderer({
+      canvasId: 'mindmapCanvas',
+      canvasClickCb: () => {
+        setInputText('');
+      },
+      nodeClickCb: (label: string) => {
+        setInputText(label);
+      }
+    }, {
+      setSelected: graph.setSelected.bind(graph),
+      getParentAddableNodeSet: graph.getParentAddableNodeSet.bind(graph),
+      getSelected: graph.getSelected.bind(graph),
+      getNodes: graph.getNodes.bind(graph),
+      setParent: graph.setParent.bind(graph)
+    } as any);
+    graph.init(renderer);
 
-    // const graph = new Graph();
-    // const renderer = new Renderer({
-    //   canvasId: 'mindmapCanvas',
-    //   canvasClickCb: () => {
-    //     setInputText('');
-    //   },
-    //   nodeClickCb: (label: string) => {
-    //     setInputText(label);
-    //   }
-    // }, {
-    //   setSelected: graph.setSelected.bind(graph),
-    //   getParentAddableNodeSet: graph.getParentAddableNodeSet.bind(graph),
-    //   getSelected: graph.getSelected.bind(graph),
-    //   getNodes: graph.getNodes.bind(graph),
-    //   setParent: graph.setParent.bind(graph)
-    // } as any);
-    // graph.init(renderer);
-
-    // setGraph(graph);
+    setGraph(graph);
   }, []);
 
   const addNode = (): void => {
     // @ts-ignore
-    // graph?.addNode();
+    graph?.addNode();
   };
 
   const removeNode = (): void => {
     // @ts-ignore
-    // graph?.removeNode();
+    graph?.removeNode();
   };
 
   const handleChangeInputText = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -56,7 +48,7 @@ const App = (): JSX.Element => {
 
   const commitText = (): void => {
     // @ts-ignore
-    // graph?.setLabel(inputText);
+    graph?.setLabel(inputText);
   }
 
   return (
@@ -78,7 +70,7 @@ const App = (): JSX.Element => {
             <button className="btn btn-default btn-sm" onClick={commitText}>确定</button>
           </div>
         </div>
-        <div id="mindmap-container"></div>
+        <div id="mindmapCanvas"></div>
       </div>
     </div>
   )
