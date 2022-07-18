@@ -49,7 +49,10 @@ class RootTopic {
   }
 
   public render(): void {
+    // 节点渲染
     this.drawNodeShape();
+
+    // todo 事件：设置拖动
   }
 
   private drawNodeShape(): void {
@@ -57,10 +60,9 @@ class RootTopic {
     const { label } = rootTopic;
 
     const x = this.containerWidth / 2 - 50;
-    const y = 200;
+    const y = 200; // todo y 是不是搞一个自动算出来？
 
     const labelShape = this.paper.text(x, y, label);
-    // todo id
     const rectShape = this.paper.rect(x, y, 100, 100, 4);
 
     labelShape.toFront();
@@ -87,8 +89,8 @@ class RootTopic {
     });
 
     this.shape.push(labelShape).push(rectShape);
-
   }
+
 }
 
 export default RootTopic;
