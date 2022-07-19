@@ -1,7 +1,6 @@
 import Raphael, { RaphaelPaper } from 'raphael';
-// import { h } from '../common/template-element';
 import Model from '../model/model';
-import RootTopic from './root-toic';
+import RootTopicShape from './shape/root-topic-shape';
 
 interface GraphOptions {
   containerDom: Element;
@@ -11,7 +10,8 @@ interface GraphOptions {
 class Graph {
   private readonly paper: RaphaelPaper;
   private readonly model: Model;
-  private readonly rootTopic: RootTopic;
+  private readonly containerWidth: number;
+  private readonly containerHeight: number;
   public constructor(options: GraphOptions) {
     const {
       containerDom,
@@ -19,22 +19,27 @@ class Graph {
     } = options;
 
     const graphDom = this.initGraphElement(containerDom);
-    const containerWidth = containerDom.clientWidth || 0;
-    const containerHeight = containerDom.clientHeight || 0;
+    this.containerWidth = containerDom.clientWidth || 0;
+    this.containerHeight = containerDom.clientHeight || 0;
 
-    this.paper = new Raphael(graphDom, containerWidth, containerHeight);
+    this.paper = new Raphael(graphDom, this.containerWidth, this.containerHeight);
     this.model = model;
-
-    this.rootTopic = new RootTopic({
-      paper: this.paper,
-      model: this.model,
-      containerWidth,
-      containerHeight,
-    });
   }
 
+  // todo 暂时强制算出来
   public render() {
-    this.rootTopic.render();
+    const rootTopicShape = new RootTopicShape({
+      paper: this.paper,
+      x: this.containerWidth / 2 - 50,
+      y: 200,
+      label: this.model.rootTopic.label,
+    });
+
+    rootTopicShape.translate(200, 200);
+    rootTopicShape.select();
+    rootTopicShape.unSelect();
+
+    console.log(rootTopicShape.getPosition());
   }
 
   private initGraphElement(containerDom: Element): HTMLDivElement {
