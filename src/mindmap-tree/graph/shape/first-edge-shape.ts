@@ -8,7 +8,7 @@ interface FirstEdgeShapeOptions {
   direction: Direction;
 }
 
-class FirstEdgeShape {
+export class FirstEdgeShape {
   private shapeSet!: RaphaelSet;
   public constructor(options: FirstEdgeShapeOptions) {
     this.draw(options);
@@ -50,4 +50,6 @@ class FirstEdgeShape {
   }
 }
 
-export default FirstEdgeShape;
+export function createFirstEdgeShape(options: FirstEdgeShapeOptions): FirstEdgeShape {
+  return new FirstEdgeShape(options);
+}

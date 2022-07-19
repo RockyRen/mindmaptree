@@ -1,10 +1,10 @@
 import Raphael, { RaphaelPaper } from 'raphael';
 import Model, { Direction } from '../model/model';
-import RootNodeShape from './shape/root-node-shape';
-import FirstNodeShape from './shape/first-node-shape';
-import GrandchildNodeShape from './shape/grandchild-node-shape';
-import FirstEdgeShape from './shape/first-edge-shape';
-import GrandchildEdgeShape from './shape/grandchild-edge-shape';
+import { createRootNodeShape } from './shape/root-node-shape';
+import { createFirstNodeShape } from './shape/first-node-shape';
+import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
+import { createFirstEdgeShape } from './shape/first-edge-shape';
+import { createGrandchildEdgeShape } from './shape/grandchild-edge-shape';
 
 interface GraphOptions {
   containerDom: Element;
@@ -32,7 +32,7 @@ class Graph {
 
   // todo 暂时强制算出来
   public render() {
-    const rootNodeShape = new RootNodeShape({
+    const rootNodeShape = createRootNodeShape({
       paper: this.paper,
       x: this.containerWidth / 2 - 50,
       y: 200,
@@ -41,35 +41,35 @@ class Graph {
 
     rootNodeShape.translate(-100, 0);
 
-    const node1 = new FirstNodeShape({
+    const node1 = createFirstNodeShape({
       paper: this.paper,
       x: this.containerWidth / 2 + 150,
       y: 100,
       label: '任务1',
     });
 
-    const grandchild = new GrandchildNodeShape({
+    const grandchild = createGrandchildNodeShape({
       paper: this.paper,
       x: this.containerWidth / 2 + 250,
       y: 100,
       label: '任务2',
     });
 
-    const grandchild2 = new GrandchildNodeShape({
+    const grandchild2 = createGrandchildNodeShape({
       paper: this.paper,
       x: this.containerWidth / 2 + 250 + 75,
       y: 100 - 30,
       label: '任务3',
     });
 
-    const edge1 = new FirstEdgeShape({
+    const edge1 = createFirstEdgeShape({
       paper: this.paper,
       sourceBBox: rootNodeShape.getBBox(),
       targetBBox: node1.getBBox(),
       direction: Direction.RIGHT,
     });
 
-    const edge2 = new GrandchildEdgeShape({
+    const edge2 = createGrandchildEdgeShape({
       paper: this.paper,
       sourceBBox: node1.getBBox(),
       targetBBox: grandchild.getBBox(),
@@ -77,7 +77,7 @@ class Graph {
       depth: 2,
     });
 
-    const edge3 = new GrandchildEdgeShape({
+    const edge3 = createGrandchildEdgeShape({
       paper: this.paper,
       sourceBBox: grandchild.getBBox(),
       targetBBox: grandchild2.getBBox(),

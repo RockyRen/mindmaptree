@@ -9,7 +9,7 @@ interface GrandchildEdgeShapeOptions {
   depth: number;
 }
 
-class GrandchildEdgeShape {
+export class GrandchildEdgeShape {
   private shapeSet!: RaphaelSet;
   public constructor(options: GrandchildEdgeShapeOptions) {
     this.draw(options);
@@ -79,4 +79,6 @@ class GrandchildEdgeShape {
   }
 }
 
-export default GrandchildEdgeShape;
+export function createGrandchildEdgeShape(options: GrandchildEdgeShapeOptions) {
+  return new GrandchildEdgeShape(options);
+}
