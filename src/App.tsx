@@ -18,26 +18,6 @@ const App = (): JSX.Element => {
       setMindmapTree(mindmapTreeTemp);
       hasMindmapTree = true;
     }
-
-    // const graph = new Graph();
-    // const renderer = new Renderer({
-    //   canvasId: 'mindmapCanvas',
-    //   canvasClickCb: () => {
-    //     setInputText('');
-    //   },
-    //   nodeClickCb: (label: string) => {
-    //     setInputText(label);
-    //   }
-    // }, {
-    //   setSelected: graph.setSelected.bind(graph),
-    //   getParentAddableNodeSet: graph.getParentAddableNodeSet.bind(graph),
-    //   getSelected: graph.getSelected.bind(graph),
-    //   getNodes: graph.getNodes.bind(graph),
-    //   setParent: graph.setParent.bind(graph)
-    // } as any);
-    // graph.init(renderer);
-
-    // setGraph(graph);
   }, []);
 
   const addNode = (): void => {

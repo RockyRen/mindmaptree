@@ -7,8 +7,7 @@ export interface CommonNodeData {
   id: string;
   children: string[];
   label: string; // node文本
-  // todo
-  attr: any; // node的样式
+  // todo attr 样式对象，以后搞
 }
 
 interface RootNodeData extends CommonNodeData {
@@ -25,7 +24,6 @@ class Model {
     id: '',
     children: [],
     label: '中心主题',
-    attr: {},
   }
   public readonly nodes: NormalNodeData[] = [];
 
