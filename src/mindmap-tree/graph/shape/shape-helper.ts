@@ -1,7 +1,7 @@
 import { RaphaelElement } from 'raphael';
 
 // todo 重构
-export function setTopicAccessoryPosition(options: {
+export function setNodeAccessoryPosition(options: {
   label: RaphaelElement;
   rect: RaphaelElement;
   nodeX: number;

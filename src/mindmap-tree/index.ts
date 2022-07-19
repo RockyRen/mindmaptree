@@ -12,7 +12,6 @@ class MindmapTree {
     const {
       container,
     } = options;
-    console.log('a-----')
     
     let containerDom = typeof container === 'string' ? document.querySelector(container) : container;
 

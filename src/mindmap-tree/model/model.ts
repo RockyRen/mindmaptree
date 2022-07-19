@@ -1,33 +1,33 @@
-enum Direction {
-  LEFT = 0,
-  RIGHT,
+export enum Direction {
+  LEFT = -1,
+  RIGHT = 1,
 }
 
-export interface CommonTopicData {
+export interface CommonNodeData {
   id: string;
   children: string[];
-  label: string; // topic文本
+  label: string; // node文本
   // todo
-  attr: any; // topic的样式
+  attr: any; // node的样式
 }
 
-interface RootTopicData extends CommonTopicData {
+interface RootNodeData extends CommonNodeData {
 
 }
 
-interface NormalTopicData extends CommonTopicData {
+interface NormalNodeData extends CommonNodeData {
   father: string;
   direction: Direction;
 }
 
 class Model {
-  public readonly rootTopic: RootTopicData = {
+  public readonly rootNode: RootNodeData = {
     id: '',
     children: [],
     label: '中心主题',
     attr: {},
   }
-  public readonly topics: NormalTopicData[] = [];
+  public readonly nodes: NormalNodeData[] = [];
 
   public constructor() {
 

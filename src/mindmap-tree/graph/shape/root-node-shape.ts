@@ -1,7 +1,7 @@
-import { RaphaelPaper, RaphaelSet, RaphaelElement } from 'raphael';
-import { setTopicAccessoryPosition } from './shape-helper';
+import { RaphaelPaper, RaphaelSet, RaphaelElement, RaphaelAxisAlignedBoundingBox } from 'raphael';
+import { setNodeAccessoryPosition } from './shape-helper';
 
-interface RootTopicShapeOptions {
+interface RootNodeShapeOptions {
   paper: RaphaelPaper;
   x: number;
   y: number;
@@ -9,18 +9,18 @@ interface RootTopicShapeOptions {
 }
 
 // 根节点shape
-class RootTopicShape {
+class RootNodeShape {
   private readonly paper: RaphaelPaper;
   private readonly shapeSet: RaphaelSet;
-  private labelShape: RaphaelElement;
-  private rectShape: RaphaelElement;
+  private readonly labelShape: RaphaelElement;
+  private readonly rectShape: RaphaelElement;
 
   public constructor({
     paper,
     x,
     y,
     label,
-  }: RootTopicShapeOptions) {
+  }: RootNodeShapeOptions) {
     this.paper = paper;
     this.shapeSet = this.paper.set();
     this.labelShape = this.paper.text(x, y, label);
@@ -28,30 +28,15 @@ class RootTopicShape {
     this.draw({ x, y, label });
   }
 
-  public getPosition(): {
-    x: number;
-    y: number;
-  } {
-    return {
-      x: this.rectShape?.attr('x') || 0,
-      y: this.rectShape?.attr('y') || 0,
-    };
+  public getBBox(): RaphaelAxisAlignedBoundingBox {
+    return this.rectShape.getBBox();
   }
 
   public translate(offsetX: number, offsetY: number): void {
-    const labelX = this.labelShape?.attr('x') || 0;
-    const labelY = this.labelShape?.attr('y') || 0;
-    this.labelShape?.attr({
-      x: labelX + offsetX,
-      y: labelY + offsetY,
-    });
-
-    const rectX = this.rectShape?.attr('x') || 0;
-    const rectY = this.rectShape?.attr('y') || 0;
-    this.rectShape?.attr({
-      x: rectX + offsetX,
-      y: rectY + offsetY,
-    });
+    // this.shapeSet.forEach((shape) => {
+    //   shape.translate(offsetX, offsetY);
+    // });
+    this.shapeSet.translate(offsetX, offsetY);
   }
 
   public select(): void {
@@ -66,6 +51,10 @@ class RootTopicShape {
       'stroke': '#808080',
       'stroke-width': 1,
     });
+  }
+
+  public remove(): void {
+    this.shapeSet.remove();
   }
 
   private draw({ x, y, label }: {
@@ -86,7 +75,7 @@ class RootTopicShape {
       'stroke-width': 1,
     });
 
-    setTopicAccessoryPosition({
+    setNodeAccessoryPosition({
       label: this.labelShape,
       rect: this.rectShape,
       nodeX: x,
@@ -99,4 +88,4 @@ class RootTopicShape {
   }
 }
 
-export default RootTopicShape;
+export default RootNodeShape;

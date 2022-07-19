@@ -1,6 +1,10 @@
 import Raphael, { RaphaelPaper } from 'raphael';
-import Model from '../model/model';
-import RootTopicShape from './shape/root-topic-shape';
+import Model, { Direction } from '../model/model';
+import RootNodeShape from './shape/root-node-shape';
+import FirstNodeShape from './shape/first-node-shape';
+import GrandchildNodeShape from './shape/grandchild-node-shape';
+import FirstEdgeShape from './shape/first-edge-shape';
+import GrandchildEdgeShape from './shape/grandchild-edge-shape';
 
 interface GraphOptions {
   containerDom: Element;
@@ -28,18 +32,58 @@ class Graph {
 
   // todo 暂时强制算出来
   public render() {
-    const rootTopicShape = new RootTopicShape({
+    const rootNodeShape = new RootNodeShape({
       paper: this.paper,
       x: this.containerWidth / 2 - 50,
       y: 200,
-      label: this.model.rootTopic.label,
+      label: this.model.rootNode.label,
     });
 
-    rootTopicShape.translate(200, 200);
-    rootTopicShape.select();
-    rootTopicShape.unSelect();
+    rootNodeShape.translate(-100, 0);
 
-    console.log(rootTopicShape.getPosition());
+    const node1 = new FirstNodeShape({
+      paper: this.paper,
+      x: this.containerWidth / 2 + 150,
+      y: 100,
+      label: '任务1',
+    });
+
+    const grandchild = new GrandchildNodeShape({
+      paper: this.paper,
+      x: this.containerWidth / 2 + 250,
+      y: 100,
+      label: '任务2',
+    });
+
+    const grandchild2 = new GrandchildNodeShape({
+      paper: this.paper,
+      x: this.containerWidth / 2 + 250 + 75,
+      y: 100 - 30,
+      label: '任务3',
+    });
+
+    const edge1 = new FirstEdgeShape({
+      paper: this.paper,
+      sourceBBox: rootNodeShape.getBBox(),
+      targetBBox: node1.getBBox(),
+      direction: Direction.RIGHT,
+    });
+
+    const edge2 = new GrandchildEdgeShape({
+      paper: this.paper,
+      sourceBBox: node1.getBBox(),
+      targetBBox: grandchild.getBBox(),
+      direction: Direction.RIGHT,
+      depth: 2,
+    });
+
+    const edge3 = new GrandchildEdgeShape({
+      paper: this.paper,
+      sourceBBox: grandchild.getBBox(),
+      targetBBox: grandchild2.getBBox(),
+      direction: Direction.RIGHT,
+      depth: 3,
+    });
   }
 
   private initGraphElement(containerDom: Element): HTMLDivElement {
