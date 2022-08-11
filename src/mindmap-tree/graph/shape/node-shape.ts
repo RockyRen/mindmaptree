@@ -114,5 +114,4 @@ export class NodeShape {
       height: rectHeight
     });
   }
-  
 }

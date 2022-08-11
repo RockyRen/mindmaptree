@@ -20,7 +20,6 @@ const customAttr = {
   },
 };
 
-
 const paddingWidth = 42;
 const rectHeight = 52;
 

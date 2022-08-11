@@ -1,10 +1,13 @@
+// todo 是不是搞引用别名比较好？？？
 import Raphael, { RaphaelPaper } from 'raphael';
 import Model, { Direction } from '../model/model';
-import { createRootNodeShape } from './shape/root-node-shape';
-import { createFirstNodeShape } from './shape/first-node-shape';
-import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
-import { createFirstEdgeShape } from './shape/first-edge-shape';
-import { createGrandchildEdgeShape } from './shape/grandchild-edge-shape';
+// import { createRootNodeShape } from './shape/root-node-shape';
+// import { createFirstNodeShape } from './shape/first-node-shape';
+// import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
+// import { createFirstEdgeShape } from './shape/first-edge-shape';
+// import { createGrandchildEdgeShape } from './shape/grandchild-edge-shape';
+import Tree from './tree';
+// import TreeNode from './tree-node';
 
 interface GraphOptions {
   containerDom: Element;
@@ -16,11 +19,9 @@ class Graph {
   private readonly model: Model;
   private readonly containerWidth: number;
   private readonly containerHeight: number;
+  private tree: Tree;
   public constructor(options: GraphOptions) {
-    const {
-      containerDom,
-      model,
-    } = options;
+    const { containerDom, model, } = options;
 
     const graphDom = this.initGraphElement(containerDom);
     this.containerWidth = containerDom.clientWidth || 0;
@@ -28,63 +29,21 @@ class Graph {
 
     this.paper = new Raphael(graphDom, this.containerWidth, this.containerHeight);
     this.model = model;
+    this.tree = new Tree(this.model, this.paper);
   }
 
   // todo 暂时强制算出来
-  public render() {
-    const rootNodeShape = createRootNodeShape({
-      paper: this.paper,
-      x: this.containerWidth / 2 - 50,
-      y: 200,
-      label: this.model.rootNode.label,
-    });
-
-    rootNodeShape.translate(-100, 0);
-
-    const node1 = createFirstNodeShape({
-      paper: this.paper,
-      x: this.containerWidth / 2 + 150,
-      y: 100,
-      label: '任务1',
-    });
-
-    const grandchild = createGrandchildNodeShape({
-      paper: this.paper,
-      x: this.containerWidth / 2 + 250,
-      y: 100,
-      label: '任务2',
-    });
-
-    const grandchild2 = createGrandchildNodeShape({
-      paper: this.paper,
-      x: this.containerWidth / 2 + 250 + 75,
-      y: 100 - 30,
-      label: '任务3',
-    });
-
-    const edge1 = createFirstEdgeShape({
-      paper: this.paper,
-      sourceBBox: rootNodeShape.getBBox(),
-      targetBBox: node1.getBBox(),
-      direction: Direction.RIGHT,
-    });
-
-    const edge2 = createGrandchildEdgeShape({
-      paper: this.paper,
-      sourceBBox: node1.getBBox(),
-      targetBBox: grandchild.getBBox(),
-      direction: Direction.RIGHT,
-      depth: 2,
-    });
-
-    const edge3 = createGrandchildEdgeShape({
-      paper: this.paper,
-      sourceBBox: grandchild.getBBox(),
-      targetBBox: grandchild2.getBBox(),
-      direction: Direction.RIGHT,
-      depth: 3,
-    });
+  public render(): void {
+    this.tree.render();
   }
+
+  // public addNode(father: any, data: any): void {
+  //   this.tree.addNode(father, data);
+  // }
+
+  // public removeNode(node: any) {
+  //   this.tree.removeNode(node);
+  // }
 
   private initGraphElement(containerDom: Element): HTMLDivElement {
     const graphDom = document.createElement('div');
