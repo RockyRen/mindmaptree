@@ -48,6 +48,7 @@ class Tree {
     });
   }
 
+  // 递归初始化TreeNode
   private init(node: NodeData, depth: number) {
     const treeNode = new TreeNode(
       this.model,
