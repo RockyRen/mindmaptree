@@ -45,6 +45,7 @@ export function getChildrenPosition(
   const childAreaHeightMap: Record<string, number> = {};
   let areaHeight = 0;
 
+  // todo 根节点：leftChildren和rightChildren
   // todo 获取areaHeight，通过虚拟获取
   treeNode.getModelChildren()?.forEach((childId) => {
     const childTreeNode = treeNodes.find((item) => item.getId() === childId);
