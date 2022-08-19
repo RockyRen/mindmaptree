@@ -48,6 +48,7 @@ export class NodeShape {
     return this.rectShape.getBBox();
   }
 
+
   public translate(offsetX: number, offsetY: number): void {
     this.shapeSet.translate(offsetX, offsetY);
   }

@@ -1,15 +1,12 @@
 import TreeNode from './tree-node';
 import Model, { NodeData } from '../model/model';
 import { RaphaelPaper } from 'raphael';
-// import { createRootNodeShape } from './shape/root-node-shape';
-// import { createFirstNodeShape } from './shape/first-node-shape';
-// import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
-// import { createFirstEdgeShape } from './shape/first-edge-shape';
-// import { createGrandchildEdgeShape } from './shape/grandchild-edge-shape';
-
+import { getChildrenPosition } from './position';
 
 // 可以做tree的递归操作
 // todo 承载树的特殊功能：根节点、树叶节点；增加节点、删除节点
+// 属性是否有值的前后顺序问题：有些属性在前置处理后一定会存在的。
+// todo 如何方便地从TreeNode中获取fatherTreeNode和brotherTreeNode
 class Tree {
   private readonly paper: RaphaelPaper;
   private readonly model: Model
@@ -24,16 +21,30 @@ class Tree {
     this.init(this.model.rootNode, 1);
   }
   public render() {
-    this.renderInner(this.rootTreeNode);
+    // todo 根节点在中间
+    this.renderInner(this.rootTreeNode!, 400, 200);
   }
 
   // todo NodeData不行
-  public renderInner(treeNode?: TreeNode) {
-    treeNode?.render();
+  public renderInner(treeNode: TreeNode, x: number, y: number) {
+    treeNode?.render(x, y);
 
+    // 应该在这里一开始全部算出来？
+    const childPositionMap = getChildrenPosition(treeNode, this.treeNodes);
+    console.log(childPositionMap);
+
+    // todo 能不能更方便地获得fatherNode和childrenNode？
     treeNode?.getModelChildren()?.forEach((childId) => {
-      const childTreeNode = this.treeNodes.find((item) => item.getId() === childId)
-      this.renderInner(childTreeNode);
+      const childTreeNode = this.treeNodes.find((item) => item.getId() === childId);
+
+      if (!childTreeNode) {
+        return;
+      }
+
+      const { x: childX, y: childY, } = childPositionMap[childId];
+
+      // todo 获取子节点的x和y
+      childTreeNode && this.renderInner(childTreeNode, childX, childY);
     });
   }
 
@@ -57,7 +68,6 @@ class Tree {
       !!child && this.init(child, depth + 1);
     })
   }
-
 
   public addNode(father: any, data: any) { }
 

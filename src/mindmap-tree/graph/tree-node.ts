@@ -21,9 +21,10 @@ class TreeNode {
   private readonly id: string;
   private readonly getTreeNodes: () => TreeNode[];
   // 渲染级别的数据
-  private depth: number;
+  public readonly depth: number;
   private nodeShape?: NodeShape;
   private edgeShape?: EdgeShape;
+  // private areaHeight: number = 0; // todo 是否需要记录？暂时不记录
   public constructor(
     model: Model,
     paper: RaphaelPaper,
@@ -37,26 +38,25 @@ class TreeNode {
     this.depth = depth;
     this.getTreeNodes = getTreeNodes;
   }
-  public render() {
+  public render(x: number, y: number) {
     const nodeData = this.getModelNodeData();
 
     if (this.depth === 1) {
       this.nodeShape = createRootNodeShape({
         paper: this.paper,
-        x: 100,
-        y: 100,
+        x,
+        y,
         label: nodeData.label,
       });
     } else if (this.depth === 2) {
       this.nodeShape = createFirstNodeShape({
         paper: this.paper,
-        x: 300,
-        y: firstCount * 100,
+        x, // todo x只受父节点的x影响
+        y, // todo y受兄弟节点的y和子节点的areaHeight影响
         label: nodeData.label,
       });
       const treeNodeFather = this.getTreeNodeFather();
       const fatherNodeShape = treeNodeFather?.getNodeShape();
-      console.log('fatherNodeShape', treeNodeFather);
 
       this.edgeShape = createFirstEdgeShape({
         paper: this.paper,
@@ -69,8 +69,8 @@ class TreeNode {
     } else {
       this.nodeShape = createGrandchildNodeShape({
         paper: this.paper,
-        x: 500,
-        y: 100,
+        x,
+        y,
         label: nodeData.label,
       });
 
@@ -107,7 +107,6 @@ class TreeNode {
     const fatherId = this.getModelFather();
     const treeNodes = this.getTreeNodes();
     return treeNodes.find((treeNode) => {
-      console.log('treeNode22', treeNode.id, fatherId);
       return treeNode.id === fatherId;
     });
   }
@@ -116,8 +115,18 @@ class TreeNode {
     const treeNodes = this.getTreeNodes();
     return treeNodes.filter((treeNode) => childrenIds.includes(treeNode.id)); 
   }
-  public getNodeShape() {
+  public getNodeShape(): NodeShape | undefined {
     return this.nodeShape;
+  }
+  // public setAreaHeight(areaHeight: number): void {
+  //   this.areaHeight += areaHeight;
+  // }
+  public getBBox() {
+    return this.nodeShape?.getBBox()!;
+  }
+  public getDirection() {
+    // @ts-ignore
+    return this.getModelNodeData()!.direction;
   }
 }
 

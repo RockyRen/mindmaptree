@@ -1,13 +1,7 @@
 // todo 是不是搞引用别名比较好？？？
 import Raphael, { RaphaelPaper } from 'raphael';
 import Model, { Direction } from '../model/model';
-// import { createRootNodeShape } from './shape/root-node-shape';
-// import { createFirstNodeShape } from './shape/first-node-shape';
-// import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
-// import { createFirstEdgeShape } from './shape/first-edge-shape';
-// import { createGrandchildEdgeShape } from './shape/grandchild-edge-shape';
 import Tree from './tree';
-// import TreeNode from './tree-node';
 
 interface GraphOptions {
   containerDom: Element;
