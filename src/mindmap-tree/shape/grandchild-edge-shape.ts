@@ -10,9 +10,9 @@ interface GrandchildEdgeShapeOptions {
 }
 
 export class GrandchildEdgeShape {
-  private shapeSet!: RaphaelSet;
+  private readonly shapeSet: RaphaelSet;
   public constructor(options: GrandchildEdgeShapeOptions) {
-    this.draw(options);
+    this.shapeSet = this.draw(options);
   }
 
   // todo 重构
@@ -22,7 +22,7 @@ export class GrandchildEdgeShape {
     targetBBox,
     direction,
     depth,
-  }: GrandchildEdgeShapeOptions): void {
+  }: GrandchildEdgeShapeOptions): RaphaelSet {
     let shortX = 0;
     let shortY = 0;
     let connectX = 0;
@@ -71,7 +71,7 @@ export class GrandchildEdgeShape {
       x1: targetUnderStartX, y1: targetUnderStartY, x2: targetUnderEndX, y2: targetUnderEndY,
     }));
 
-    this.shapeSet = paper.set().push(shortPath).push(connectPath).push(targetUnderPath);
+    return paper.set().push(shortPath).push(connectPath).push(targetUnderPath);
   }
 
   public remove(): void {

@@ -9,9 +9,9 @@ interface FirstEdgeShapeOptions {
 }
 
 export class FirstEdgeShape {
-  private shapeSet!: RaphaelSet;
+  private readonly shapeSet: RaphaelSet;
   public constructor(options: FirstEdgeShapeOptions) {
-    this.draw(options);
+    this.shapeSet = this.draw(options);
   }
 
   private draw({
@@ -19,7 +19,7 @@ export class FirstEdgeShape {
     sourceBBox,
     targetBBox,
     direction
-  }: FirstEdgeShapeOptions): void {
+  }: FirstEdgeShapeOptions): RaphaelSet {
     const x1 = sourceBBox.cx;
     const y1 = sourceBBox.cy;
     const x2 = targetBBox.cx - direction * targetBBox.width / 2;
@@ -42,7 +42,7 @@ export class FirstEdgeShape {
     });
     edgePath.toBack();
 
-    this.shapeSet = paper.set().push(edgePath);
+    return paper.set().push(edgePath);
   }
   
   public remove(): void {

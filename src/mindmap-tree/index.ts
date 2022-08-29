@@ -21,6 +21,9 @@ class MindmapTree {
       containerDom: containerDom,
     });
   }
+  public addNode(): void {
+    this.graph.addNode();
+  }
 }
 
 export default MindmapTree;

@@ -10,7 +10,7 @@ interface GraphOptions {
 const testNodes = [
   {
     id: '111',
-    children: ['222', '333'],
+    children: ['222', '333', '444'],
     label: '中心主题',
     direction: null,
     isRoot: true,
@@ -24,18 +24,18 @@ const testNodes = [
   },
   {
     id: '333',
-    children: ['444'],
+    children: [''],
     label: '任务3',
     direction: Direction.RIGHT,
     isRoot: false,
   },
-  {
-    id: '444',
-    children: [],
-    label: '任务4',
-    direction: Direction.RIGHT,
-    isRoot: false,
-  },
+  // {
+  //   id: '444',
+  //   children: [],
+  //   label: '任务4',
+  //   direction: Direction.RIGHT,
+  //   isRoot: false,
+  // },
 ]
 
 
@@ -57,9 +57,9 @@ class Graph {
     this.tree = new Tree(this.paper, testNodes);
   }
 
-  // public addNode(father: any, data: any): void {
-  //   this.tree.addNode(father, data);
-  // }
+  public addNode(): void {
+    this.tree.addNode();
+  }
 
   // public removeNode(node: any) {
   //   this.tree.removeNode(node);

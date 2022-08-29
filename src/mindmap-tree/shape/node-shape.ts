@@ -26,7 +26,7 @@ export class NodeShape {
   private readonly shapeSet: RaphaelSet;
   private readonly labelShape: RaphaelElement;
   private readonly rectShape: RaphaelElement;
-  private customAttr: CustomAttr;
+  private readonly customAttr: CustomAttr;
 
   public constructor(options: NodeShapeOptions) {
     const {

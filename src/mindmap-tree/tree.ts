@@ -1,6 +1,7 @@
 import Node from './node';
 import { RaphaelPaper } from 'raphael';
 import { getChildrenPosition } from './position';
+import { translateWhenChange } from './position2';
 import { Direction } from './types';
 
 export interface NodeData {
@@ -13,11 +14,11 @@ export interface NodeData {
 
 // 可以做tree的递归操作
 // todo 承载树的特殊功能：根节点、树叶节点；增加节点、删除节点
-// 属性是否有值的前后顺序问题：有些属性在前置处理后一定会存在的。
-// todo 如何方便地从Node中获取fatherNode和brotherNode
+// todo 属性是否有值的前后顺序问题：有些属性在前置处理后一定会存在的。
 class Tree {
   private readonly paper: RaphaelPaper;
-  private rootNode: Node;
+  private readonly root: Node;
+  private selection: Node | null = null;
   public constructor(paper: RaphaelPaper, nodeDataList: NodeData[]) {
     this.paper = paper;
 
@@ -29,7 +30,10 @@ class Tree {
       isRoot: true,
     };
 
-    this.rootNode = this.initNode(rootData, nodeDataList, 1, null, 500, 200);
+    this.root = this.initNode(rootData, nodeDataList, 1, null, 500, 200);
+
+    // todo for test
+    // this.selection = this.root;
   }
 
   // todo depth的1、2、3等需要有个公共方法获取，不要用魔数
@@ -69,6 +73,36 @@ class Tree {
     });
 
     return node;
+  }
+
+  public addNode(): void {
+    // todo for test
+    this.selection = this.root.children?.[0] || null;
+    
+    const selection = this.selection;
+
+    if (!selection) {
+      return;
+    }
+
+    selection.translate({
+      x: 100,
+      // y: -100,
+    });
+    
+    // translateWhenChange(selection);
+
+    // // 初始化Node
+    // const newNode = new Node({
+    //   paper: this.paper,
+    //   id: '666', // todo 自动生成id
+    //   depth: selection.depth + 1,
+    //   label: '任务xxx', // todo 自动生成文本
+    //   direction: selection.direction,
+    //   x: 800,
+    //   y: 500,
+    //   father: selection,
+    // });
   }
 }
 

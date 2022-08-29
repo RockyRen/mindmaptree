@@ -21,8 +21,7 @@ const App = (): JSX.Element => {
   }, []);
 
   const addNode = (): void => {
-    // @ts-ignore
-    // graph?.addNode();
+    mindmapTree.addNode();
   };
 
   const removeNode = (): void => {

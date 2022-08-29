@@ -18,8 +18,10 @@ class Node {
   public readonly depth: number;
   public readonly direction: Direction | null;
   private readonly nodeShape: NodeShape;
-  private readonly edgeShape?: EdgeShape;
+  private label: string;
+  private edgeShape?: EdgeShape;
 
+  // todo 是否用null？还是undefined？
   public readonly father: Node | null = null;
   public children?: Node[];
   public constructor({
@@ -46,52 +48,10 @@ class Node {
     this.depth = depth;
     this.direction = direction;
     this.father = father;
+    this.label = label; // todo label是否要存到Node上？？
 
-    // todo render
-    if (this.depth === 1) {
-      this.nodeShape = createRootNodeShape({
-        paper: this.paper,
-        x,
-        y,
-        label: label,
-      });
-    } else if (this.depth === 2) {
-      this.nodeShape = createFirstNodeShape({
-        paper: this.paper,
-        x, // todo x只受父节点的x影响
-        y, // todo y受兄弟节点的y和子节点的areaHeight影响
-        label: label,
-      });
-
-      if (father) {
-        this.edgeShape = createFirstEdgeShape({
-          paper: this.paper,
-          sourceBBox: father.getBBox(),
-          targetBBox: this.nodeShape.getBBox(),
-          // todo
-          direction: direction!,
-        })
-      }
-
-    } else {
-      this.nodeShape = createGrandchildNodeShape({
-        paper: this.paper,
-        x,
-        y,
-        label: label,
-      });
-
-      if (father) {
-        this.edgeShape = createGrandchildEdgeShape({
-          paper: this.paper,
-          sourceBBox: father.getBBox(),
-          targetBBox: this.nodeShape.getBBox(),
-          // todo
-          direction: direction!,
-          depth: this.depth,
-        })
-      }
-    }
+    this.nodeShape = this.createNode(x, y);
+    this.edgeShape = this.createEdge();
   }
 
   // todo ??
@@ -108,6 +68,75 @@ class Node {
 
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.nodeShape.getBBox()!;
+  }
+
+  public translate({ x = 0, y = 0 }: { x?: number, y?: number }): void {
+    this.nodeShape.translate(x, y);
+
+    if (this.edgeShape) {
+      this.edgeShape.remove();
+      this.edgeShape = this.createEdge();
+    }
+  }
+
+  private createNode(x: number, y: number): NodeShape {
+    const {
+      paper,
+      depth,
+      label,
+    } = this;
+
+    if (depth === 1) {
+      return createRootNodeShape({
+        paper,
+        x,
+        y,
+        label,
+      });
+    } else if (depth === 2) {
+      return createFirstNodeShape({
+        paper,
+        x,
+        y,
+        label,
+      });
+    } else {
+      return createGrandchildNodeShape({
+        paper,
+        x,
+        y,
+        label,
+      });
+    }
+  }
+
+  private createEdge(): EdgeShape | undefined {
+    const {
+      father,
+      direction,
+    } = this;
+
+    if (!father || !direction) {
+      return;
+    }
+
+    if (this.depth === 2) {
+      return createFirstEdgeShape({
+        paper: this.paper,
+        sourceBBox: father.getBBox(),
+        targetBBox: this.nodeShape.getBBox(),
+        direction,
+      })
+
+    } else if (this.depth > 2) {
+      return createGrandchildEdgeShape({
+        paper: this.paper,
+        sourceBBox: father.getBBox(),
+        targetBBox: this.nodeShape.getBBox(),
+        direction,
+        depth: this.depth,
+      })
+    }
   }
 }
 
