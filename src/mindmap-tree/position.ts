@@ -8,10 +8,10 @@ function getAreaHeight(currentData: NodeData, nodeDataList: NodeData[], depth: n
   const { children, direction } = currentData;
 
   if (children.length === 0) {
-    if (depth === 2) {
+    if (depth === 1) {
       return 37;
       // return 37 + 40;
-    } else if (depth > 2) {
+    } else if (depth > 1) {
       return 26.5
       // return 26.5 + 16;
     }
@@ -30,9 +30,9 @@ function getAreaHeight(currentData: NodeData, nodeDataList: NodeData[], depth: n
   console.log('depth', depth);
   let singleGap = 0;
 
-  if (depth === 2) {
+  if (depth === 1) {
     singleGap = 40;
-  } else if (depth > 2) {
+  } else if (depth > 1) {
     singleGap = 16;
   }
 
@@ -91,7 +91,7 @@ export function getChildrenPosition(currentData: NodeData, nodeDataList: NodeDat
 
 
     // 根节点
-    if (depth === 1) {
+    if (depth === 0) {
       // const nodeXInterval = 40;
 
       // if (childData.direction === Direction.LEFT && leftChildrenCount <= 2) {
@@ -125,7 +125,7 @@ export function getChildrenPosition(currentData: NodeData, nodeDataList: NodeDat
       }
 
 
-    } else if (depth >= 2) {
+    } else if (depth >= 1) {
       // 第一层节点
       const nodeXInterval = 40;
 

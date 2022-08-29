@@ -86,14 +86,14 @@ class Node {
       label,
     } = this;
 
-    if (depth === 1) {
+    if (depth === 0) {
       return createRootNodeShape({
         paper,
         x,
         y,
         label,
       });
-    } else if (depth === 2) {
+    } else if (depth === 1) {
       return createFirstNodeShape({
         paper,
         x,
@@ -120,7 +120,7 @@ class Node {
       return;
     }
 
-    if (this.depth === 2) {
+    if (this.depth === 1) {
       return createFirstEdgeShape({
         paper: this.paper,
         sourceBBox: father.getBBox(),
@@ -128,7 +128,7 @@ class Node {
         direction,
       })
 
-    } else if (this.depth > 2) {
+    } else if (this.depth > 1) {
       return createGrandchildEdgeShape({
         paper: this.paper,
         sourceBBox: father.getBBox(),

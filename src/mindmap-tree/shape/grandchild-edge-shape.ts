@@ -44,7 +44,7 @@ export class GrandchildEdgeShape {
       targetUnderEndX = targetBBox.x;
     }
 
-    if (depth > 2) {
+    if (depth > 1) {
       shortY = sourceBBox.cy;
     } else {
       shortY = targetBBox.cy;

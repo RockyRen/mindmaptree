@@ -30,10 +30,7 @@ class Tree {
       isRoot: true,
     };
 
-    this.root = this.initNode(rootData, nodeDataList, 1, null, 500, 200);
-
-    // todo for test
-    // this.selection = this.root;
+    this.root = this.initNode(rootData, nodeDataList, 0, null, 500, 200);
   }
 
   // todo depth的1、2、3等需要有个公共方法获取，不要用魔数
