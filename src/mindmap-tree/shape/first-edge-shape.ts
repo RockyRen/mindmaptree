@@ -1,5 +1,5 @@
 import Raphael, { RaphaelPaper, RaphaelSet, RaphaelAxisAlignedBoundingBox } from 'raphael';
-import { Direction } from '../../model/model';
+import { Direction } from '../types';
 
 interface FirstEdgeShapeOptions {
   paper: RaphaelPaper;

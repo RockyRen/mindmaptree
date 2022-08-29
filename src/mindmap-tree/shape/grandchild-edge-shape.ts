@@ -1,5 +1,5 @@
 import Raphael, { RaphaelPaper, RaphaelSet, RaphaelPath, RaphaelAxisAlignedBoundingBox } from 'raphael';
-import { Direction } from '../../model/model';
+import { Direction } from '../types';
 
 interface GrandchildEdgeShapeOptions {
   paper: RaphaelPaper;

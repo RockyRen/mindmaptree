@@ -1,5 +1,4 @@
-import Model from './model/model';
-import Graph from './graph/graph';
+import Graph from './graph';
 
 interface MindmapTreeOptions {
   container: string | Element;
@@ -7,7 +6,6 @@ interface MindmapTreeOptions {
 
 class MindmapTree {
   private graph: Graph;
-  private model: Model;
   public constructor(private options: MindmapTreeOptions) {
     const {
       container,
@@ -19,15 +17,9 @@ class MindmapTree {
       throw new Error('container is not exist');
     }
 
-
-    this.model = new Model();
-
     this.graph = new Graph({
       containerDom: containerDom,
-      model: this.model,
     });
-
-    this.graph.render();
   }
 }
 

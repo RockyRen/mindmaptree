@@ -1,5 +1,5 @@
 import { RaphaelPaper } from 'raphael';
-import Model, { NodeData } from '../model/model';
+import Model, { NodeData } from './model/model';
 import { createFirstNodeShape } from './shape/first-node-shape';
 import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
 import { createRootNodeShape } from './shape/root-node-shape';
