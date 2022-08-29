@@ -7,10 +7,49 @@ interface GraphOptions {
   containerDom: Element;
 }
 
+// const testNodes = [
+//   {
+//     id: '111',
+//     children: ['222', '333', '444'],
+//     label: '中心主题',
+//     direction: null,
+//     isRoot: true,
+//   },
+//   {
+//     id: '222',
+//     children: [],
+//     label: '任务2',
+//     direction: Direction.RIGHT,
+//     isRoot: false,
+//   },
+//   {
+//     id: '333',
+//     children: ['555'],
+//     label: '任务3',
+//     direction: Direction.RIGHT,
+//     isRoot: false,
+//   },
+//   {
+//     id: '444',
+//     children: [],
+//     label: '任务4',
+//     direction: Direction.RIGHT,
+//     isRoot: false,
+//   },
+//   {
+//     id: '555',
+//     children: [],
+//     label: '任务5',
+//     direction: Direction.RIGHT,
+//     isRoot: false,
+//   },
+// ]
+
 const testNodes = [
   {
     id: '111',
-    children: ['222', '333', '444'],
+    children: ['222'],
+    // children: ['222', '333'],
     label: '中心主题',
     direction: null,
     isRoot: true,
@@ -22,20 +61,13 @@ const testNodes = [
     direction: Direction.RIGHT,
     isRoot: false,
   },
-  {
-    id: '333',
-    children: [''],
-    label: '任务3',
-    direction: Direction.RIGHT,
-    isRoot: false,
-  },
   // {
-  //   id: '444',
+  //   id: '333',
   //   children: [],
-  //   label: '任务4',
+  //   label: '任务3',
   //   direction: Direction.RIGHT,
   //   isRoot: false,
-  // },
+  // }
 ]
 
 
