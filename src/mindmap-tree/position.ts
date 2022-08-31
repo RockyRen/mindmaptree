@@ -1,7 +1,6 @@
-import { NodeData } from "./tree";
-import { RaphaelAxisAlignedBoundingBox } from 'raphael';
-import { Direction } from "./types";
-import { DepthType, getDepthType } from "./helper";
+import { DepthType, getDepthType } from './helper';
+import Node from './node';
+import { Direction } from './types';
 
 // todo 放到同一个地方
 const rootNodeHeight = 52;
@@ -19,137 +18,78 @@ function getNodeHeight(depth: number): number {
   return grandchildNodeHeight;
 }
 
-interface PositionData {
-  x: number;
-  y: number;
-}
-
 class Position {
-  private readonly nodeDataList: NodeData[];
-  private readonly rootBBox: RaphaelAxisAlignedBoundingBox;
-  private readonly positionDatas: Record<string, PositionData> = {};
   private readonly areaHeightMap: Record<string, number> = {};
-  public constructor({
-    nodeDataList,
-    rootBBox,
-  }: {
-    nodeDataList: NodeData[];
-    rootBBox: RaphaelAxisAlignedBoundingBox;
-  }) {
-    this.nodeDataList = nodeDataList;
-    this.rootBBox = rootBBox;
-
-    // todo rootData可能未被初始化
-    const rootData = nodeDataList.find((item) => item.isRoot);
-    if (!rootData) {
-      return;
-    }
-
-    this.initPosition({
-      currentData: rootData,
-      depth: 0,
-      direction: Direction.LEFT,
-    });
-
-    this.initPosition({
-      currentData: rootData,
-      depth: 0,
-      direction: Direction.RIGHT,
-    });
-
-    // console.log('areaHeight----', this.areaHeightMap);
+  public constructor(node: Node) {
+    this.initPosition(node, Direction.LEFT);
+    this.initPosition(node, Direction.RIGHT);
   }
 
-  private initPosition({
-    currentData,
-    depth,
-    direction,
-  }: {
-    currentData: NodeData;
-    depth: number;
-    direction: Direction;
-  }): void {
-    const currentAreaHeight = this.getAreaHeight(currentData, direction, depth);
+  private initPosition(node: Node, direction: Direction): void {
+    const areaHeight = this.getAreaHeight(node, direction);
 
-    const childDataList = this.nodeDataList.filter((nodeData) => {
-      return currentData.children.includes(nodeData.id) && nodeData.direction === direction;
-    });
+    // todo 和下面的children能否复用？
+    const children = node.children?.filter((currentNode) => {
+      return currentNode.direction === direction;
+    }) || [];
 
-    // const 
+    let nodeBBox = node.getBBox();
+    let startY = nodeBBox.cy - (areaHeight / 2);
 
-
-    let startY = this.rootBBox.cy - (currentAreaHeight / 2);
-
-    childDataList.forEach((childData) => {
-      const childDepth = depth + 1;
-      const childAreaHeight = this.getAreaHeight(childData, direction, childDepth);
+    children.forEach((child) => {
+      const childAreaHeight = this.getAreaHeight(child, direction);
 
       const nodeXInterval = 40;
-      const childX = this.rootBBox.cx + direction * (nodeXInterval + this.rootBBox.width / 2);
+      const childX = nodeBBox.cx + (direction * (nodeXInterval + nodeBBox.width / 2));
 
-      const childNodeHeight = getNodeHeight(childDepth);
-      const childY = startY + (childAreaHeight / 2) - (childNodeHeight / 2);
+      const childNodeHeight = getNodeHeight(child.depth);
+      const childY = startY + (childAreaHeight / 2) - (childNodeHeight - 2);
 
-      this.positionDatas[childData.id] = {
+      child.show({
         x: childX,
         y: childY,
-      };
-
-      this.initPosition({
-        currentData: childData,
-        direction,
-        depth: childDepth,
       });
+
+      this.initPosition(child, direction);
     });
+
   }
 
-  private getAreaHeight(currentData: NodeData, direction: Direction, depth: number): number {
-    const areaKey = `${currentData.id}_${direction}`;
+  private getAreaHeight(node: Node, direction: Direction): number {
+    const areaKey = `${node.id}_${direction}`;
     if (this.areaHeightMap[areaKey]) {
       return this.areaHeightMap[areaKey];
     }
+
     let areaHeight = 0;
 
-    const childDataList = this.nodeDataList.filter((nodeData) => {
-      return currentData.children.includes(nodeData.id) && nodeData.direction === direction;
-    });
+    const children = node.children?.filter((currentNode) => {
+      return currentNode.direction === direction;
+    }) || [];
 
-
-    const depthType = getDepthType(depth);
-    if (childDataList.length === 0 || childDataList.length === 1) {
-      areaHeight = getNodeHeight(depth);
+    if (children.length === 0 || children.length === 1) {
+      areaHeight = getNodeHeight(node.depth);
     } else {
-      const childrenAreaHeight = childDataList.reduce((total, childData) => {
-        const childAreaHeight = this.getAreaHeight(childData, direction, depth + 1);
+      const childrenAreaHeight = children.reduce((total, child) => {
+        const childAreaHeight = this.getAreaHeight(child, direction);
         return total + childAreaHeight;
       }, 0);
 
       let gap = 0;
-      if (depthType === DepthType.root) {
-        gap = 60;
-      } else if (depthType === DepthType.firstLevel) {
+      if (node.getDepthType() === DepthType.root) {
+        gap =  60;
+      } else if (node.getDepthType() === DepthType.firstLevel) {
         gap = 40;
       } else {
         gap = 16;
       }
-
-      areaHeight = childrenAreaHeight + (childDataList.length - 1) * gap;
+ 
+      areaHeight = childrenAreaHeight + (children.length - 1) * gap;
     }
 
-    this.areaHeightMap[currentData.id] = areaHeight;
-
+    this.areaHeightMap[node.id] = areaHeight;
+      
     return areaHeight;
-  }
-
-  public getPosition(id: string): {
-    x: number;
-    y: number;
-  } {
-    const position = this.positionDatas[id];
-    if (!position) {
-      throw new Error(`The position of id:${id} is not existed`);
-    }
-    return position;
   }
 }
 

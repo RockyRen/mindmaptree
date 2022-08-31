@@ -3,7 +3,7 @@ import { RaphaelPaper } from 'raphael';
 import Position from './position';
 import { translateWhenChange } from './position2';
 import { Direction } from './types';
-import { DepthType, getDepthType } from './helper';
+// import Position from './position-old2';
 
 export interface NodeData {
   id: string;
@@ -36,28 +36,30 @@ class Tree {
       nodeDataList,
       depth: 0, // todo 魔数
       father: null,
+    });
+
+    // todo
+    this.root.show({
       x: 500,
       y: 200,
     });
+    console.log(this.root.getBBox());
+
+    const position = new Position(this.root);
   }
 
-  // todo init children
   public initNode({
     currentData,
     nodeDataList,
     depth,
     father,
-    x,
-    y,
-    position,
+    // position,
   }: {
     currentData: NodeData,
     nodeDataList: NodeData[],
     depth: number,
     father: Node | null,
-    x: number,
-    y: number,
-    position?: Position,
+    // position?: Position,
   }): Node {
     // 初始化的时候，father可以确定已初始化，children还没被初始化
     const node = new Node({
@@ -66,54 +68,29 @@ class Tree {
       depth,
       label: currentData.label,
       direction: currentData.direction,
-      x,
-      y,
       father,
     });
 
-    let positionIns: Position;
-    if (!position) {
-      const rootBBox = node.getBBox();
-      positionIns = new Position({
-        nodeDataList,
-        rootBBox,
-      });
-    } else {
-      positionIns = position;
-    }
-
-
-    // // 一开始就算出所有子节点的位置
-    // const childrenPositionMap = getChildrenPosition({
-    //   currentData,
-    //   nodeDataList,
-    //   nodeBBox: node.getBBox(),
-    //   depth,
-    // });
+    // let positionIns: Position;
+    // if (!position) {
+    //   const rootBBox = node.getBBox();
+    //   positionIns = new Position({
+    //     nodeDataList,
+    //     rootBBox,
+    //   });
+    // } else {
+    //   positionIns = position;
+    // }
 
     currentData.children.forEach((childId) => {
       const childData = nodeDataList.find((nodeData) => nodeData.id === childId);
       if (childData) {
-        // const {
-        //   x: childX,
-        //   y: childY,
-        // } = childrenPositionMap[childData.id];
-        const {
-          x: childX,
-          y: childY,
-        } = positionIns.getPosition(childId);
-
-        // const childX = 700;
-        // const childY = 700;
-
         const childNode = this.initNode({
           currentData: childData,
           nodeDataList,
           depth: depth + 1,
           father: node,
-          x: childX,
-          y: childY,
-          position: positionIns,
+          // position: positionIns,
         });
         node.pushChild(childNode);
       }
@@ -123,33 +100,33 @@ class Tree {
   }
 
   public addNode(): void {
-    // todo for test
-    this.selection = this.root.children?.[0] || null;
+    // // todo for test
+    // this.selection = this.root.children?.[0] || null;
 
-    const selection = this.selection;
+    // const selection = this.selection;
 
-    if (!selection) {
-      return;
-    }
+    // if (!selection) {
+    //   return;
+    // }
 
-    selection.translate({
-      x: 100,
-      // y: -100,
-    });
-
-    // translateWhenChange(selection);
-
-    // // 初始化Node
-    // const newNode = new Node({
-    //   paper: this.paper,
-    //   id: '666', // todo 自动生成id
-    //   depth: selection.depth + 1,
-    //   label: '任务xxx', // todo 自动生成文本
-    //   direction: selection.direction,
-    //   x: 800,
-    //   y: 500,
-    //   father: selection,
+    // selection.translate({
+    //   x: 100,
+    //   // y: -100,
     // });
+
+    // // translateWhenChange(selection);
+
+    // // // 初始化Node
+    // // const newNode = new Node({
+    // //   paper: this.paper,
+    // //   id: '666', // todo 自动生成id
+    // //   depth: selection.depth + 1,
+    // //   label: '任务xxx', // todo 自动生成文本
+    // //   direction: selection.direction,
+    // //   x: 800,
+    // //   y: 500,
+    // //   father: selection,
+    // // });
   }
 }
 

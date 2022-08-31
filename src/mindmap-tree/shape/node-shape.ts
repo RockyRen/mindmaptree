@@ -9,8 +9,8 @@ interface CustomAttr {
 
 export interface NodeShapeBaseOptions {
   paper: RaphaelPaper;
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   label: string;
 }
 
@@ -19,6 +19,14 @@ interface NodeShapeOptions extends NodeShapeBaseOptions {
   paddingWidth: number;
   rectHeight: number;
 }
+
+interface NodeDrawShapeOptions extends NodeShapeOptions {
+  x: number;
+  y: number; 
+}
+
+const invisibleX = -999999;
+const invisibleY = -999999;
 
 // 根节点shape
 export class NodeShape {
@@ -39,15 +47,39 @@ export class NodeShape {
     this.paper = paper;
     this.customAttr = customAttr;
     this.shapeSet = this.paper.set();
-    this.labelShape = this.paper.text(x, y, label);
-    this.rectShape = this.paper.rect(x, y, 0, 0, 4);
-    this.draw(options);
+
+    const hasValidPosition = (x !== undefined && y !== undefined);
+    const shapeX = hasValidPosition ? x : invisibleX;
+    const shapeY = hasValidPosition ? y : invisibleY;
+
+    this.labelShape = this.paper.text(shapeX, shapeY, label);
+    this.rectShape = this.paper.rect(shapeX, shapeY, 0, 0, 4);
+    this.draw({
+      ...options,
+      x: shapeX,
+      y: shapeY,
+    });
+
+    if (!hasValidPosition) {
+      this.shapeSet.hide();
+    }
+  }
+
+  
+  public show(x?: number, y?: number) {
+    if (x && y) {
+      this.shapeSet.translate(-invisibleX + x, -invisibleY + y);
+    }
+    this.shapeSet.show();
+  }
+
+  public hide() {
+    this.shapeSet.hide();
   }
 
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.rectShape.getBBox();
   }
-
 
   public translate(offsetX: number, offsetY: number): void {
     this.shapeSet.translate(offsetX, offsetY);
@@ -71,7 +103,7 @@ export class NodeShape {
     label,
     paddingWidth,
     rectHeight,
-  }: NodeShapeOptions): void {
+  }: NodeDrawShapeOptions): void {
     const { labelShape, rectShape, shapeSet, }  = this;
     labelShape.toFront();
     labelShape.attr({
@@ -107,7 +139,7 @@ export class NodeShape {
     const rectWidth = labelBox.width + paddingWidth;
   
     labelShape.attr({
-      x: x+ rectWidth * 0.5,
+      x: x + rectWidth * 0.5,
       y: y + rectHeight * 0.5
     });
     rectShape.attr({

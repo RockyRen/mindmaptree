@@ -40,8 +40,8 @@ class Node {
     depth: number,
     label: string,
     direction: Direction | null,
-    x: number,
-    y: number,
+    x?: number,
+    y?: number,
     father: Node | null,
   }) {
     this.paper = paper;
@@ -52,7 +52,9 @@ class Node {
     this.label = label; // todo label是否要存到Node上？？
 
     this.nodeShape = this.createNode(x, y);
-    this.edgeShape = this.createEdge();
+    if (x !== undefined || y !== undefined) {
+      this.edgeShape = this.createEdge();
+    } 
   }
 
   // todo ??
@@ -71,45 +73,46 @@ class Node {
     return this.nodeShape.getBBox()!;
   }
 
+  // todo
+  public show({ x = 0, y = 0 }: { x?: number, y?: number }): void {
+    this.nodeShape.show(x, y);
+
+    this.edgeShape?.remove();
+    this.edgeShape = this.createEdge();
+  }
+
   public translate({ x = 0, y = 0 }: { x?: number, y?: number }): void {
     this.nodeShape.translate(x, y);
 
-    if (this.edgeShape) {
-      this.edgeShape.remove();
-      this.edgeShape = this.createEdge();
-    }
+    this.edgeShape?.remove();
+    this.edgeShape = this.createEdge();
   }
 
-  private createNode(x: number, y: number): NodeShape {
+  public getDepthType(): DepthType {
+    return getDepthType(this.depth);
+  }
+
+  private createNode(x?: number, y?: number): NodeShape {
     const {
       paper,
       depth,
       label,
     } = this;
 
-    const depthType = getDepthType(depth);
+    const nodeOptions = {
+      paper,
+      x,
+      y,
+      label,
+    };
 
+    const depthType = getDepthType(depth);
     if (depthType === DepthType.root) {
-      return createRootNodeShape({
-        paper,
-        x, 
-        y,
-        label,
-      });
+      return createRootNodeShape(nodeOptions);
     } else if (depthType === DepthType.firstLevel) {
-      return createFirstNodeShape({
-        paper,
-        x,
-        y,
-        label,
-      });
+      return createFirstNodeShape(nodeOptions);
     } else {
-      return createGrandchildNodeShape({
-        paper,
-        x,
-        y,
-        label,
-      });
+      return createGrandchildNodeShape(nodeOptions);
     }
   }
 
