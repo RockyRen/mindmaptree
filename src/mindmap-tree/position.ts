@@ -18,6 +18,19 @@ function getNodeHeight(depth: number): number {
   return grandchildNodeHeight;
 }
 
+function getNodeGap(depth: number): number {
+  const depthType = getDepthType(depth);
+  let gap = 0;
+  if (depthType === DepthType.firstLevel) {
+    gap = 36;
+  } else {
+    gap = 25;
+  }
+  return gap;
+}
+
+
+// todo 重构
 class Position {
   private readonly areaHeightMap: Record<string, number> = {};
   public constructor(node: Node) {
@@ -38,12 +51,22 @@ class Position {
 
     children.forEach((child) => {
       const childAreaHeight = this.getAreaHeight(child, direction);
+      const childBBox = child.getBBox();
 
       const nodeXInterval = 40;
-      const childX = nodeBBox.cx + (direction * (nodeXInterval + nodeBBox.width / 2));
+      let childX = 0;
+      if (direction === Direction.RIGHT) {
+        childX = nodeBBox.cx + nodeXInterval + nodeBBox.width / 2;
+      } else {
+        childX = nodeBBox.cx - nodeXInterval - nodeBBox.width / 2 - childBBox.width; 
+      }
 
       const childNodeHeight = getNodeHeight(child.depth);
-      const childY = startY + (childAreaHeight / 2) - (childNodeHeight - 2);
+
+      // todo ???
+      const useAreaHeight = children.length === 1 ? areaHeight : childAreaHeight;
+
+      const childY = startY + (useAreaHeight / 2) - (childNodeHeight / 2);
 
       child.show({
         x: childX,
@@ -51,6 +74,8 @@ class Position {
       });
 
       this.initPosition(child, direction);
+
+      startY += childAreaHeight + getNodeGap(child.depth);
     });
 
   }
@@ -75,20 +100,13 @@ class Position {
         return total + childAreaHeight;
       }, 0);
 
-      let gap = 0;
-      if (node.getDepthType() === DepthType.root) {
-        gap =  60;
-      } else if (node.getDepthType() === DepthType.firstLevel) {
-        gap = 40;
-      } else {
-        gap = 16;
-      }
- 
+      const gap = getNodeGap(node.depth);
+
       areaHeight = childrenAreaHeight + (children.length - 1) * gap;
     }
 
     this.areaHeightMap[node.id] = areaHeight;
-      
+
     return areaHeight;
   }
 }

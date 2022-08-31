@@ -10,7 +10,7 @@ interface GraphOptions {
 // const testNodes = [
 //   {
 //     id: '111',
-//     children: ['222', '333', '444'],
+//     children: ['222'],
 //     label: '中心主题',
 //     direction: null,
 //     isRoot: true,
@@ -22,42 +22,19 @@ interface GraphOptions {
 //     direction: Direction.RIGHT,
 //     isRoot: false,
 //   },
-//   {
-//     id: '333',
-//     children: ['555'],
-//     label: '任务3',
-//     direction: Direction.RIGHT,
-//     isRoot: false,
-//   },
-//   {
-//     id: '444',
-//     children: [],
-//     label: '任务4',
-//     direction: Direction.RIGHT,
-//     isRoot: false,
-//   },
-//   {
-//     id: '555',
-//     children: [],
-//     label: '任务5',
-//     direction: Direction.RIGHT,
-//     isRoot: false,
-//   },
-// ]
+// ];
 
 const testNodes = [
   {
     id: '111',
-    children: ['222', '444'],
-    // children: ['222', '333'],
+    children: ['222', '333', '444', '777'],
     label: '中心主题',
     direction: null,
     isRoot: true,
   },
   {
     id: '222',
-    // children: [],
-    children: ['333'],
+    children: [],
     label: '任务2',
     direction: Direction.RIGHT,
     isRoot: false,
@@ -66,31 +43,101 @@ const testNodes = [
     id: '333',
     children: [],
     label: '任务3',
-    direction: Direction.RIGHT,
+    direction: Direction.LEFT,
     isRoot: false,
   },
   {
     id: '444',
     children: ['555', '666'],
     label: '任务4',
-    direction: Direction.LEFT,
+    direction: Direction.RIGHT,
     isRoot: false,
   },
   {
     id: '555',
     children: [],
     label: '任务5',
-    direction: Direction.LEFT,
+    direction: Direction.RIGHT,
     isRoot: false,
   },
   {
     id: '666',
     children: [],
     label: '任务6',
-    direction: Direction.LEFT,
+    direction: Direction.RIGHT,
     isRoot: false,
   },
-]
+  {
+    id: '777',
+    children: [],
+    label: '任务7',
+    direction: Direction.RIGHT,
+    isRoot: false,
+  },
+];
+
+// const testNodes = [
+//   {
+//     id: '111',
+//     // children: ['222', '999', '1010'],
+//     // children: ['222', '999', '333'],
+//     // children: ['222'],
+//     children: ['222', '333'],
+//     label: '中心主题',
+//     direction: null,
+//     isRoot: true,
+//   },
+//   {
+//     id: '222',
+//     children: [],
+//     // children: ['333'],
+//     label: '任务2',
+//     direction: Direction.RIGHT,
+//     isRoot: false,
+//   },
+//   {
+//     id: '333',
+//     children: [],
+//     label: '任务3',
+//     direction: Direction.LEFT,
+//     isRoot: false,
+//   },
+//   {
+//     id: '999',
+//     children: [],
+//     label: '任务9',
+//     direction: Direction.RIGHT,
+//     isRoot: false, 
+//   },
+//   {
+//     id: '1010',
+//     children: [],
+//     label: '任务10',
+//     direction: Direction.RIGHT,
+//     isRoot: false, 
+//   }
+//   // {
+//   //   id: '444',
+//   //   children: ['555', '666'],
+//   //   label: '任务4',
+//   //   direction: Direction.LEFT,
+//   //   isRoot: false,
+//   // },
+//   // {
+//   //   id: '555',
+//   //   children: [],
+//   //   label: '任务5',
+//   //   direction: Direction.LEFT,
+//   //   isRoot: false,
+//   // },
+//   // {
+//   //   id: '666',
+//   //   children: [],
+//   //   label: '任务6',
+//   //   direction: Direction.LEFT,
+//   //   isRoot: false,
+//   // },
+// ]
 
 
 class Graph {

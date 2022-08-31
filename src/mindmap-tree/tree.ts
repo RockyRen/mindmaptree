@@ -40,10 +40,9 @@ class Tree {
 
     // todo
     this.root.show({
-      x: 500,
+      x: 400,
       y: 200,
     });
-    console.log(this.root.getBBox());
 
     const position = new Position(this.root);
   }
