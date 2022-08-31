@@ -18,13 +18,24 @@ function getNodeHeight(depth: number): number {
   return grandchildNodeHeight;
 }
 
-function getNodeGap(depth: number): number {
+function getNodeYGap(depth: number): number {
   const depthType = getDepthType(depth);
   let gap = 0;
   if (depthType === DepthType.firstLevel) {
     gap = 36;
   } else {
     gap = 25;
+  }
+  return gap;
+}
+
+function getNodeXGap(depth: number): number {
+  const depthType = getDepthType(depth);
+  let gap = 0;
+  if (depthType === DepthType.firstLevel) {
+    gap = 40;
+  } else {
+    gap = 14;
   }
   return gap;
 }
@@ -53,12 +64,13 @@ class Position {
       const childAreaHeight = this.getAreaHeight(child, direction);
       const childBBox = child.getBBox();
 
-      const nodeXInterval = 40;
+      // const nodeXInterval = 40;
+      const xGap = getNodeXGap(child.depth);
       let childX = 0;
       if (direction === Direction.RIGHT) {
-        childX = nodeBBox.cx + nodeXInterval + nodeBBox.width / 2;
+        childX = nodeBBox.cx + xGap + nodeBBox.width / 2;
       } else {
-        childX = nodeBBox.cx - nodeXInterval - nodeBBox.width / 2 - childBBox.width; 
+        childX = nodeBBox.cx - xGap - nodeBBox.width / 2 - childBBox.width; 
       }
 
       const childNodeHeight = getNodeHeight(child.depth);
@@ -75,7 +87,7 @@ class Position {
 
       this.initPosition(child, direction);
 
-      startY += childAreaHeight + getNodeGap(child.depth);
+      startY += childAreaHeight + getNodeYGap(child.depth);
     });
 
   }
@@ -100,7 +112,7 @@ class Position {
         return total + childAreaHeight;
       }, 0);
 
-      const gap = getNodeGap(node.depth);
+      const gap = getNodeYGap(node.depth);
 
       areaHeight = childrenAreaHeight + (children.length - 1) * gap;
     }
