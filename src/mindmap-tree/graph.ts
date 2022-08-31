@@ -56,18 +56,19 @@ const testNodes = [
   },
   {
     id: '222',
-    children: [],
+    // children: [],
+    children: ['333'],
     label: '任务2',
     direction: Direction.RIGHT,
     isRoot: false,
   },
-  // {
-  //   id: '333',
-  //   children: [],
-  //   label: '任务3',
-  //   direction: Direction.RIGHT,
-  //   isRoot: false,
-  // }
+  {
+    id: '333',
+    children: [],
+    label: '任务3',
+    direction: Direction.RIGHT,
+    isRoot: false,
+  }
 ]
 
 

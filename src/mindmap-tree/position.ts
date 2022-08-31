@@ -1,164 +1,156 @@
+import { NodeData } from "./tree";
 import { RaphaelAxisAlignedBoundingBox } from 'raphael';
-import type { NodeData } from './tree';
-import { Direction } from './types';
+import { Direction } from "./types";
+import { DepthType, getDepthType } from "./helper";
 
-function getAreaHeight(currentData: NodeData, nodeDataList: NodeData[], depth: number, brotherCount: number): number {
-  if (!currentData) { return 0; }
+// todo 放到同一个地方
+const rootNodeHeight = 52;
+const firstLevelNodeHeight = 37;
+const grandchildNodeHeight = 27;
 
-  const { children, direction } = currentData;
-
-  if (children.length === 0) {
-    if (depth === 1) {
-      return 37;
-      // return 37 + 40;
-    } else if (depth > 1) {
-      return 26.5
-      // return 26.5 + 16;
-    }
+// todo
+function getNodeHeight(depth: number): number {
+  const depthType = getDepthType(depth);
+  if (depthType === DepthType.root) {
+    return rootNodeHeight;
+  } else if (depthType === DepthType.firstLevel) {
+    return firstLevelNodeHeight;
   }
-
-  const childDataList = nodeDataList.filter((nodeData) => {
-    return children.includes(nodeData.id) && nodeData.direction === direction;
-  }) || [];
-
-  return childDataList.reduce((total: number, childNodeData) => {
-    const areaHeight = getAreaHeight(childNodeData, nodeDataList, depth + 1, childDataList.length);
-    return total + areaHeight;
-    // return total + getAreaHeight(childNodeData, nodeDataList, depth + 1, childDataList.length);
-  }, 0);
-
-  console.log('depth', depth);
-  let singleGap = 0;
-
-  if (depth === 1) {
-    singleGap = 40;
-  } else if (depth > 1) {
-    singleGap = 16;
-  }
-
-  const gapTotalHeight = (childDataList.length - 1) * singleGap;
-
-  return nodeTotalHeight + gapTotalHeight;
+  return grandchildNodeHeight;
 }
 
-type ChildrenPositionMap = Record<string, {
+interface PositionData {
   x: number;
   y: number;
-}>
+}
 
-// todo 缓存位置
-export function getChildrenPosition(currentData: NodeData, nodeDataList: NodeData[], nodeBBox: RaphaelAxisAlignedBoundingBox, depth: number): ChildrenPositionMap {
-  const { cx, cy, width, } = nodeBBox;
-  const { children, } = currentData;
+class Position {
+  private readonly nodeDataList: NodeData[];
+  private readonly rootBBox: RaphaelAxisAlignedBoundingBox;
+  private readonly positionDatas: Record<string, PositionData> = {};
+  private readonly areaHeightMap: Record<string, number> = {};
+  public constructor({
+    nodeDataList,
+    rootBBox,
+  }: {
+    nodeDataList: NodeData[];
+    rootBBox: RaphaelAxisAlignedBoundingBox;
+  }) {
+    this.nodeDataList = nodeDataList;
+    this.rootBBox = rootBBox;
 
-  const childDataList = nodeDataList.filter((nodeData) => children.includes(nodeData.id)) || [];
-
-  // 先算出各子节点的areaHeight高度
-  const childAreaHeightMap = childDataList.reduce((childAreaHeightMap: Record<string, number>, childData) => {
-    childAreaHeightMap[childData.id] = getAreaHeight(childData, nodeDataList, depth + 1, childDataList.length);
-    return childAreaHeightMap;
-  }, {});
-
-  // 子节点总高度
-  const totalAreaHeight = childDataList.reduce((total, childData) => {
-    return total + childAreaHeightMap[childData.id];
-  }, 0);
-  console.log('totalAreaHeight', totalAreaHeight);
-
-  let startY = cy - (totalAreaHeight / 2);
-
-  // const leftChildrenCount = childDataList.reduce((count, childData) => {
-  //   if (childData.direction === Direction.LEFT) {
-  //     return count + 1;
-  //   }
-  //   return count;
-  // }, 0);
-
-  // const rightChildrenCount = childDataList.reduce((count, childData) => {
-  //   if (childData.direction === Direction.RIGHT) {
-  //     return count + 1;
-  //   }
-  //   return count;
-  // }, 0);
-
-  const childrenPositionMap = childDataList.reduce((childrenPositionMap: ChildrenPositionMap, childData) => {
-    const { id: childId, direction: childDirection, } = childData;
-    const childAreaHeight = childAreaHeightMap[childId] || 0;
-
-    if (!childDirection || childrenPositionMap[childId]) {
-      return childrenPositionMap;
+    // todo rootData可能未被初始化
+    const rootData = nodeDataList.find((item) => item.isRoot);
+    if (!rootData) {
+      return;
     }
 
+    this.initPosition({
+      currentData: rootData,
+      depth: 0,
+      direction: Direction.LEFT,
+    });
 
-    // 根节点
-    if (depth === 0) {
-      // const nodeXInterval = 40;
+    this.initPosition({
+      currentData: rootData,
+      depth: 0,
+      direction: Direction.RIGHT,
+    });
 
-      // if (childData.direction === Direction.LEFT && leftChildrenCount <= 2) {
+    // console.log('areaHeight----', this.areaHeightMap);
+  }
 
-      // } else if (childData.direction === Direction.RIGHT && rightChildrenCount <= 2) {
-      //   const childX = cx + childDirection * (nodeXInterval + (width / 2));
-      //   const childY = cy
-      // } else {
+  private initPosition({
+    currentData,
+    depth,
+    direction,
+  }: {
+    currentData: NodeData;
+    depth: number;
+    direction: Direction;
+  }): void {
+    const currentAreaHeight = this.getAreaHeight(currentData, direction, depth);
 
-      //   // todo 这里是不是有点不对？
-      //   const childX = cx + childDirection * (nodeXInterval + (width / 2));
-      //   // todo 52是魔数
-      //   const childY = startY + childAreaHeight / 2 - (52 / 2);
+    const childDataList = this.nodeDataList.filter((nodeData) => {
+      return currentData.children.includes(nodeData.id) && nodeData.direction === direction;
+    });
 
-      //   childrenPositionMap[childId] = {
-      //     x: childX,
-      //     y: childY,
-      //   }
-      // }
+    // const 
 
+
+    let startY = this.rootBBox.cy - (currentAreaHeight / 2);
+
+    childDataList.forEach((childData) => {
+      const childDepth = depth + 1;
+      const childAreaHeight = this.getAreaHeight(childData, direction, childDepth);
 
       const nodeXInterval = 40;
+      const childX = this.rootBBox.cx + direction * (nodeXInterval + this.rootBBox.width / 2);
 
-      const childX = cx + childDirection * (nodeXInterval + (width / 2));
-      const childNodeHeight = 37;
-      const childY = startY + childAreaHeight / 2 - (childNodeHeight / 2);
+      const childNodeHeight = getNodeHeight(childDepth);
+      const childY = startY + (childAreaHeight / 2) - (childNodeHeight / 2);
 
-      childrenPositionMap[childId] = {
+      this.positionDatas[childData.id] = {
         x: childX,
         y: childY,
+      };
+
+      this.initPosition({
+        currentData: childData,
+        direction,
+        depth: childDepth,
+      });
+    });
+  }
+
+  private getAreaHeight(currentData: NodeData, direction: Direction, depth: number): number {
+    const areaKey = `${currentData.id}_${direction}`;
+    if (this.areaHeightMap[areaKey]) {
+      return this.areaHeightMap[areaKey];
+    }
+    let areaHeight = 0;
+
+    const childDataList = this.nodeDataList.filter((nodeData) => {
+      return currentData.children.includes(nodeData.id) && nodeData.direction === direction;
+    });
+
+
+    const depthType = getDepthType(depth);
+    if (childDataList.length === 0 || childDataList.length === 1) {
+      areaHeight = getNodeHeight(depth);
+    } else {
+      const childrenAreaHeight = childDataList.reduce((total, childData) => {
+        const childAreaHeight = this.getAreaHeight(childData, direction, depth + 1);
+        return total + childAreaHeight;
+      }, 0);
+
+      let gap = 0;
+      if (depthType === DepthType.root) {
+        gap = 60;
+      } else if (depthType === DepthType.firstLevel) {
+        gap = 40;
+      } else {
+        gap = 16;
       }
 
+      areaHeight = childrenAreaHeight + (childDataList.length - 1) * gap;
+    }
 
-    } else if (depth >= 1) {
-      // 第一层节点
-      const nodeXInterval = 40;
+    this.areaHeightMap[currentData.id] = areaHeight;
 
-      // todo 这里是不是有点不对？
-      const childX = cx + childDirection * (nodeXInterval + (width / 2));
-      // todo 37是魔数
-      const childNodeHeight = 26.5;
-      const childY = startY + childAreaHeight / 2 - (childNodeHeight / 2);
+    return areaHeight;
+  }
 
-      childrenPositionMap[childId] = {
-        x: childX,
-        y: childY,
-      }
-
-    } 
-    // else {
-    //   const nodeXInterval = 40;
-
-    //   // todo 这里是不是有点不对？
-    //   const childX = cx + childDirection * (nodeXInterval + (width / 2));
-    //   // todo 37是魔数
-    //   const childY = startY + childAreaHeight / 2 - (26.5 / 2);
-
-    //   childrenPositionMap[childId] = {
-    //     x: childX,
-    //     y: childY,
-    //   }
-    // }
-
-    startY += childAreaHeight;
-
-    return childrenPositionMap;
-  }, {});
-
-  return childrenPositionMap;
+  public getPosition(id: string): {
+    x: number;
+    y: number;
+  } {
+    const position = this.positionDatas[id];
+    if (!position) {
+      throw new Error(`The position of id:${id} is not existed`);
+    }
+    return position;
+  }
 }
+
+export default Position;

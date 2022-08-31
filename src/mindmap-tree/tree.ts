@@ -1,8 +1,9 @@
 import Node from './node';
 import { RaphaelPaper } from 'raphael';
-import { getChildrenPosition } from './position';
+import Position from './position';
 import { translateWhenChange } from './position2';
 import { Direction } from './types';
+import { DepthType, getDepthType } from './helper';
 
 export interface NodeData {
   id: string;
@@ -30,18 +31,34 @@ class Tree {
       isRoot: true,
     };
 
-    this.root = this.initNode(rootData, nodeDataList, 0, null, 500, 200);
+    this.root = this.initNode({
+      currentData: rootData,
+      nodeDataList,
+      depth: 0, // todo 魔数
+      father: null,
+      x: 500,
+      y: 200,
+    });
   }
 
-  // todo depth的1、2、3等需要有个公共方法获取，不要用魔数
-  public initNode(
+  // todo init children
+  public initNode({
+    currentData,
+    nodeDataList,
+    depth,
+    father,
+    x,
+    y,
+    position,
+  }: {
     currentData: NodeData,
     nodeDataList: NodeData[],
     depth: number,
     father: Node | null,
     x: number,
     y: number,
-  ): Node {
+    position?: Position,
+  }): Node {
     // 初始化的时候，father可以确定已初始化，children还没被初始化
     const node = new Node({
       paper: this.paper,
@@ -54,17 +71,50 @@ class Tree {
       father,
     });
 
-    // 一开始就算出所有子节点的位置
-    const childrenPositionMap = getChildrenPosition(currentData, nodeDataList, node.getBBox(), depth);
+    let positionIns: Position;
+    if (!position) {
+      const rootBBox = node.getBBox();
+      positionIns = new Position({
+        nodeDataList,
+        rootBBox,
+      });
+    } else {
+      positionIns = position;
+    }
+
+
+    // // 一开始就算出所有子节点的位置
+    // const childrenPositionMap = getChildrenPosition({
+    //   currentData,
+    //   nodeDataList,
+    //   nodeBBox: node.getBBox(),
+    //   depth,
+    // });
 
     currentData.children.forEach((childId) => {
       const childData = nodeDataList.find((nodeData) => nodeData.id === childId);
       if (childData) {
+        // const {
+        //   x: childX,
+        //   y: childY,
+        // } = childrenPositionMap[childData.id];
         const {
           x: childX,
           y: childY,
-        } = childrenPositionMap[childData.id];
-        const childNode = this.initNode(childData, nodeDataList, depth + 1, node, childX, childY);
+        } = positionIns.getPosition(childId);
+
+        // const childX = 700;
+        // const childY = 700;
+
+        const childNode = this.initNode({
+          currentData: childData,
+          nodeDataList,
+          depth: depth + 1,
+          father: node,
+          x: childX,
+          y: childY,
+          position: positionIns,
+        });
         node.pushChild(childNode);
       }
     });
@@ -75,7 +125,7 @@ class Tree {
   public addNode(): void {
     // todo for test
     this.selection = this.root.children?.[0] || null;
-    
+
     const selection = this.selection;
 
     if (!selection) {
@@ -86,7 +136,7 @@ class Tree {
       x: 100,
       // y: -100,
     });
-    
+
     // translateWhenChange(selection);
 
     // // 初始化Node

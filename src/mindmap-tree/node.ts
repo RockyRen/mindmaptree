@@ -6,6 +6,7 @@ import { createFirstEdgeShape, FirstEdgeShape } from './shape/first-edge-shape';
 import { createGrandchildEdgeShape, GrandchildEdgeShape } from './shape/grandchild-edge-shape';
 import { NodeShape } from './shape/node-shape';
 import { Direction } from './types';
+import { getDepthType, DepthType } from './helper';
 
 // todo 如何解决多态对象的类型问题？有些属性只有那个对象有
 type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
@@ -86,14 +87,16 @@ class Node {
       label,
     } = this;
 
-    if (depth === 0) {
+    const depthType = getDepthType(depth);
+
+    if (depthType === DepthType.root) {
       return createRootNodeShape({
         paper,
-        x,
+        x, 
         y,
         label,
       });
-    } else if (depth === 1) {
+    } else if (depthType === DepthType.firstLevel) {
       return createFirstNodeShape({
         paper,
         x,
@@ -114,13 +117,16 @@ class Node {
     const {
       father,
       direction,
+      depth,
     } = this;
 
     if (!father || !direction) {
       return;
     }
 
-    if (this.depth === 1) {
+    const depthType = getDepthType(depth);
+
+    if (depthType === DepthType.firstLevel) {
       return createFirstEdgeShape({
         paper: this.paper,
         sourceBBox: father.getBBox(),
@@ -128,7 +134,7 @@ class Node {
         direction,
       })
 
-    } else if (this.depth > 1) {
+    } else if (depthType === DepthType.grandchild) {
       return createGrandchildEdgeShape({
         paper: this.paper,
         sourceBBox: father.getBBox(),
