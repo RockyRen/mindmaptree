@@ -88,6 +88,21 @@ class Node {
     this.edgeShape = this.createEdge();
   }
 
+  // todo 带着子节点移动
+  public translateWithChild({ x = 0, y = 0 }: { x?: number, y?: number }): void {
+    this.translateWithChildInner(this, x, y);
+  }
+
+  // todo
+  private translateWithChildInner(node: Node, x: number, y: number) {
+    node.translate({ x, y, });
+
+    node.children?.forEach((child) => {
+      this.translateWithChildInner(child, x, y);
+    })
+
+  }
+
   public getDepthType(): DepthType {
     return getDepthType(this.depth);
   }

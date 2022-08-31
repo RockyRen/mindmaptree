@@ -67,7 +67,7 @@ export class NodeShape {
 
   
   public show(x?: number, y?: number) {
-    if (x && y) {
+    if (x !== undefined && y !== undefined) {
       this.shapeSet.translate(-invisibleX + x, -invisibleY + y);
     }
     this.shapeSet.show();
