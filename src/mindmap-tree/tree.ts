@@ -3,7 +3,6 @@ import { RaphaelPaper } from 'raphael';
 import Position from './position';
 import Position2 from './position2';
 import { Direction } from './types';
-// import Position from './position-old2';
 
 export interface NodeData {
   id: string;
@@ -19,8 +18,8 @@ export interface NodeData {
 class Tree {
   private readonly paper: RaphaelPaper;
   private readonly root: Node;
-  private selection: Node | null = null;
-  public constructor(paper: RaphaelPaper, nodeDataList: NodeData[]) {
+  private selections: Node[] = [];
+  public constructor(paper: RaphaelPaper, nodeDataList: NodeData[], containerWidth: number) {
     this.paper = paper;
 
     const rootData = nodeDataList.find((item) => item.isRoot) || {
@@ -38,9 +37,10 @@ class Tree {
       father: null,
     });
 
-    // todo
+    const rootBBox = this.root.getBBox();
+
     this.root.show({
-      x: 400,
+      x: (containerWidth - rootBBox.width) / 2,
       y: 200,
     });
 
@@ -52,7 +52,6 @@ class Tree {
     nodeDataList,
     depth,
     father,
-    // position,
   }: {
     currentData: NodeData,
     nodeDataList: NodeData[],
@@ -67,6 +66,9 @@ class Tree {
       label: currentData.label,
       direction: currentData.direction,
       father,
+      mousedownHandler: (node) => {
+        this.selectNode(node);
+      },
     });
 
     currentData.children.forEach((childId) => {
@@ -86,44 +88,57 @@ class Tree {
   }
 
   public addNode(): void {
-    // todo for test
-    this.selection = this.root.children?.[0] || null;
-
-    const selection = this.selection;
-
-    if (!selection) {
+    if (this.selections.length !== 1) {
       return;
     }
+
+    const selection = this.selections[0];
+
+    // todo 根节点先全加到右边
+    const direction = selection.direction || Direction.LEFT;
 
     const newNode = new Node({
       paper: this.paper,
       id: `${+new Date()}`,  // todo 自动生成id
       depth: selection.depth + 1,
       label: '任务xxx',
-      direction: selection.direction, // todo 根节点的direction不一样
+      direction, // todo 根节点的direction不一样
       father: selection,
+      mousedownHandler: (node) => {
+        this.selectNode(node);
+      },
     });
 
     selection.pushChild(newNode);
 
     const position2 = new Position2();
-    position2.moveAdd(newNode);
+    position2.moveAdd(newNode, direction);
   }
 
+  // todo 可删除多个节点，后面再做
+  // todo 删除后选择下一个节点
   public removeNode(): void {
-    // todo for test
-    this.selection = this.root.children?.[0] || null;
-
-    const selection = this.selection;
-
-    if (!selection) {
+    if (this.selections.length === 0) {
       return;
     }
+
+    const selection = this.selections[0];
 
     const position2 = new Position2();
     position2.moveRemove(selection);
 
     selection.remove();
+
+    this.selections = [];
+  }
+
+  public selectNode(node: Node): void {
+    this.selections.forEach((selection) => {
+      selection.unSelect();
+    });
+
+    node.select();
+    this.selections = [node];
   }
 }
 

@@ -27,7 +27,7 @@ class Position2 {
   // todo 兄弟节点，front向上移动，back向下移动。然后递归father的兄弟节点
   // todo 获取当前节点的y点
   // todo 测试有多个子节点的节点的情况
-  public moveAdd(node: Node): void {
+  public moveAdd(node: Node, direction: Direction): void {
     const father = node.father;
     if (!father) {
       return;
@@ -37,7 +37,8 @@ class Position2 {
     const fatherBBox = father?.getBBox();
 
     const areaHeightHandler = new AreaHeight();
-    const areaHeight = areaHeightHandler.getAreaHeight(node);
+
+    const areaHeight = areaHeightHandler.getAreaHeight(node, direction);
 
     const yGap = getNodeYGap(node.depth);
 

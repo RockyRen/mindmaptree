@@ -97,7 +97,6 @@ class Position {
 
     let nodeBBox = node.getBBox();
     let startY = nodeBBox.cy - (areaHeight / 2);
-    console.log('startY', node.id, direction, startY, nodeBBox.cy, areaHeight);
 
     children.forEach((child) => {
       const childAreaHeight = this.areaHeightHandler.getAreaHeight(child, direction);

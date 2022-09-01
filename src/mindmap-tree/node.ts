@@ -1,4 +1,4 @@
-import { RaphaelPaper, RaphaelAxisAlignedBoundingBox } from 'raphael';
+import { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelBaseElement } from 'raphael';
 import { createFirstNodeShape } from './shape/first-node-shape';
 import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
 import { createRootNodeShape } from './shape/root-node-shape';
@@ -34,6 +34,7 @@ class Node {
     x,
     y,
     father,
+    mousedownHandler,
   }: {
     paper: RaphaelPaper,
     id: string,
@@ -43,6 +44,7 @@ class Node {
     x?: number,
     y?: number,
     father: Node | null,
+    mousedownHandler?: (node: Node) => void;
   }) {
     this.paper = paper;
     this.id = id;
@@ -55,6 +57,11 @@ class Node {
     if (x !== undefined || y !== undefined) {
       this.edgeShape = this.createEdge();
     }
+
+    // todo mousedown统一管理
+    mousedownHandler && this.nodeShape.mousedown(() => {
+      mousedownHandler(this);
+    });
   }
 
   // todo 取个好听点的名字？还有如果要插入到前面或者中间怎么办？
@@ -109,7 +116,6 @@ class Node {
   // todo 会不会有内存泄露问题？
   public remove(): void {
     const brothers = this.father?.children;
-    const children = this.children;
 
     if (this.getDepthType() === DepthType.root || !brothers) {
       return;
@@ -118,15 +124,26 @@ class Node {
     const index = brothers.findIndex((brother) => this.id === brother.id);
     brothers.splice(index, 1);
 
-    this.removeShape(this);
+    this.removeAll(this);
   }
 
-  // todo 递归删除shape
-  private removeShape(node: Node): void {
+  // todo 递归删除
+  private removeAll(node: Node): void {
     node.nodeShape.remove();
     node.edgeShape?.remove();
 
-    node.children?.forEach((child) => this.removeShape(child));
+    // todo 删除事件 包括mousedown等
+    // this.nodeShape.unmousedown()
+
+    node.children?.forEach((child) => this.removeAll(child));
+  }
+
+  public select(): void {
+    this.nodeShape.select();
+  }
+
+  public unSelect(): void {
+    this.nodeShape.unSelect();
   }
 
   private createNode(x?: number, y?: number): NodeShape {

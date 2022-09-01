@@ -1,4 +1,4 @@
-import { RaphaelPaper, RaphaelSet, RaphaelElement, RaphaelAxisAlignedBoundingBox, RaphaelAttributes } from 'raphael';
+import { RaphaelPaper, RaphaelSet, RaphaelElement, RaphaelAxisAlignedBoundingBox, RaphaelAttributes, RaphaelBaseElement } from 'raphael';
 
 interface CustomAttr {
   defaultLabel: Partial<RaphaelAttributes>;
@@ -95,6 +95,10 @@ export class NodeShape {
 
   public remove(): void {
     this.shapeSet.remove();
+  }
+
+  public mousedown(...params: Parameters<RaphaelBaseElement['mousedown']>): void {
+    this.shapeSet.mousedown(...params);
   }
 
   private draw({
