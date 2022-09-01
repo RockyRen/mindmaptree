@@ -3,6 +3,7 @@ import { RaphaelPaper } from 'raphael';
 import Position from './position';
 import Position2 from './position2';
 import { Direction } from './types';
+import { generateId } from './helper';
 
 export interface NodeData {
   id: string;
@@ -19,11 +20,23 @@ class Tree {
   private readonly paper: RaphaelPaper;
   private readonly root: Node;
   private selections: Node[] = [];
-  public constructor(paper: RaphaelPaper, nodeDataList: NodeData[], containerWidth: number) {
+  private readonly onLabelChange: (label: string) => void;
+  public constructor({
+    paper,
+    nodeDataList,
+    containerWidth,
+    onLabelChange,
+  }: {
+    paper: RaphaelPaper;
+    nodeDataList: NodeData[];
+    containerWidth: number;
+    onLabelChange: (label: string) => void;
+  }) {
     this.paper = paper;
+    this.onLabelChange = onLabelChange;
 
     const rootData = nodeDataList.find((item) => item.isRoot) || {
-      id: '111',
+      id: generateId(),
       children: [],
       label: '中心主题',
       direction: null,
@@ -99,9 +112,9 @@ class Tree {
 
     const newNode = new Node({
       paper: this.paper,
-      id: `${+new Date()}`,  // todo 自动生成id
+      id: generateId(),
       depth: selection.depth + 1,
-      label: '任务xxx',
+      label: '子主题',
       direction, // todo 根节点的direction不一样
       father: selection,
       mousedownHandler: (node) => {
@@ -132,13 +145,25 @@ class Tree {
     this.selections = [];
   }
 
-  public selectNode(node: Node): void {
+  public setLabel(label: string): void {
+    if (this.selections.length !== 1) {
+      return;
+    }
+
+    const selection = this.selections[0];
+
+    selection.setLabel(label);
+  }
+
+  private selectNode(node: Node): void {
     this.selections.forEach((selection) => {
       selection.unSelect();
     });
 
     node.select();
     this.selections = [node];
+
+    this.onLabelChange(node.label);
   }
 }
 

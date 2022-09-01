@@ -19,7 +19,7 @@ class Node {
   public readonly depth: number;
   public readonly direction: Direction | null;
   private readonly nodeShape: NodeShape;
-  private label: string;
+  public label: string;
   private edgeShape?: EdgeShape;
 
   // todo 是否用null？还是undefined？
@@ -96,6 +96,7 @@ class Node {
   }
 
   // todo 带着子节点移动
+  // todo 改成非对象
   public translateWithChild({ x = 0, y = 0 }: { x?: number, y?: number }): void {
     this.translateWithChildInner(this, x, y);
   }
@@ -144,6 +145,25 @@ class Node {
 
   public unSelect(): void {
     this.nodeShape.unSelect();
+  }
+
+  public setLabel(label: string): void {
+    const offset = this.nodeShape.setLabel(label) / 2;
+
+    const depthType = this.getDepthType();
+    if (depthType === DepthType.root) {
+      this.children?.forEach((child) => {
+        child.translateWithChild({ x: child.direction! * offset });
+      });
+    } else {
+      const direction = this.direction!;
+      this.translate({ x: direction * offset });
+      this.children?.forEach((child) => {
+        child.translateWithChild({ x: direction * offset * 2 })
+      });
+    }
+
+    this.label = label;
   }
 
   private createNode(x?: number, y?: number): NodeShape {

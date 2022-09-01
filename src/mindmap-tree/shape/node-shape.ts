@@ -65,6 +65,26 @@ export class NodeShape {
     }
   }
 
+  public setLabel(label: string): number {
+    const beforeLabelBBox = this.labelShape.getBBox();
+    const rectBBox = this.rectShape.getBBox();
+    
+    this.labelShape.attr({
+      text: label,
+    });
+
+    const afterLabelBBox = this.labelShape.getBBox();
+    const diff = afterLabelBBox.width - beforeLabelBBox.width;
+
+    this.rectShape.attr({
+      width: rectBBox.width + diff,
+    });
+
+    this.rectShape.translate(-diff / 2, 0);
+    
+    return diff;
+  }
+
   
   public show(x?: number, y?: number) {
     if (x !== undefined && y !== undefined) {

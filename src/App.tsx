@@ -14,6 +14,10 @@ const App = (): JSX.Element => {
     if (!hasMindmapTree) {
       const mindmapTreeTemp = new MindemapTree({
         container: '#mindmap-container',
+        // todo 后面都不知道需不需要这个？
+        onLabelChange: function(label: string) {
+          setInputText(label);
+        },
       });
       setMindmapTree(mindmapTreeTemp);
       hasMindmapTree = true;
@@ -33,8 +37,7 @@ const App = (): JSX.Element => {
   };
 
   const commitText = (): void => {
-    // @ts-ignore
-    // graph?.setLabel(inputText);
+    mindmapTree.setLabel(inputText);
   }
 
   return (

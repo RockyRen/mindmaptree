@@ -5,13 +5,13 @@ import { Direction } from './types';
 
 interface GraphOptions {
   containerDom: Element;
+  onLabelChange: (label: string) => void;
 }
 
-
-const testNodes = [
+const nodeDataList = [
   {
     id: '111',
-    children: ['222', '444', '777'],
+    children: ['222', '333', '444', '777'],
     label: '中心主题',
     direction: null,
     isRoot: true,
@@ -64,8 +64,10 @@ const testNodes = [
 class Graph {
   private readonly paper: RaphaelPaper;
   private tree: Tree;
-  public constructor(options: GraphOptions) {
-    const { containerDom, } = options;
+  public constructor({
+    containerDom,
+    onLabelChange
+  }: GraphOptions) {
 
     const graphDom = this.initGraphElement(containerDom);
     const containerWidth = containerDom.clientWidth;
@@ -78,7 +80,12 @@ class Graph {
     this.paper = new Raphael(graphDom, containerWidth, containerHeight);
 
     // 初始化Tree后立即画图
-    this.tree = new Tree(this.paper, testNodes, containerWidth);
+    this.tree = new Tree({
+      paper: this.paper, 
+      nodeDataList,
+      containerWidth,
+      onLabelChange,
+    });
   }
 
   public addNode(): void {
@@ -87,6 +94,10 @@ class Graph {
 
   public removeNode(): void {
     this.tree.removeNode();
+  }
+
+  public setLabel(label: string): void {
+    this.tree.setLabel(label);
   }
 
   private initGraphElement(containerDom: Element): HTMLDivElement {

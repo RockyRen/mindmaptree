@@ -12,7 +12,7 @@ const customAttr = {
     'stroke-width': 2.5,
   },
   unSelected: {
-    'stroke': '#808080',
+    'stroke': 'none',
     'stroke-width': 1,
   },
 };
