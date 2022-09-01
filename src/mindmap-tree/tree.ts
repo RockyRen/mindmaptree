@@ -109,6 +109,22 @@ class Tree {
     const position2 = new Position2();
     position2.moveAdd(newNode);
   }
+
+  public removeNode(): void {
+    // todo for test
+    this.selection = this.root.children?.[0] || null;
+
+    const selection = this.selection;
+
+    if (!selection) {
+      return;
+    }
+
+    const position2 = new Position2();
+    position2.moveRemove(selection);
+
+    selection.remove();
+  }
 }
 
 export default Tree;

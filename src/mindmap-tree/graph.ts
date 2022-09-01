@@ -27,7 +27,7 @@ interface GraphOptions {
 const testNodes = [
   {
     id: '111',
-    children: ['222', '333', '444', '777'],
+    children: ['222', '444', '777'],
     label: '中心主题',
     direction: null,
     isRoot: true,
@@ -162,9 +162,9 @@ class Graph {
     this.tree.addNode();
   }
 
-  // public removeNode(node: any) {
-  //   this.tree.removeNode(node);
-  // }
+  public removeNode() {
+    this.tree.removeNode();
+  }
 
   private initGraphElement(containerDom: Element): HTMLDivElement {
     const graphDom = document.createElement('div');

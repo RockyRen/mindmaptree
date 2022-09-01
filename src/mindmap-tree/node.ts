@@ -54,7 +54,7 @@ class Node {
     this.nodeShape = this.createNode(x, y);
     if (x !== undefined || y !== undefined) {
       this.edgeShape = this.createEdge();
-    } 
+    }
   }
 
   // todo 取个好听点的名字？还有如果要插入到前面或者中间怎么办？
@@ -104,6 +104,29 @@ class Node {
 
   public getDepthType(): DepthType {
     return getDepthType(this.depth);
+  }
+
+  // todo 会不会有内存泄露问题？
+  public remove(): void {
+    const brothers = this.father?.children;
+    const children = this.children;
+
+    if (this.getDepthType() === DepthType.root || !brothers) {
+      return;
+    }
+
+    const index = brothers.findIndex((brother) => this.id === brother.id);
+    brothers.splice(index, 1);
+
+    this.removeShape(this);
+  }
+
+  // todo 递归删除shape
+  private removeShape(node: Node): void {
+    node.nodeShape.remove();
+    node.edgeShape?.remove();
+
+    node.children?.forEach((child) => this.removeShape(child));
   }
 
   private createNode(x?: number, y?: number): NodeShape {

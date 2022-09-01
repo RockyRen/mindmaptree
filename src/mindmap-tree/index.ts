@@ -24,6 +24,10 @@ class MindmapTree {
   public addNode(): void {
     this.graph.addNode();
   }
+
+  public removeNode(): void {
+    this.graph.removeNode();
+  }
 }
 
 export default MindmapTree;

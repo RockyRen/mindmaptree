@@ -1,82 +1,84 @@
 import Node from './node';
-import { DepthType, getDepthType } from './helper';
 import { Direction } from './types';
-
-// todo
-function getNodeYGap(depth: number): number {
-  const depthType = getDepthType(depth);
-  let gap = 0;
-  if (depthType === DepthType.firstLevel) {
-    gap = 36;
-  } else {
-    gap = 25;
-  }
-  return gap;
-}
-
-// todo
-function getNodeXGap(depth: number): number {
-  const depthType = getDepthType(depth);
-  let gap = 0;
-  if (depthType === DepthType.firstLevel) {
-    gap = 40;
-  } else {
-    gap = 14;
-  }
-  return gap;
-}
-
+import { getNodeXGap, getNodeYGap, AreaHeight } from './position';
 
 // todo 主要还是Y的变化
 class Position2 {
-  public constructor() {
+  public constructor() { }
 
+  public moveRemove(node: Node): void {
+    const father = node.father;
+    if (!father) {
+      return;
+    }
+
+    const areaHeightHandler = new AreaHeight();
+    const areaHeight = areaHeightHandler.getAreaHeight(node);
+
+
+    const moveHeight = this.getMoveHeight(node, areaHeight);
+
+    if (moveHeight > 0) {
+      // 兄弟节点移动
+      this.moveBrother(node, -moveHeight);
+    }
   }
 
   // todo 兄弟节点，front向上移动，back向下移动。然后递归father的兄弟节点
   // todo 获取当前节点的y点
   // todo 测试有多个子节点的节点的情况
-  public moveAdd(newNode: Node): void {
-    const father = newNode.father;
+  public moveAdd(node: Node): void {
+    const father = node.father;
     if (!father) {
       return;
     }
 
-    const newNodeBBox = newNode.getBBox();
+    const newNodeBBox = node.getBBox();
     const fatherBBox = father?.getBBox();
 
-    const newNodeAreaHeight = newNodeBBox.height; // todo 这里换成areaHeight的获取
+    const areaHeightHandler = new AreaHeight();
+    const areaHeight = areaHeightHandler.getAreaHeight(node);
 
-    const yGap = getNodeYGap(newNode.depth);
+    const yGap = getNodeYGap(node.depth);
 
-    let moveHeight = 0;
-    const children = father.getDirectionChildren(newNode.direction);
-
-    if (children.length > 1) {
-      moveHeight = (newNodeAreaHeight + yGap) / 2;
-    } else if (children.length === 1) {
-      if (newNodeAreaHeight > fatherBBox.height) {
-        moveHeight = newNodeAreaHeight / 2;
-      }
-    }
+    const moveHeight = this.getMoveHeight(node, areaHeight);
 
     if (moveHeight > 0) {
       // 兄弟节点移动
-      this.moveBrother(newNode, moveHeight);
+      this.moveBrother(node, moveHeight);
     }
 
     const nodeXGap = getNodeXGap(father.depth + 1);;
 
-    const newNodeX = newNode.direction === Direction.RIGHT ?
+    const newNodeX = node.direction === Direction.RIGHT ?
       fatherBBox.x2 + nodeXGap :
       fatherBBox.x - nodeXGap - newNodeBBox.width;
 
-    const newNodeY = this.getNewNodeY(newNode, newNodeAreaHeight, yGap);
+    const newNodeY = this.getNewNodeY(node, areaHeight, yGap);
 
-    newNode.show({
+    node.show({
       x: newNodeX,
       y: newNodeY,
-    })
+    });
+  }
+
+  private getMoveHeight(node: Node, areaHeight: number): number {
+    const father = node.father!;
+    let moveHeight = 0;
+    const children = father.getDirectionChildren(node.direction);
+    const yGap = getNodeYGap(node.depth);
+    const fatherBBox = father.getBBox();
+
+    if (children.length > 1) {
+      moveHeight = (areaHeight + yGap) / 2;
+    } else if (children.length === 1) {
+      // 能不能不用特殊对待length为1的情况？
+      if (areaHeight > fatherBBox.height) {
+        moveHeight = areaHeight / 2;
+      }
+    }
+
+    return moveHeight;
   }
 
   // todo 需要考虑从其他地方插入，而不是从最后一个插入
@@ -133,7 +135,6 @@ class Position2 {
     });
 
     this.moveBrother(father, moveHeight);
-
   }
 }
 

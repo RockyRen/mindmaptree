@@ -25,8 +25,7 @@ const App = (): JSX.Element => {
   };
 
   const removeNode = (): void => {
-    // @ts-ignore
-    // graph?.removeNode();
+    mindmapTree.removeNode();
   };
 
   const handleChangeInputText = (event: ChangeEvent<HTMLInputElement>): void => {
