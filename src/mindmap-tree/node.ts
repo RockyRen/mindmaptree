@@ -59,7 +59,11 @@ class Node {
     }
 
     // todo mousedown统一管理
-    mousedownHandler && this.nodeShape.mousedown(() => {
+    mousedownHandler && this.nodeShape.mousedown((e: MouseEvent) => {
+      const depthType = this.getDepthType();
+      if (depthType !== DepthType.root) {
+        e.stopPropagation();
+      }
       mousedownHandler(this);
     });
   }

@@ -1,7 +1,7 @@
-// todo 是不是搞引用别名比较好？？？
 import Raphael, { RaphaelPaper } from 'raphael';
 import Tree from './tree';
 import { Direction } from './types';
+import { GraphViewport } from './viewport';
 
 interface GraphOptions {
   containerDom: Element;
@@ -86,6 +86,9 @@ class Graph {
       containerWidth,
       onLabelChange,
     });
+
+    // todo 这种是否直接new就好，不用再暴露方法了？
+    new GraphViewport(this.paper, graphDom);
   }
 
   public addNode(): void {
