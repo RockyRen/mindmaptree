@@ -3,7 +3,7 @@ import { RaphaelPaper } from 'raphael';
 import Position from './position';
 import Position2 from './position2';
 import { Direction } from './types';
-import { generateId } from './helper';
+import { DepthType, generateId, getDepthType } from './helper';
 
 export interface NodeData {
   id: string;
@@ -107,15 +107,30 @@ class Tree {
 
     const selection = this.selections[0];
 
-    // todo 根节点先全加到右边
-    const direction = selection.direction || Direction.LEFT;
+    let direction = selection.direction;
+    if (!direction) {
+      const countMap = selection.children?.reduce((countMap: Record<string, number>, child) => {
+        if (child.direction === Direction.LEFT) {
+          countMap.left += 1;
+        } else {
+          countMap.right += 1; 
+        }
+        return countMap;
+      }, {
+        left: 0,
+        right: 0,
+      })!;
+
+      // 如果右边节点比左边多，则在左边增加
+      direction = countMap.right > countMap.left ? Direction.LEFT : Direction.RIGHT;
+    }
 
     const newNode = new Node({
       paper: this.paper,
       id: generateId(),
       depth: selection.depth + 1,
       label: '子主题',
-      direction, // todo 根节点的direction不一样
+      direction,
       father: selection,
       mousedownHandler: (node) => {
         this.selectNode(node);
