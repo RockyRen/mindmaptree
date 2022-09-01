@@ -1,4 +1,4 @@
-import { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelBaseElement } from 'raphael';
+import { RaphaelPaper, RaphaelAxisAlignedBoundingBox } from 'raphael';
 import { createFirstNodeShape } from './shape/first-node-shape';
 import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
 import { createRootNodeShape } from './shape/root-node-shape';
@@ -88,7 +88,7 @@ class Node {
     this.edgeShape = this.createEdge();
   }
 
-  public translate({ x = 0, y = 0 }: { x?: number, y?: number }): void {
+  public translate(x: number, y: number): void {
     this.nodeShape.translate(x, y);
 
     this.edgeShape?.remove();
@@ -97,13 +97,13 @@ class Node {
 
   // todo 带着子节点移动
   // todo 改成非对象
-  public translateWithChild({ x = 0, y = 0 }: { x?: number, y?: number }): void {
+  public translateWithChild(x: number, y: number): void {
     this.translateWithChildInner(this, x, y);
   }
 
   // todo
   private translateWithChildInner(node: Node, x: number, y: number) {
-    node.translate({ x, y, });
+    node.translate(x, y);
 
     node.children?.forEach((child) => {
       this.translateWithChildInner(child, x, y);
@@ -153,13 +153,13 @@ class Node {
     const depthType = this.getDepthType();
     if (depthType === DepthType.root) {
       this.children?.forEach((child) => {
-        child.translateWithChild({ x: child.direction! * offset });
+        child.translateWithChild(child.direction! * offset, 0);
       });
     } else {
       const direction = this.direction!;
-      this.translate({ x: direction * offset });
+      this.translate(direction * offset, 0);
       this.children?.forEach((child) => {
-        child.translateWithChild({ x: direction * offset * 2 })
+        child.translateWithChild(direction * offset * 2, 0)
       });
     }
 

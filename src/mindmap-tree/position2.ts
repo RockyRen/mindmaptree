@@ -125,13 +125,9 @@ class Position2 {
       if (node.id === child.id) {
         isFront = false;
       } else if (isFront) {
-        child.translateWithChild({
-          y: -moveHeight,
-        })
+        child.translateWithChild(0, -moveHeight)
       } else {
-        child.translateWithChild({
-          y: moveHeight,
-        })
+        child.translateWithChild(0, moveHeight);
       }
     });
 
