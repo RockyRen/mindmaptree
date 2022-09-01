@@ -18,6 +18,7 @@ function getNodeHeight(depth: number): number {
   return grandchildNodeHeight;
 }
 
+// todo
 function getNodeYGap(depth: number): number {
   const depthType = getDepthType(depth);
   let gap = 0;
@@ -52,10 +53,7 @@ class Position {
   private initPosition(node: Node, direction: Direction): void {
     const areaHeight = this.getAreaHeight(node, direction);
 
-    // todo 和下面的children能否复用？
-    const children = node.children?.filter((currentNode) => {
-      return currentNode.direction === direction;
-    }) || [];
+    const children = node.getDirectionChildren(direction);
 
     let nodeBBox = node.getBBox();
     let startY = nodeBBox.cy - (areaHeight / 2);
@@ -100,9 +98,7 @@ class Position {
 
     let areaHeight = 0;
 
-    const children = node.children?.filter((currentNode) => {
-      return currentNode.direction === direction;
-    }) || [];
+    const children = node.getDirectionChildren(direction);
 
     if (children.length === 0 || children.length === 1) {
       areaHeight = getNodeHeight(node.depth);

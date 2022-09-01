@@ -106,16 +106,8 @@ class Tree {
 
     selection.pushChild(newNode);
 
-    const newNodeBBox = newNode.getBBox();
-
     const position2 = new Position2();
-    const newNodePosition = position2.moveAdd(selection, newNode);
-
-    newNode.show({
-      x: newNodePosition.x, 
-      y: newNodePosition.y
-    });
-    
+    position2.moveAdd(newNode);
   }
 }
 

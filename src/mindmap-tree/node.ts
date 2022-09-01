@@ -57,7 +57,7 @@ class Node {
     } 
   }
 
-  // todo ??
+  // todo 取个好听点的名字？还有如果要插入到前面或者中间怎么办？
   public pushChild(child: Node): void {
     if (!this.children) {
       this.children = [];
@@ -65,15 +65,15 @@ class Node {
     this.children.push(child);
   }
 
-  public getChildren(): Node[] | undefined {
-    return this.children;
+  public getDirectionChildren(direction: Direction | null): Node[] {
+    return this.children?.filter((child) => child.direction === direction) || [];
   }
 
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.nodeShape.getBBox()!;
   }
 
-  // todo
+  // todo 搞清楚show和tranlate的x y关系
   public show({ x = 0, y = 0 }: { x?: number, y?: number }): void {
     this.nodeShape.show(x, y);
 
@@ -100,7 +100,6 @@ class Node {
     node.children?.forEach((child) => {
       this.translateWithChildInner(child, x, y);
     })
-
   }
 
   public getDepthType(): DepthType {

@@ -29,43 +29,48 @@ class Position2 {
   public constructor() {
 
   }
-  public moveAdd(selection: Node, newNode: Node): {
-    x: number;
-    y: number;
-  } {
-    // 兄弟节点移动
-    const newNodeBBox = newNode.getBBox();
-    const yGap = getNodeYGap(newNode.depth);
-    const moveHeight = (newNodeBBox.height + yGap) / 2;
 
-    this.moveBrother(selection, newNode, moveHeight, newNode.id);
-    console.log('a---', newNodeY);
-
-    return {
-      x: selection.getBBox().x2 + getNodeXGap(selection.depth + 1),
-      y: newNodeY,
+  // todo 兄弟节点，front向上移动，back向下移动。然后递归father的兄弟节点
+  // todo 获取当前节点的y点
+  public moveAdd(newNode: Node): void {
+    const father = newNode.father;
+    if (!father) {
+      return;
     }
+
+    const newNodeBBox = newNode.getBBox();
+    const fatherBBox = father?.getBBox();
+
+    const newNodeAreaHeight = newNodeBBox.height; // todo 这里换成areaHeight的获取
+    
+    const yGap = getNodeYGap(newNode.depth);
+    const moveHeight = (newNodeAreaHeight + yGap) / 2;
+
+    // 兄弟节点移动
+    this.moveBrother(newNode, moveHeight);
+
+    const newNodeX = fatherBBox.x2 + getNodeXGap(father.depth + 1);
+
+    newNode.show({
+      x: newNodeX,
+      y: newNodeY,
+    })
   }
 
-  private moveBrother(father: Node | null, anchor: Node, moveHeight: number, originId: string) {
+  private moveBrother(node: Node, moveHeight: number) {
+    const father = node.father;
     if (!father || !father.children) {
       return;
     }
 
-    // todo 从node那里可以直接拿到相同direction的children
-    const children = father.children.filter((child) => {
-      return child.direction === anchor.direction;
-    });
+    const children = father.getDirectionChildren(node.direction);
 
+
+    // todo 优雅的写法？？
     let isFront = true;
-    let preY = 0;
     children.forEach((child) => {
-      if (anchor.id === child.id) {
+      if (node.id === child.id) {
         isFront = false;
-        // todo 有可能是第一个开始插入的方式插入
-        if (originId === child.id) {
-          newNodeY = preY + moveHeight * 2;
-        }
       } else if (isFront) {
         child.translateWithChild({
           y: -moveHeight,
@@ -75,13 +80,9 @@ class Position2 {
           y: moveHeight,
         })
       }
-
-
-      const bbox = child.getBBox();
-      preY = bbox.y;
     });
 
-    this.moveBrother(father.father, father, moveHeight, originId);
+    this.moveBrother(father, moveHeight);
 
   }
 }
