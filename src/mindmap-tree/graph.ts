@@ -48,7 +48,7 @@ const testNodes = [
   },
   {
     id: '444',
-    children: ['555', '666'],
+    children: ['555'],
     label: '任务4',
     direction: Direction.RIGHT,
     isRoot: false,

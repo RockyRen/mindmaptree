@@ -87,7 +87,7 @@ class Tree {
 
   public addNode(): void {
     // todo for test
-    this.selection = this.root.children?.[2] || null;
+    this.selection = this.root.children?.[0] || null;
 
     const selection = this.selection;
 
@@ -97,7 +97,7 @@ class Tree {
 
     const newNode = new Node({
       paper: this.paper,
-      id: 'xxx',
+      id: `${+new Date()}`,  // todo 自动生成id
       depth: selection.depth + 1,
       label: '任务xxx',
       direction: selection.direction, // todo 根节点的direction不一样
