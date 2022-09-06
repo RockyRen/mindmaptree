@@ -3,7 +3,7 @@ import { RaphaelPaper } from 'raphael';
 import Position from './position';
 import Position2 from './position2';
 import { Direction } from './types';
-import { DepthType, generateId, getDepthType } from './helper';
+import { DepthType, generateId } from './helper';
 
 export interface NodeData {
   id: string;
@@ -58,6 +58,14 @@ class Tree {
     });
 
     new Position(this.root);
+
+    this.setDrag(this.root);
+  }
+
+  public setDrag(node: Node) {
+    node.setDrag();
+
+    node.children?.forEach((child) => child.setDrag());
   }
 
   public initNode({
@@ -79,9 +87,9 @@ class Tree {
       label: currentData.label,
       direction: currentData.direction,
       father,
-      mousedownHandler: (node) => {
-        this.selectNode(node);
-      },
+    });
+    node.mousedown((event: MouseEvent) => {
+      this.selectNode(node, event);
     });
 
     currentData.children.forEach((childId) => {
@@ -113,7 +121,7 @@ class Tree {
         if (child.direction === Direction.LEFT) {
           countMap.left += 1;
         } else {
-          countMap.right += 1; 
+          countMap.right += 1;
         }
         return countMap;
       }, {
@@ -132,12 +140,15 @@ class Tree {
       label: '子主题',
       direction,
       father: selection,
-      mousedownHandler: (node) => {
-        this.selectNode(node);
-      },
+    });
+
+    newNode.mousedown((event: MouseEvent) => {
+      this.selectNode(newNode, event);
     });
 
     selection.pushChild(newNode);
+
+    newNode.setDrag();
 
     const position2 = new Position2();
     position2.moveAdd(newNode, direction);
@@ -170,12 +181,19 @@ class Tree {
     selection.setLabel(label);
   }
 
-  private selectNode(node: Node): void {
-    this.selections.forEach((selection) => {
-      selection.unSelect();
-    });
+  private selectNode(node: Node, event: MouseEvent): void {
+    // todo 放在drag？
+    if (node.getDepthType() !== DepthType.root) {
+      event.stopPropagation();
+    }
 
-    node.select();
+    // todo 补回来
+    // this.selections.forEach((selection) => {
+    //   selection.unSelect();
+    // });
+
+    // node.select();
+
     this.selections = [node];
 
     this.onLabelChange(node.label);

@@ -4,23 +4,30 @@ import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
 import { createRootNodeShape } from './shape/root-node-shape';
 import { createFirstEdgeShape, FirstEdgeShape } from './shape/first-edge-shape';
 import { createGrandchildEdgeShape, GrandchildEdgeShape } from './shape/grandchild-edge-shape';
-import { NodeShape } from './shape/node-shape';
+import { NodeShape, MousedownCallback, MousemoveCallback, MouseupCallback, DragCallbackList } from './shape/node-shape';
 import { Direction } from './types';
 import { getDepthType, DepthType } from './helper';
+import Drag from './drag';
 
 // todo 如何解决多态对象的类型问题？有些属性只有那个对象有
 type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
 
 // todo 如果不是root，direction等数据是一定有的。是否应该区分RootNode和普通Node？？
 // readonly的属性值是public还是private好？
+// todo node的操作有可能影响到子节点
 class Node {
   private readonly paper: RaphaelPaper;
   public readonly id: string;
   public readonly depth: number;
   public readonly direction: Direction | null;
-  private readonly nodeShape: NodeShape;
+  // 这么多public真的好吗？
+  public readonly nodeShape: NodeShape;
   public label: string;
   private edgeShape?: EdgeShape;
+  private mousedownHandlers: MousedownCallback[] = [];
+  private mousemoveHandlers: MousemoveCallback[] = [];
+  private mouseupHandlers: MouseupCallback[] = [];
+  private dragHandler?: Drag;
 
   // todo 是否用null？还是undefined？
   public readonly father: Node | null = null;
@@ -34,7 +41,6 @@ class Node {
     x,
     y,
     father,
-    mousedownHandler,
   }: {
     paper: RaphaelPaper,
     id: string,
@@ -44,7 +50,6 @@ class Node {
     x?: number,
     y?: number,
     father: Node | null,
-    mousedownHandler?: (node: Node) => void;
   }) {
     this.paper = paper;
     this.id = id;
@@ -57,15 +62,36 @@ class Node {
     if (x !== undefined || y !== undefined) {
       this.edgeShape = this.createEdge();
     }
+  }
 
-    // todo mousedown统一管理
-    mousedownHandler && this.nodeShape.mousedown((e: MouseEvent) => {
-      const depthType = this.getDepthType();
-      if (depthType !== DepthType.root) {
-        e.stopPropagation();
-      }
-      mousedownHandler(this);
-    });
+  // todo 必须保证父子关系已经设置好
+  public setDrag(): void {
+    if (this.getDepthType() === DepthType.root) {
+      return;
+    }
+
+    // todo
+    this.dragHandler = new Drag(this);
+  }
+
+  // todo 是否暴露解除绑定事件的方法
+  public mousedown(callback: MousedownCallback) {
+    this.nodeShape.mousedown(callback);
+    this.mousedownHandlers.push(callback);
+  }
+
+  public mousemove(callback: MousemoveCallback) {
+    this.nodeShape.mousemove(callback);
+    this.mousemoveHandlers.push(callback);
+  }
+
+  public mouseup(callback: MouseupCallback) {
+    this.nodeShape.mouseup(callback);
+    this.mouseupHandlers.push(callback);
+  }
+
+  public drag(...params: DragCallbackList) {
+    this.nodeShape.drag(...params);
   }
 
   // todo 取个好听点的名字？还有如果要插入到前面或者中间怎么办？
@@ -137,8 +163,11 @@ class Node {
     node.nodeShape.remove();
     node.edgeShape?.remove();
 
-    // todo 删除事件 包括mousedown等
-    // this.nodeShape.unmousedown()
+    // 删除事件
+    this.mousedownHandlers.forEach((handler) => this.nodeShape.unmousedown(handler));
+    this.mousemoveHandlers.forEach((handler) => this.nodeShape.unmousemove(handler));
+    this.mouseupHandlers.forEach((handler) => this.nodeShape.unmouseup(handler));
+    this.nodeShape.undrag();
 
     node.children?.forEach((child) => this.removeAll(child));
   }
@@ -149,6 +178,41 @@ class Node {
 
   public unSelect(): void {
     this.nodeShape.unSelect();
+  }
+
+  // todo 样式shape透传是不是不太好？
+  public overlay(): void {
+    this.nodeShape.overlay();
+  }
+
+  public unOverlay(): void {
+    this.nodeShape.unOverlay();
+  }
+
+  public opacity(): void {
+    this.nodeShape.opacity();
+  }
+
+  public unOpacity(): void {
+    this.nodeShape.unOpacity();
+  }
+
+  public opacityAll(): void {
+    this.opacityAllInner(this);
+  }
+
+  private opacityAllInner(node: Node): void {
+    node.nodeShape.opacity();
+    node.children?.forEach((child) => this.opacityAllInner(child));
+  }
+
+  public unOpacityAll(): void {
+    this.unOpacityAllInner(this);
+  }
+
+  private unOpacityAllInner(node: Node): void {
+    node.nodeShape.unOpacity();
+    node.children?.forEach((child) => this.unOpacityAllInner(child));
   }
 
   public setLabel(label: string): void {
