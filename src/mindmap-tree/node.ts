@@ -76,15 +76,15 @@ class Node {
     node.depth = depth;
     node.direction = direction;
 
+    console.log('node---', node, depth, direction);
+
     console.log('oldDepthType', oldDepthType, newDepthType);
     if (oldDepthType !== newDepthType) {
-      // todo 是不是不直接拿到属性比较好？
+      node.nodeShape.remove();
       node.nodeShape = this.createNode();
       node.edgeShape?.remove();
       node.edgeShape = this.createEdge();
     }
-
-
 
     node.children?.forEach((child) => this.resetAllInner(child, depth + 1, direction));
   }

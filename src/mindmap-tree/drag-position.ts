@@ -14,7 +14,7 @@ class DragPosition {
 
   // 删除旧父节点的children
   private remove() {
-    const oldFather = this.node.father;  
+    const oldFather = this.node.father;
 
     const removeIndex = oldFather?.children?.findIndex((node) => node.id === this.node.id)
     if (removeIndex !== undefined && removeIndex > -1) {
@@ -26,16 +26,15 @@ class DragPosition {
 
   // 父节点变为newFather，增加newFather的children
   private add() {
+    this.node.setFather(this.newFather);
+    this.newFather.children?.push(this.node);
+
     // todo 后面处理root的方向
     const direction = this.newFather.direction || Direction.RIGHT;
     this.node.resetAll(this.newFather.depth + 1, direction);
 
-    this.node.setFather(this.newFather);
-    this.newFather.children?.push(this.node);
-
     this.position.setPosition(direction!);
   }
-
 }
 
 export default DragPosition;
