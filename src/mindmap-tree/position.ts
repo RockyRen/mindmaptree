@@ -81,10 +81,13 @@ class AreaHeight {
 
 class Position {
   public constructor(
-    private readonly root: Node
+    private readonly root: Node | null
   ) {}
 
   public setPosition(direction: Direction): void {
+    if (!this.root) {
+      return;
+    }
     const areaHeightHandler = new AreaHeight();
     this.setPositionInner(this.root, direction, areaHeightHandler);
   }

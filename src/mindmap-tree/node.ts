@@ -8,7 +8,7 @@ import { NodeShape, MousedownCallback, MousemoveCallback, MouseupCallback, DragC
 import { Direction } from './types';
 import { getDepthType, DepthType } from './helper';
 import Drag from './drag';
-import Position from './position';
+// import Position from './position';
 
 // todo 如何解决多态对象的类型问题？有些属性只有那个对象有
 type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
@@ -28,7 +28,7 @@ class Node {
   private mousedownHandlers: MousedownCallback[] = [];
   private mousemoveHandlers: MousemoveCallback[] = [];
   private mouseupHandlers: MouseupCallback[] = [];
-  private dragHandler?: Drag;
+  private readonly dragHandler: Drag;
 
   // todo 是否用null？还是undefined？
   public father: Node | null = null;
@@ -63,6 +63,8 @@ class Node {
     if (x !== undefined || y !== undefined) {
       this.edgeShape = this.createEdge();
     }
+
+    this.dragHandler = new Drag(this);
   }
 
   public resetAll(depth: number, direction: Direction) {
@@ -76,9 +78,6 @@ class Node {
     node.depth = depth;
     node.direction = direction;
 
-    console.log('node---', node, depth, direction);
-
-    console.log('oldDepthType', oldDepthType, newDepthType);
     if (oldDepthType !== newDepthType) {
       node.nodeShape.remove();
       node.nodeShape = this.createNode();
@@ -93,30 +92,25 @@ class Node {
     this.father = newFather;
   }
 
-  // public changeFather(newFather: Node) {
-  //   // todo 有没可能有内存泄露问题？
-  //   // 改变父子关系：父节点变为newFather，删除旧父节点的children，增加新父节点的children
+  public getRoot(): Node | null {
+    let root: Node | null = this;
 
-  //   // todo 改变depth direction nodeShape edgeShape
-  //   const oldIndex = this.father?.children?.findIndex((node) => node.id === this.id)
-  //   if (oldIndex !== undefined && oldIndex > -1) {
-  //     this.father?.children?.splice(oldIndex, 1);
-  //   }
-
-  //   this.father = newFather;
-
-  //   newFather.children?.push(this);
-  // }
-
-  // todo 必须保证父子关系已经设置好
-  public setDrag(position: Position): void {
-    if (this.getDepthType() === DepthType.root) {
-      return;
+    while(root && root.getDepthType() !== DepthType.root) {
+      root = root.father;
     }
 
-    // todo
-    this.dragHandler = new Drag(this, position);
+    return root;
   }
+
+  // // todo 必须保证父子关系已经设置好
+  // public setDrag(position: Position): void {
+  //   if (this.getDepthType() === DepthType.root) {
+  //     return;
+  //   }
+
+  //   // todo
+  //   this.dragHandler = new Drag(this, position);
+  // }
 
   // todo 是否暴露解除绑定事件的方法
   public mousedown(callback: MousedownCallback) {
@@ -153,7 +147,6 @@ class Node {
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.nodeShape.getBBox()!;
   }
-
 
   public translateTo(x: number, y: number) {
     this.nodeShape.translateTo(x, y);
@@ -211,9 +204,13 @@ class Node {
     this.mousedownHandlers.forEach((handler) => this.nodeShape.unmousedown(handler));
     this.mousemoveHandlers.forEach((handler) => this.nodeShape.unmousemove(handler));
     this.mouseupHandlers.forEach((handler) => this.nodeShape.unmouseup(handler));
-    this.nodeShape.undrag();
+    this.dragHandler?.unbind();
 
     node.children?.forEach((child) => this.removeAll(child));
+  }
+
+  public undrag(): void {
+    this.nodeShape.undrag();
   }
 
   public select(): void {

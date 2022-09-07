@@ -1,19 +1,21 @@
+import { DepthType } from './helper';
 import Node from './node';
 import Position from './position';
 import { Direction } from './types';
 
 class DragPosition {
+  private position?: Position;
   public constructor(
     private readonly node: Node,
     private readonly newFather: Node,
-    private readonly position: Position,
   ) {
-    this.remove();
-    this.add();
+    const position = new Position(this.node.getRoot());
+    this.remove(position);
+    this.add(position);
   }
 
   // 删除旧父节点的children
-  private remove() {
+  private remove(position: Position) {
     const oldFather = this.node.father;
 
     const removeIndex = oldFather?.children?.findIndex((node) => node.id === this.node.id)
@@ -21,11 +23,11 @@ class DragPosition {
       oldFather?.children?.splice(removeIndex, 1);
     }
 
-    this.position.setPosition(this.node.direction!);
+    position.setPosition(this.node.direction!);
   }
 
   // 父节点变为newFather，增加newFather的children
-  private add() {
+  private add(position: Position) {
     this.node.setFather(this.newFather);
     this.newFather.children?.push(this.node);
 
@@ -33,8 +35,9 @@ class DragPosition {
     const direction = this.newFather.direction || Direction.RIGHT;
     this.node.resetAll(this.newFather.depth + 1, direction);
 
-    this.position.setPosition(direction!);
+    position.setPosition(direction);
   }
+
 }
 
 export default DragPosition;

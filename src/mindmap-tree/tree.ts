@@ -51,20 +51,11 @@ class Tree {
     });
 
     const rootBBox = this.root.getBBox();
-
     this.root.translateTo((containerWidth - rootBBox.width) / 2, 200);
 
     this.position = new Position(this.root);
     this.position.setPosition(Direction.LEFT);
     this.position.setPosition(Direction.RIGHT);
-
-    this.setDrag(this.root);
-  }
-
-  public setDrag(node: Node) {
-    node.setDrag(this.position);
-
-    node.children?.forEach((child) => child.setDrag(this.position));
   }
 
   public initNode({
@@ -147,8 +138,6 @@ class Tree {
 
     selection.pushChild(newNode);
 
-    newNode.setDrag(this.position);
-
     this.position.setPosition(direction);
   }
 
@@ -185,11 +174,11 @@ class Tree {
     }
 
     // todo 补回来
-    // this.selections.forEach((selection) => {
-    //   selection.unSelect();
-    // });
+    this.selections.forEach((selection) => {
+      selection.unSelect();
+    });
 
-    // node.select();
+    node.select();
 
     this.selections = [node];
 
