@@ -6,6 +6,7 @@ import { getNodeXGap, getNodeYGap, AreaHeight } from './position';
 class Position2 {
   public constructor() { }
 
+  // todo 是不是等关系改变后，传father和node会比较好？
   public moveRemove(node: Node): void {
     const father = node.father;
     if (!father) {
@@ -24,6 +25,23 @@ class Position2 {
     }
   }
 
+  public moveAddBrother(node: Node, direction: Direction): void {
+    const father = node.father;
+    if (!father) {
+      return;
+    }
+
+    const areaHeightHandler = new AreaHeight();
+    const areaHeight = areaHeightHandler.getAreaHeight(node, direction);
+
+    const moveHeight = this.getMoveHeight(node, areaHeight);
+
+    if (moveHeight > 0) {
+      // 兄弟节点移动
+      this.moveBrother(node, moveHeight);
+    }
+  }
+
   // todo 兄弟节点，front向上移动，back向下移动。然后递归father的兄弟节点
   // todo 获取当前节点的y点
   // todo 测试有多个子节点的节点的情况
@@ -33,21 +51,18 @@ class Position2 {
       return;
     }
 
+    this.moveAddBrother(node, direction);
+
+
+    // todo 递归并
     const newNodeBBox = node.getBBox();
     const fatherBBox = father?.getBBox();
 
     const areaHeightHandler = new AreaHeight();
-
     const areaHeight = areaHeightHandler.getAreaHeight(node, direction);
 
     const yGap = getNodeYGap(node.depth);
 
-    const moveHeight = this.getMoveHeight(node, areaHeight);
-
-    if (moveHeight > 0) {
-      // 兄弟节点移动
-      this.moveBrother(node, moveHeight);
-    }
 
     const nodeXGap = getNodeXGap(father.depth + 1);;
 

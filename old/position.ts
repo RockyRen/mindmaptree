@@ -1,5 +1,5 @@
-import Node from './node';
 import { DepthType, getDepthType } from './helper';
+import Node from './node';
 import { Direction } from './types';
 
 // todo 放到同一个地方
@@ -41,7 +41,8 @@ export function getNodeXGap(depth: number): number {
   return gap;
 }
 
-class AreaHeight {
+
+export class AreaHeight {
   private readonly areaHeightMap: Record<string, number> = {};
   public constructor() { }
   public getAreaHeight(node: Node, aDirection?: Direction) {
@@ -79,18 +80,18 @@ class AreaHeight {
   }
 }
 
-class Position {
-  public constructor(
-    private readonly root: Node
-  ) {}
 
-  public setPosition(direction: Direction): void {
-    const areaHeightHandler = new AreaHeight();
-    this.setPositionInner(this.root, direction, areaHeightHandler);
+// todo 重构
+class Position {
+  private readonly areaHeightHandler: AreaHeight;
+  public constructor(node: Node) {
+    this.areaHeightHandler = new AreaHeight();
+    this.initPosition(node, Direction.LEFT);
+    this.initPosition(node, Direction.RIGHT);
   }
 
-  private setPositionInner(node: Node, direction: Direction, areaHeightHandler: AreaHeight): void {
-    const areaHeight = areaHeightHandler.getAreaHeight(node, direction);
+  private initPosition(node: Node, direction: Direction): void {
+    const areaHeight = this.areaHeightHandler.getAreaHeight(node, direction);
 
     const children = node.getDirectionChildren(direction);
 
@@ -98,7 +99,7 @@ class Position {
     let startY = nodeBBox.cy - (areaHeight / 2);
 
     children.forEach((child) => {
-      const childAreaHeight = areaHeightHandler.getAreaHeight(child, direction);
+      const childAreaHeight = this.areaHeightHandler.getAreaHeight(child, direction);
       const childBBox = child.getBBox();
 
       const xGap = getNodeXGap(child.depth);
@@ -117,14 +118,17 @@ class Position {
 
       const childY = startY + (useAreaHeight / 2) - (childNodeHeight / 2);
 
-      child.translateTo(childX, childY);
+      child.show({
+        x: childX,
+        y: childY,
+      });
 
-      this.setPositionInner(child, direction, areaHeightHandler);
+      this.initPosition(child, direction);
 
       startY += childAreaHeight + getNodeYGap(child.depth);
     });
-  }
 
+  }
 }
 
 export default Position;

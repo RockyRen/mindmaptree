@@ -79,20 +79,6 @@ class Graph {
 
     this.paper = new Raphael(graphDom, containerWidth, containerHeight);
 
-    var el = this.paper.rect(10, 20, 300, 200);
-    // translate 100, 100, rotate 45°, translate -100, 0
-    // el.transform("t50,50");
-
-    // el.transform("t100,100");
-    // el.transform("t60,60");
-
-    el.translate(-99999, -99999);
-
-    el.translate(99999, 99999);
-
-    el.transform("t100,100r45t-100,0");
-
-
     // 初始化Tree后立即画图
     this.tree = new Tree({
       paper: this.paper, 

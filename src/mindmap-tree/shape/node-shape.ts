@@ -99,17 +99,33 @@ export class NodeShape {
     return diff;
   }
 
+  // todo
+  public translateTo(x: number, y: number) {
+    const {
+      x: oldX,
+      y: oldY,
+    } = this.getBBox();
 
-  public show(x?: number, y?: number) {
-    if (x !== undefined && y !== undefined) {
-      this.shapeSet.translate(-invisibleX + x, -invisibleY + y);
-    }
+    const dx = x - oldX;
+    const dy = y - oldY;
+
+    this.shapeSet.translate(dx, dy);
+
+    // if (x !== undefined && y !== undefined) {
+    //   this.shapeSet.translate(-invisibleX + x, -invisibleY + y);
+    // }
+
+    // console.log('n', this.getBBox(), x, y, oldX, oldY, dx, dy);
     this.shapeSet.show();
   }
 
-  public hide() {
-    this.shapeSet.hide();
-  }
+  // public show(): void {
+
+  // }
+
+  // public hide(): void {
+  //   this.shapeSet.hide();
+  // }
 
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.rectShape.getBBox();

@@ -8,6 +8,7 @@ import { NodeShape, MousedownCallback, MousemoveCallback, MouseupCallback, DragC
 import { Direction } from './types';
 import { getDepthType, DepthType } from './helper';
 import Drag from './drag';
+import Position from './position';
 
 // todo 如何解决多态对象的类型问题？有些属性只有那个对象有
 type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
@@ -18,10 +19,10 @@ type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
 class Node {
   private readonly paper: RaphaelPaper;
   public readonly id: string;
-  public readonly depth: number;
-  public readonly direction: Direction | null;
+  public depth: number;
+  public direction: Direction | null;
   // 这么多public真的好吗？
-  public readonly nodeShape: NodeShape;
+  public nodeShape: NodeShape;
   public label: string;
   private edgeShape?: EdgeShape;
   private mousedownHandlers: MousedownCallback[] = [];
@@ -30,7 +31,7 @@ class Node {
   private dragHandler?: Drag;
 
   // todo 是否用null？还是undefined？
-  public readonly father: Node | null = null;
+  public father: Node | null = null;
   public children?: Node[];
   public constructor({
     paper,
@@ -64,14 +65,57 @@ class Node {
     }
   }
 
+  public resetAll(depth: number, direction: Direction) {
+    this.resetAllInner(this, depth, direction);
+  }
+
+  public resetAllInner(node: Node, depth: number, direction: Direction) {
+    const oldDepthType = getDepthType(node.depth);
+    const newDepthType = getDepthType(depth);
+
+    node.depth = depth;
+    node.direction = direction;
+
+    console.log('oldDepthType', oldDepthType, newDepthType);
+    if (oldDepthType !== newDepthType) {
+      // todo 是不是不直接拿到属性比较好？
+      node.nodeShape = this.createNode();
+      node.edgeShape?.remove();
+      node.edgeShape = this.createEdge();
+    }
+
+
+
+    node.children?.forEach((child) => this.resetAllInner(child, depth + 1, direction));
+  }
+
+  public setFather(newFather: Node): void {
+    this.father = newFather;
+  }
+
+  // public changeFather(newFather: Node) {
+  //   // todo 有没可能有内存泄露问题？
+  //   // 改变父子关系：父节点变为newFather，删除旧父节点的children，增加新父节点的children
+
+  //   // todo 改变depth direction nodeShape edgeShape
+  //   const oldIndex = this.father?.children?.findIndex((node) => node.id === this.id)
+  //   if (oldIndex !== undefined && oldIndex > -1) {
+  //     this.father?.children?.splice(oldIndex, 1);
+  //   }
+
+  //   this.father = newFather;
+
+  //   newFather.children?.push(this);
+  // }
+
   // todo 必须保证父子关系已经设置好
-  public setDrag(): void {
+  public setDrag(position: Position): void {
     if (this.getDepthType() === DepthType.root) {
       return;
     }
 
     // todo
-    this.dragHandler = new Drag(this);
+    this.dragHandler = new Drag(this, position);
   }
 
   // todo 是否暴露解除绑定事件的方法
@@ -110,9 +154,9 @@ class Node {
     return this.nodeShape.getBBox()!;
   }
 
-  // todo 搞清楚show和tranlate的x y关系
-  public show({ x = 0, y = 0 }: { x?: number, y?: number }): void {
-    this.nodeShape.show(x, y);
+
+  public translateTo(x: number, y: number) {
+    this.nodeShape.translateTo(x, y);
 
     this.edgeShape?.remove();
     this.edgeShape = this.createEdge();

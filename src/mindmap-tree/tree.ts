@@ -1,9 +1,8 @@
 import Node from './node';
 import { RaphaelPaper } from 'raphael';
-import Position from './position';
-import Position2 from './position2';
 import { Direction } from './types';
 import { DepthType, generateId } from './helper';
+import Position from './position';
 
 export interface NodeData {
   id: string;
@@ -20,6 +19,7 @@ class Tree {
   private readonly paper: RaphaelPaper;
   private readonly root: Node;
   private selections: Node[] = [];
+  private readonly position: Position;
   private readonly onLabelChange: (label: string) => void;
   public constructor({
     paper,
@@ -52,20 +52,19 @@ class Tree {
 
     const rootBBox = this.root.getBBox();
 
-    this.root.show({
-      x: (containerWidth - rootBBox.width) / 2,
-      y: 200,
-    });
+    this.root.translateTo((containerWidth - rootBBox.width) / 2, 200);
 
-    new Position(this.root);
+    this.position = new Position(this.root);
+    this.position.setPosition(Direction.LEFT);
+    this.position.setPosition(Direction.RIGHT);
 
     this.setDrag(this.root);
   }
 
   public setDrag(node: Node) {
-    node.setDrag();
+    node.setDrag(this.position);
 
-    node.children?.forEach((child) => child.setDrag());
+    node.children?.forEach((child) => child.setDrag(this.position));
   }
 
   public initNode({
@@ -148,10 +147,9 @@ class Tree {
 
     selection.pushChild(newNode);
 
-    newNode.setDrag();
+    newNode.setDrag(this.position);
 
-    const position2 = new Position2();
-    position2.moveAdd(newNode, direction);
+    this.position.setPosition(direction);
   }
 
   // todo 可删除多个节点，后面再做
@@ -163,10 +161,9 @@ class Tree {
 
     const selection = this.selections[0];
 
-    const position2 = new Position2();
-    position2.moveRemove(selection);
-
     selection.remove();
+    
+    this.position.setPosition(selection.direction!);
 
     this.selections = [];
   }
