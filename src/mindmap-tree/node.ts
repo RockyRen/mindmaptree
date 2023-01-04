@@ -1,14 +1,13 @@
-import { RaphaelPaper, RaphaelAxisAlignedBoundingBox } from 'raphael';
+import { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelSet } from 'raphael';
 import { createFirstNodeShape } from './shape/first-node-shape';
 import { createGrandchildNodeShape } from './shape/grandchild-node-shape';
 import { createRootNodeShape } from './shape/root-node-shape';
 import { createFirstEdgeShape, FirstEdgeShape } from './shape/first-edge-shape';
 import { createGrandchildEdgeShape, GrandchildEdgeShape } from './shape/grandchild-edge-shape';
-import { NodeShape, MousedownCallback, MousemoveCallback, MouseupCallback, DragCallbackList } from './shape/node-shape';
+import { NodeShape, MousedownCallback, DragCallbackList } from './shape/node-shape';
 import { Direction } from './types';
 import { getDepthType, DepthType } from './helper';
 import Drag from './drag';
-// import Position from './position';
 
 // todo 如何解决多态对象的类型问题？有些属性只有那个对象有
 type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
@@ -26,8 +25,6 @@ class Node {
   public label: string;
   private edgeShape?: EdgeShape;
   private mousedownHandlers: MousedownCallback[] = [];
-  private mousemoveHandlers: MousemoveCallback[] = [];
-  private mouseupHandlers: MouseupCallback[] = [];
   private readonly dragHandler: Drag;
 
   // todo 是否用null？还是undefined？
@@ -67,6 +64,7 @@ class Node {
     this.dragHandler = new Drag(this);
   }
 
+  // todo 名字
   public resetAll(depth: number, direction: Direction) {
     this.resetAllInner(this, depth, direction);
   }
@@ -102,30 +100,10 @@ class Node {
     return root;
   }
 
-  // // todo 必须保证父子关系已经设置好
-  // public setDrag(position: Position): void {
-  //   if (this.getDepthType() === DepthType.root) {
-  //     return;
-  //   }
-
-  //   // todo
-  //   this.dragHandler = new Drag(this, position);
-  // }
-
   // todo 是否暴露解除绑定事件的方法
   public mousedown(callback: MousedownCallback) {
     this.nodeShape.mousedown(callback);
     this.mousedownHandlers.push(callback);
-  }
-
-  public mousemove(callback: MousemoveCallback) {
-    this.nodeShape.mousemove(callback);
-    this.mousemoveHandlers.push(callback);
-  }
-
-  public mouseup(callback: MouseupCallback) {
-    this.nodeShape.mouseup(callback);
-    this.mouseupHandlers.push(callback);
   }
 
   public drag(...params: DragCallbackList) {
@@ -164,7 +142,8 @@ class Node {
 
   // todo 带着子节点移动
   // todo 改成非对象
-  public translateWithChild(x: number, y: number): void {
+  public translateAll(x: number, y: number): void {
+
     this.translateWithChildInner(this, x, y);
   }
 
@@ -176,6 +155,7 @@ class Node {
       this.translateWithChildInner(child, x, y);
     })
   }
+
 
   public getDepthType(): DepthType {
     return getDepthType(this.depth);
@@ -189,7 +169,8 @@ class Node {
       return;
     }
 
-    const index = brothers.findIndex((brother) => this.id === brother.id);
+    // 删除关系
+    const index = brothers?.findIndex((brother) => this.id === brother.id);
     brothers.splice(index, 1);
 
     this.removeAll(this);
@@ -202,58 +183,45 @@ class Node {
 
     // 删除事件
     this.mousedownHandlers.forEach((handler) => this.nodeShape.unmousedown(handler));
-    this.mousemoveHandlers.forEach((handler) => this.nodeShape.unmousemove(handler));
-    this.mouseupHandlers.forEach((handler) => this.nodeShape.unmouseup(handler));
     this.dragHandler?.unbind();
 
     node.children?.forEach((child) => this.removeAll(child));
   }
 
-  public undrag(): void {
-    this.nodeShape.undrag();
-  }
 
-  public select(): void {
-    this.nodeShape.select();
-  }
+  // todo 样式名字是不是改一改比较好？
+  public cloneShape = (): RaphaelSet => this.nodeShape.clone();
 
-  public unSelect(): void {
-    this.nodeShape.unSelect();
-  }
+  public undrag = (): void => this.nodeShape.undrag();
 
-  // todo 样式shape透传是不是不太好？
-  public overlay(): void {
-    this.nodeShape.overlay();
-  }
+  public select = (): void => this.nodeShape.select();
 
-  public unOverlay(): void {
-    this.nodeShape.unOverlay();
-  }
+  public unSelect = (): void => this.nodeShape.unSelect();
 
-  public opacity(): void {
-    this.nodeShape.opacity();
-  }
+  public overlay = (): void => this.nodeShape.overlay();
 
-  public unOpacity(): void {
-    this.nodeShape.unOpacity();
-  }
+  public unOverlay = (): void => this.nodeShape.unOverlay();
+
+  public opacity = (): void => this.nodeShape.opacity();
+
+  public unOpacity = (): void => this.nodeShape.unOpacity();
 
   public opacityAll(): void {
-    this.opacityAllInner(this);
-  }
+    const opacityInner = (node: Node): void => {
+      node.opacity(); 
+      node.children?.forEach((child) => opacityInner(child));
+    }
 
-  private opacityAllInner(node: Node): void {
-    node.nodeShape.opacity();
-    node.children?.forEach((child) => this.opacityAllInner(child));
+    opacityInner(this);
   }
 
   public unOpacityAll(): void {
-    this.unOpacityAllInner(this);
-  }
+    const unOpacityInner = (node: Node): void => {
+      node.nodeShape.unOpacity();
+      node.children?.forEach((child) => unOpacityInner(child));
+    }
 
-  private unOpacityAllInner(node: Node): void {
-    node.nodeShape.unOpacity();
-    node.children?.forEach((child) => this.unOpacityAllInner(child));
+    unOpacityInner(this);
   }
 
   public setLabel(label: string): void {
@@ -262,13 +230,13 @@ class Node {
     const depthType = this.getDepthType();
     if (depthType === DepthType.root) {
       this.children?.forEach((child) => {
-        child.translateWithChild(child.direction! * offset, 0);
+        child.translateAll(child.direction! * offset, 0);
       });
     } else {
       const direction = this.direction!;
       this.translate(direction * offset, 0);
       this.children?.forEach((child) => {
-        child.translateWithChild(direction * offset * 2, 0)
+        child.translateAll(direction * offset * 2, 0)
       });
     }
 

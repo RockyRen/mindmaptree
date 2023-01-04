@@ -60,7 +60,7 @@ const nodeDataList = [
   },
 ];
 
-
+// 包含背景的graph
 class Graph {
   private readonly paper: RaphaelPaper;
   private tree: Tree;
@@ -68,7 +68,6 @@ class Graph {
     containerDom,
     onLabelChange
   }: GraphOptions) {
-
     const graphDom = this.initGraphElement(containerDom);
     const containerWidth = containerDom.clientWidth;
     const containerHeight = containerDom.clientHeight;

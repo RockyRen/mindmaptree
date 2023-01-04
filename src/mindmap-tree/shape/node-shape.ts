@@ -11,13 +11,7 @@ interface CustomAttr {
 
 // todo 这里可以统一一个泛型
 export type MousedownCallback = Parameters<RaphaelBaseElement['mousedown']>[0];
-export type MousemoveCallback = Parameters<RaphaelBaseElement['mousemove']>[0];
-export type MouseupCallback = Parameters<RaphaelBaseElement['mouseup']>[0];
-
 export type UnMousedownCallback = Parameters<RaphaelBaseElement['unmousedown']>[0];
-export type UnMousemoveCallback = Parameters<RaphaelBaseElement['unmousemove']>[0];
-export type UnMouseupCallback = Parameters<RaphaelBaseElement['unmouseup']>[0];
-
 export type DragCallbackList = Parameters<RaphaelBaseElement['drag']>;
 
 export interface NodeShapeBaseOptions {
@@ -111,21 +105,9 @@ export class NodeShape {
 
     this.shapeSet.translate(dx, dy);
 
-    // if (x !== undefined && y !== undefined) {
-    //   this.shapeSet.translate(-invisibleX + x, -invisibleY + y);
-    // }
-
-    // console.log('n', this.getBBox(), x, y, oldX, oldY, dx, dy);
+    // todo
     this.shapeSet.show();
   }
-
-  // public show(): void {
-
-  // }
-
-  // public hide(): void {
-  //   this.shapeSet.hide();
-  // }
 
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.rectShape.getBBox();
@@ -175,24 +157,8 @@ export class NodeShape {
     this.shapeSet.mousedown(callback);
   }
 
-  public mousemove(callback: MousemoveCallback): void {
-    this.shapeSet.mousemove(callback);
-  }
-
-  public mouseup(callback: MouseupCallback): void {
-    this.shapeSet.mouseup(callback);
-  }
-
   public unmousedown(callback: UnMousedownCallback): void {
     this.shapeSet.unmousedown(callback);
-  }
-
-  public unmousemove(callback: UnMousemoveCallback): void {
-    this.shapeSet.unmousemove(callback);
-  }
-
-  public unmouseup(callback: UnMouseupCallback): void {
-    this.shapeSet.unmouseup(callback);
   }
 
   public drag(...params: DragCallbackList): void {

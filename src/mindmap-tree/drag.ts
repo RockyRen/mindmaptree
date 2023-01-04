@@ -27,7 +27,7 @@ class Drag {
 
   private start = (): void => {
     this.node.opacityAll();
-    this.clonedNodeShapeSet = this.node.nodeShape.clone();
+    this.clonedNodeShapeSet = this.node.cloneShape();
     this.clonedNodeShapeSet.attr({
       opacity: 0.4,
     });

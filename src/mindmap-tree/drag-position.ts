@@ -4,7 +4,6 @@ import Position from './position';
 import { Direction } from './types';
 
 class DragPosition {
-  private position?: Position;
   public constructor(
     private readonly node: Node,
     private readonly newFather: Node,

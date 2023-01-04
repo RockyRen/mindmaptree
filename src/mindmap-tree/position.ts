@@ -97,7 +97,7 @@ class Position {
 
     const children = node.getDirectionChildren(direction);
 
-    let nodeBBox = node.getBBox();
+    const nodeBBox = node.getBBox();
     let startY = nodeBBox.cy - (areaHeight / 2);
 
     children.forEach((child) => {
@@ -120,6 +120,7 @@ class Position {
 
       const childY = startY + (useAreaHeight / 2) - (childNodeHeight / 2);
 
+      // 关键的移动
       child.translateTo(childX, childY);
 
       this.setPositionInner(child, direction, areaHeightHandler);

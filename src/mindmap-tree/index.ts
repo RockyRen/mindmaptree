@@ -5,6 +5,7 @@ interface MindmapTreeOptions {
   onLabelChange: (label: string) => void;
 }
 
+// todo 将来整合工具栏、键盘事件和里面的graph
 class MindmapTree {
   private graph: Graph;
   public constructor(private options: MindmapTreeOptions) {
