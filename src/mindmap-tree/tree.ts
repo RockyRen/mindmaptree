@@ -1,39 +1,32 @@
 import Node from './node';
 import { RaphaelPaper } from 'raphael';
-import { Direction } from './types';
+import { Direction, NodeData } from './types';
 import { DepthType, generateId } from './helper';
 import Position from './position';
 
-export interface NodeData {
-  id: string;
-  children: string[];
-  label: string;
-  direction: Direction | null;
-  isRoot: boolean;
-}
-
-// 可以做tree的递归操作
-// todo 承载树的特殊功能：根节点、树叶节点；增加节点、删除节点
-// todo 属性是否有值的前后顺序问题：有些属性在前置处理后一定会存在的。
+// 思维导图树类，操作节点之间的关系
 class Tree {
   private readonly paper: RaphaelPaper;
   private readonly root: Node;
-  private selections: Node[] = [];
   private readonly position: Position;
   private readonly onLabelChange: (label: string) => void;
+
+  private selections: Node[] = [];
   public constructor({
     paper,
-    nodeDataList,
+    data,
     containerWidth,
     onLabelChange,
   }: {
     paper: RaphaelPaper;
-    nodeDataList: NodeData[];
+    data?: NodeData[];
     containerWidth: number;
     onLabelChange: (label: string) => void;
   }) {
     this.paper = paper;
     this.onLabelChange = onLabelChange;
+
+    const nodeDataList = data || [];
 
     const rootData = nodeDataList.find((item) => item.isRoot) || {
       id: generateId(),
@@ -46,70 +39,17 @@ class Tree {
     this.root = this.initNode({
       currentData: rootData,
       nodeDataList,
-      depth: 0, // todo 魔数
+      depth: 0,
       father: null,
     });
 
+    // 初始化根节点的位置
     const rootBBox = this.root.getBBox();
     this.root.translateTo((containerWidth - rootBBox.width) / 2, 200);
 
     this.position = new Position(this.root);
     this.position.setPosition(Direction.LEFT);
     this.position.setPosition(Direction.RIGHT);
-  }
-
-  private createNewNode({
-    node,
-    depth,
-    direction,
-    father,
-  }: {
-    node: Node;
-    depth: number;
-    direction: Direction;
-    father: Node;
-  }): Node {
-    return this.createNewNodeInner({
-      node,
-      depth,
-      direction,
-      father, 
-    });
-  }
-
-  private createNewNodeInner({
-    node,
-    depth,
-    direction,
-    father,
-  }: {
-    node: Node;
-    depth: number;
-    direction: Direction;
-    father: Node;
-  }): Node {
-    const newNode = new Node({
-      paper: this.paper,
-      // id: node.id,
-      id: `${+new Date()}`,
-      depth,
-      label: node.label,
-      direction,
-      father,
-      createNewNode: this.createNewNode.bind(this),
-    });
-
-    node.children.forEach((oldChild) => {
-      const newChild = this.createNewNodeInner({
-        node: oldChild,
-        depth: depth + 1,
-        direction,
-        father: newNode
-      });
-      newNode.pushChild(newChild);
-    });
-
-    return newNode;
   }
 
   public initNode({
@@ -124,19 +64,12 @@ class Tree {
     father: Node | null,
   }): Node {
     // 初始化的时候，father可以确定已初始化，children还没被初始化
-    const node = new Node({
-      paper: this.paper,
+    const node = this.createSingleNode({
       id: currentData.id,
       depth,
       label: currentData.label,
       direction: currentData.direction,
       father,
-      createNewNode: this.createNewNode.bind(this),
-    });
-
-    // todo 这个mousedown应该在一个统一的createNode里面做
-    node.mousedown((event: MouseEvent) => {
-      this.selectNode(node, event);
     });
 
     currentData.children.forEach((childId) => {
@@ -162,6 +95,7 @@ class Tree {
 
     const selection = this.selections[0];
 
+    // 如果节点时根节点，则两边的节点平衡增加
     let direction = selection.direction;
     if (!direction) {
       const countMap = selection.children?.reduce((countMap: Record<string, number>, child) => {
@@ -180,49 +114,38 @@ class Tree {
       direction = countMap.right > countMap.left ? Direction.LEFT : Direction.RIGHT;
     }
 
-    const newNode = new Node({
-      paper: this.paper,
-      id: generateId(),
+    const newNode = this.createSingleNode({
       depth: selection.depth + 1,
       label: '子主题',
       direction,
       father: selection,
-      createNewNode: this.createNewNode.bind(this),
-    });
-
-    newNode.mousedown((event: MouseEvent) => {
-      this.selectNode(newNode, event);
     });
 
     selection.pushChild(newNode);
-
     this.position.setPosition(direction);
   }
 
   // todo 可删除多个节点，后面再做
   // todo 删除后选择下一个节点
   public removeNode(): void {
-    if (this.selections.length === 0) {
-      return;
-    }
+    if (this.selections.length === 0) return;
 
     const selection = this.selections[0];
-
     selection.remove();
 
     this.position.setPosition(selection.direction!);
-
     this.selections = [];
   }
 
   public setLabel(label: string): void {
-    if (this.selections.length !== 1) {
-      return;
-    }
-
+    if (this.selections.length !== 1) return;
     const selection = this.selections[0];
-
     selection.setLabel(label);
+  }
+
+  // todo 
+  public getData() {
+
   }
 
   private selectNode(node: Node, event: MouseEvent): void {
@@ -243,6 +166,87 @@ class Tree {
     this.onLabelChange(node.label);
   }
 
+  private createNewNode({
+    node,
+    depth,
+    direction,
+    father,
+  }: {
+    node: Node;
+    depth: number;
+    direction: Direction;
+    father: Node;
+  }): Node {
+    return this.createNewNodeInner({
+      node,
+      depth,
+      direction,
+      father,
+    });
+  }
+
+  private createNewNodeInner({
+    node,
+    depth,
+    direction,
+    father,
+  }: {
+    node: Node;
+    depth: number;
+    direction: Direction;
+    father: Node;
+  }): Node {
+    const newNode = this.createSingleNode({
+      depth,
+      label: node.label,
+      direction,
+      father,
+    });
+
+    node.children.forEach((oldChild) => {
+      const newChild = this.createNewNodeInner({
+        node: oldChild,
+        depth: depth + 1,
+        direction,
+        father: newNode
+      });
+      newNode.pushChild(newChild);
+    });
+
+    return newNode;
+  }
+
+  private createSingleNode({
+    id,
+    depth,
+    label,
+    direction,
+    father,
+  }: {
+    id?: string;
+    depth: number;
+    label: string;
+    direction: Direction | null;
+    father: Node | null;
+  }): Node {
+    const newNode = new Node({
+      paper: this.paper,
+      id: id || generateId(),
+      depth,
+      label,
+      direction,
+      father,
+      createNewNode: this.createNewNode.bind(this),
+    });
+
+    newNode.mousedown((event: MouseEvent) => {
+      this.selectNode(newNode, event);
+    });
+
+    // todo 在这里用Drag初始化
+
+    return newNode;
+  }
 
 }
 

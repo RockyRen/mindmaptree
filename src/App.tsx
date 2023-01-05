@@ -1,9 +1,62 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import MindemapTree from './mindmap-tree/index';
+import { Direction } from './mindmap-tree/types';
 import './index.less';
 
 // todo
 let hasMindmapTree = false;
+
+const data = [
+  {
+    id: '111',
+    children: ['222', '333', '444', '777'],
+    label: '中心主题',
+    direction: null,
+    isRoot: true,
+  },
+  {
+    id: '222',
+    children: [],
+    label: '任务2',
+    direction: Direction.RIGHT,
+    isRoot: false,
+  },
+  {
+    id: '333',
+    children: [],
+    label: '任务3',
+    direction: Direction.LEFT,
+    isRoot: false,
+  },
+  {
+    id: '444',
+    children: ['555'],
+    label: '任务4',
+    direction: Direction.RIGHT,
+    isRoot: false,
+  },
+  {
+    id: '555',
+    children: [],
+    label: '任务5',
+    direction: Direction.RIGHT,
+    isRoot: false,
+  },
+  {
+    id: '666',
+    children: [],
+    label: '任务6',
+    direction: Direction.RIGHT,
+    isRoot: false,
+  },
+  {
+    id: '777',
+    children: [],
+    label: '任务7',
+    direction: Direction.RIGHT,
+    isRoot: false,
+  },
+];
 
 // todo 重构
 const App = (): JSX.Element => {
@@ -14,7 +67,7 @@ const App = (): JSX.Element => {
     if (!hasMindmapTree) {
       const mindmapTreeTemp = new MindemapTree({
         container: '#mindmap-container',
-        // todo 后面都不知道需不需要这个？
+        data,
         onLabelChange: function(label: string) {
           setInputText(label);
         },
