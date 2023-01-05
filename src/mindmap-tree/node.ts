@@ -65,7 +65,10 @@ class Node {
       this.edgeShape = this.createEdge();
     }
 
-    this.dragHandler = new Drag(this, createNewNode);
+    if (this.depth !== DepthType.root) {
+      this.dragHandler = new Drag(this, createNewNode);
+    }
+  
   }
 
   // todo 名字

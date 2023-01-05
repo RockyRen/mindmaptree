@@ -1,3 +1,4 @@
+// todo 按照深度判断是否是根节点可能并不准确，因为可能有孤岛节点
 export enum DepthType {
   root = 0,
   firstLevel,

@@ -1,4 +1,3 @@
-import { DepthType } from './helper';
 import Node from './node';
 import Position from './position';
 import { Direction } from './types';
@@ -12,7 +11,6 @@ class DragPosition {
     const position = new Position(this.node.getRoot());
     this.init(position);
   }
-
 
   // todo 重新创建节点
   // depth可能会改变
