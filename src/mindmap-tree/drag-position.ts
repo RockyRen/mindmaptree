@@ -1,19 +1,18 @@
 import Node from './node';
 import Position from './position';
 import { Direction } from './types';
+import type { CreateSingleNodeFunc } from './tree';
 
 class DragPosition {
   public constructor(
     private readonly node: Node,
     private readonly newFather: Node,
-    private readonly createNewNode: Function,
+    private readonly createSingleNode: CreateSingleNodeFunc,
   ) {
     const position = new Position(this.node.getRoot());
     this.init(position);
   }
 
-  // todo 重新创建节点
-  // depth可能会改变
   private init(position: Position) {
     const direction = this.newFather.direction || Direction.RIGHT;
 
@@ -36,6 +35,37 @@ class DragPosition {
       position.setPosition(Direction.LEFT);
       position.setPosition(Direction.RIGHT);
     }
+  }
+
+  private createNewNode({
+    node,
+    depth,
+    direction,
+    father,
+  }: {
+    node: Node;
+    depth: number;
+    direction: Direction;
+    father: Node;
+  }): Node {
+    const newNode = this.createSingleNode({
+      depth,
+      label: node.label,
+      direction,
+      father,
+    });
+
+    node.children.forEach((oldChild) => {
+      const newChild = this.createNewNode({
+        node: oldChild,
+        depth: depth + 1,
+        direction,
+        father: newNode
+      });
+      newNode.pushChild(newChild);
+    });
+
+    return newNode;
   }
 }
 

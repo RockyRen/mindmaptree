@@ -1,8 +1,20 @@
 import Node from './node';
 import { RaphaelPaper } from 'raphael';
 import { Direction, NodeData } from './types';
-import { DepthType, generateId } from './helper';
+import { DepthType, generateId, getDepthType } from './helper';
 import Position from './position';
+
+export interface CreateSingleNodeOptions {
+  id?: string;
+  depth: number;
+  label: string;
+  direction: Direction | null;
+  father: Node | null;
+}
+
+export interface CreateSingleNodeFunc {
+  (options: CreateSingleNodeOptions): Node;
+}
 
 // 思维导图树类，操作节点之间的关系
 class Tree {
@@ -166,69 +178,14 @@ class Tree {
     this.onLabelChange(node.label);
   }
 
-  private createNewNode({
-    node,
-    depth,
-    direction,
-    father,
-  }: {
-    node: Node;
-    depth: number;
-    direction: Direction;
-    father: Node;
-  }): Node {
-    return this.createNewNodeInner({
-      node,
-      depth,
-      direction,
-      father,
-    });
-  }
-
-  private createNewNodeInner({
-    node,
-    depth,
-    direction,
-    father,
-  }: {
-    node: Node;
-    depth: number;
-    direction: Direction;
-    father: Node;
-  }): Node {
-    const newNode = this.createSingleNode({
-      depth,
-      label: node.label,
-      direction,
-      father,
-    });
-
-    node.children.forEach((oldChild) => {
-      const newChild = this.createNewNodeInner({
-        node: oldChild,
-        depth: depth + 1,
-        direction,
-        father: newNode
-      });
-      newNode.pushChild(newChild);
-    });
-
-    return newNode;
-  }
-
+  // 创建新的node应该使用这个方法
   private createSingleNode({
     id,
     depth,
     label,
     direction,
     father,
-  }: {
-    id?: string;
-    depth: number;
-    label: string;
-    direction: Direction | null;
-    father: Node | null;
-  }): Node {
+  }: CreateSingleNodeOptions): Node {
     const newNode = new Node({
       paper: this.paper,
       id: id || generateId(),
@@ -236,14 +193,12 @@ class Tree {
       label,
       direction,
       father,
-      createNewNode: this.createNewNode.bind(this),
+      createSingleNode: this.createSingleNode.bind(this),
     });
 
     newNode.mousedown((event: MouseEvent) => {
       this.selectNode(newNode, event);
     });
-
-    // todo 在这里用Drag初始化
 
     return newNode;
   }

@@ -2,6 +2,7 @@ import Raphael, { RaphaelSet, RaphaelAxisAlignedBoundingBox } from 'raphael';
 import { DepthType } from './helper';
 import Node from './node';
 import DragPosition from './drag-position';
+import type { CreateSingleNodeFunc } from './tree';
 
 interface AddableNode {
   bbox: RaphaelAxisAlignedBoundingBox;
@@ -17,7 +18,7 @@ class Drag {
   private addableNodeList: AddableNode[] = [];
   public constructor(
     private readonly node: Node,
-    private readonly createNewNode: Function,
+    private readonly createSingleNode: CreateSingleNodeFunc,
   ) {
     node.drag(this.move, this.start, this.end);
   }
@@ -128,7 +129,7 @@ class Drag {
 
     if (this.lastOverlayNode && !isFather) {
       this.lastOverlayNode.unOverlay();
-      new DragPosition(this.node, this.lastOverlayNode, this.createNewNode);
+      new DragPosition(this.node, this.lastOverlayNode, this.createSingleNode);
     }
 
     this.clonedNodeShapeSet?.remove();

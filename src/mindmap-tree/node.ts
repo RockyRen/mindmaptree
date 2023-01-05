@@ -8,6 +8,7 @@ import { NodeShape, MousedownCallback, DragCallbackList } from './shape/node-sha
 import { Direction } from './types';
 import { getDepthType, DepthType } from './helper';
 import Drag from './drag';
+import type { CreateSingleNodeFunc } from './tree';
 
 // todo 如何解决多态对象的类型问题？有些属性只有那个对象有
 type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
@@ -40,7 +41,7 @@ class Node {
     x,
     y,
     father,
-    createNewNode,
+    createSingleNode,
   }: {
     paper: RaphaelPaper,
     id: string,
@@ -50,7 +51,7 @@ class Node {
     x?: number,
     y?: number,
     father: Node | null,
-    createNewNode: Function; // todo
+    createSingleNode: CreateSingleNodeFunc; // todo
   }) {
     this.paper = paper;
     this.id = id;
@@ -65,8 +66,9 @@ class Node {
       this.edgeShape = this.createEdge();
     }
 
-    if (this.depth !== DepthType.root) {
-      this.dragHandler = new Drag(this, createNewNode);
+
+    if (this.getDepthType() !== DepthType.root) {
+      this.dragHandler = new Drag(this, createSingleNode);
     }
   }
 
