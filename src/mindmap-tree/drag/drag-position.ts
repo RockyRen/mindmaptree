@@ -1,7 +1,7 @@
-import Node from './node';
-import Position from './position';
-import { Direction } from './types';
-import type { CreateSingleNodeFunc } from './tree';
+import Node from '../node/node';
+import Position from '../position';
+import { Direction } from '../types';
+import type { CreateSingleNodeFunc } from '../tree';
 
 class DragPosition {
   public constructor(

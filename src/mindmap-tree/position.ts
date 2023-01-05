@@ -1,4 +1,4 @@
-import Node from './node';
+import Node from './node/node';
 import { DepthType, getDepthType } from './helper';
 import { Direction } from './types';
 
@@ -121,7 +121,6 @@ class Position {
 
       const childY = startY + (useAreaHeight / 2) - (childNodeHeight / 2);
 
-      // console.log('t----', child, childX, childY);
       // 关键的移动
       child.translateTo(childX, childY);
 

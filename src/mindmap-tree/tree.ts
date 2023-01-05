@@ -1,4 +1,4 @@
-import Node from './node';
+import Node from './node/node';
 import { RaphaelPaper } from 'raphael';
 import { Direction, NodeData } from './types';
 import { DepthType, generateId, getDepthType } from './helper';
@@ -64,42 +64,6 @@ class Tree {
     this.position.setPosition(Direction.RIGHT);
   }
 
-  public initNode({
-    currentData,
-    nodeDataList,
-    depth,
-    father,
-  }: {
-    currentData: NodeData,
-    nodeDataList: NodeData[],
-    depth: number,
-    father: Node | null,
-  }): Node {
-    // 初始化的时候，father可以确定已初始化，children还没被初始化
-    const node = this.createSingleNode({
-      id: currentData.id,
-      depth,
-      label: currentData.label,
-      direction: currentData.direction,
-      father,
-    });
-
-    currentData.children.forEach((childId) => {
-      const childData = nodeDataList.find((nodeData) => nodeData.id === childId);
-      if (childData) {
-        const childNode = this.initNode({
-          currentData: childData,
-          nodeDataList,
-          depth: depth + 1,
-          father: node,
-        });
-        node.pushChild(childNode);
-      }
-    });
-
-    return node;
-  }
-
   public addNode(): void {
     if (this.selections.length !== 1) {
       return;
@@ -160,6 +124,42 @@ class Tree {
 
   }
 
+  private initNode({
+    currentData,
+    nodeDataList,
+    depth,
+    father,
+  }: {
+    currentData: NodeData,
+    nodeDataList: NodeData[],
+    depth: number,
+    father: Node | null,
+  }): Node {
+    // 初始化的时候，father可以确定已初始化，children还没被初始化
+    const node = this.createSingleNode({
+      id: currentData.id,
+      depth,
+      label: currentData.label,
+      direction: currentData.direction,
+      father,
+    });
+
+    currentData.children.forEach((childId) => {
+      const childData = nodeDataList.find((nodeData) => nodeData.id === childId);
+      if (childData) {
+        const childNode = this.initNode({
+          currentData: childData,
+          nodeDataList,
+          depth: depth + 1,
+          father: node,
+        });
+        node.pushChild(childNode);
+      }
+    });
+
+    return node;
+  }
+
   private selectNode(node: Node, event: MouseEvent): void {
     // todo 放在drag？
     if (node.getDepthType() !== DepthType.root) {
@@ -168,10 +168,10 @@ class Tree {
 
     // todo 补回来
     this.selections.forEach((selection) => {
-      selection.unSelect();
+      selection.nodeShapeHandler.unSelect();
     });
 
-    node.select();
+    node.nodeShapeHandler.select();
 
     this.selections = [node];
 
@@ -202,7 +202,6 @@ class Tree {
 
     return newNode;
   }
-
 }
 
 export default Tree;

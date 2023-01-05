@@ -1,8 +1,8 @@
 import Raphael, { RaphaelSet, RaphaelAxisAlignedBoundingBox } from 'raphael';
-import { DepthType } from './helper';
-import Node from './node';
+import { DepthType } from '../helper';
+import Node from '../node/node';
 import DragPosition from './drag-position';
-import type { CreateSingleNodeFunc } from './tree';
+import type { CreateSingleNodeFunc } from '../tree';
 
 interface AddableNode {
   bbox: RaphaelAxisAlignedBoundingBox;
@@ -20,17 +20,17 @@ class Drag {
     private readonly node: Node,
     private readonly createSingleNode: CreateSingleNodeFunc,
   ) {
-    node.drag(this.move, this.start, this.end);
+    node.nodeShapeHandler.drag(this.move, this.start, this.end);
   }
 
   public unbind(): void {
-    this.node.undrag();
+    this.node.nodeShapeHandler.undrag();
   }
 
   // todo 判断是点击还是拖拽
   private start = (): void => {
-    this.node.opacityAll();
-    this.clonedNodeShapeSet = this.node.cloneShape();
+    this.node.nodeShapeHandler.opacityAll();
+    this.clonedNodeShapeSet = this.node.nodeShapeHandler.cloneShape();
     this.clonedNodeShapeSet?.attr({
       opacity: 0.4,
     });
@@ -59,8 +59,8 @@ class Drag {
       overlayNode?.id !== this.lastOverlayNode?.id
       && !isFather
     ) {
-      overlayNode?.overlay();
-      this.lastOverlayNode?.unOverlay();
+      overlayNode?.nodeShapeHandler.overlay();
+      this.lastOverlayNode?.nodeShapeHandler.unOverlay();
     }
 
     this.lastOverlayNode = overlayNode;
@@ -122,13 +122,13 @@ class Drag {
     //   return;
     // }
 
-    this.node.unOpacityAll();
+    this.node.nodeShapeHandler.unOpacityAll();
 
     // todo 暂时不能改变同一father的变向
     const isFather = this.node.father?.id === this.lastOverlayNode?.id;
 
     if (this.lastOverlayNode && !isFather) {
-      this.lastOverlayNode.unOverlay();
+      this.lastOverlayNode.nodeShapeHandler.unOverlay();
       new DragPosition(this.node, this.lastOverlayNode, this.createSingleNode);
     }
 
