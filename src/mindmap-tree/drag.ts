@@ -30,7 +30,7 @@ class Drag {
   private start = (): void => {
     this.node.opacityAll();
     this.clonedNodeShapeSet = this.node.cloneShape();
-    this.clonedNodeShapeSet.attr({
+    this.clonedNodeShapeSet?.attr({
       opacity: 0.4,
     });
 
@@ -51,12 +51,19 @@ class Drag {
     // todo 可能有性能问题
     const overlayNode = this.getOverlayNode();
 
-    if (overlayNode?.id !== this.lastOverlayNode?.id) {
+    // todo 暂时不能改变同一father的变向
+    const isFather = this.node.father?.id === overlayNode?.id;
+
+    if (
+      overlayNode?.id !== this.lastOverlayNode?.id
+      && !isFather
+    ) {
       overlayNode?.overlay();
       this.lastOverlayNode?.unOverlay();
     }
 
     this.lastOverlayNode = overlayNode;
+
   }
 
   private getOverlayNode(): Node | undefined {
@@ -108,9 +115,18 @@ class Drag {
   }
 
   private end = (): void => {
+    // if (this.delayTimer) {
+    //   clearTimeout(this.delayTimer);
+    //   this.delayTimer = null;
+    //   return;
+    // }
+
     this.node.unOpacityAll();
 
-    if (this.lastOverlayNode) {
+    // todo 暂时不能改变同一father的变向
+    const isFather = this.node.father?.id === this.lastOverlayNode?.id;
+
+    if (this.lastOverlayNode && !isFather) {
       this.lastOverlayNode.unOverlay();
       new DragPosition(this.node, this.lastOverlayNode, this.createNewNode);
     }
@@ -125,6 +141,8 @@ class Drag {
     this.lastDy = 0;
 
     this.addableNodeList = [];
+
+    // this.delayTimer = null;
   }
 }
 

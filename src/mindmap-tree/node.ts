@@ -26,7 +26,7 @@ class Node {
   public label: string;
   private edgeShape?: EdgeShape;
   private mousedownHandlers: MousedownCallback[] = [];
-  private readonly dragHandler: Drag;
+  private readonly dragHandler?: Drag;
 
   // todo 是否用null？还是undefined？
   public father: Node | null = null;
@@ -68,7 +68,6 @@ class Node {
     if (this.depth !== DepthType.root) {
       this.dragHandler = new Drag(this, createNewNode);
     }
-  
   }
 
   // todo 名字

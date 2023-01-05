@@ -1,6 +1,6 @@
 import Raphael, { RaphaelPaper, RaphaelSet, RaphaelAxisAlignedBoundingBox } from 'raphael';
 import { Direction } from '../types';
-import { DepthType, getDepthType } from '../helper';
+// import { DepthType, getDepthType } from '../helper';
 
 interface GrandchildEdgeShapeOptions {
   paper: RaphaelPaper;
@@ -45,11 +45,11 @@ export class GrandchildEdgeShape {
       targetUnderEndX = targetBBox.x;
     }
 
-    const depthType = getDepthType(depth);
-    if (depthType === DepthType.grandchild) {
+    // todo 魔数
+    if (depth === 2) {
       shortY = sourceBBox.cy;
     } else {
-      shortY = targetBBox.cy;
+      shortY = sourceBBox.y2;
     }
 
     connectY = shortY;
