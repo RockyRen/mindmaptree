@@ -42,7 +42,6 @@ class Drag {
 
   // todo 是否要做节流？
   private move = (dx: number, dy: number): void => {
-    console.log(dx, dy);
     const offsetX = (dx - this.lastDx);
     const offsetY = (dy - this.lastDy);
 
