@@ -12,6 +12,7 @@ import { Direction } from '../types';
 
 export type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
 
+// 节点shape生成类
 class ShapeGenerator {
   private readonly paper: RaphaelPaper;
   private readonly depth: number;

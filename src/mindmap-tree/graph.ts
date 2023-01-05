@@ -9,7 +9,7 @@ interface GraphOptions {
   onLabelChange: (label: string) => void;
 }
 
-// 包含背景的图像操作类
+// 图像操作类
 class Graph {
   private readonly paper: RaphaelPaper;
   private tree: Tree;

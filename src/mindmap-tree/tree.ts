@@ -101,8 +101,7 @@ class Tree {
     this.position.setPosition(direction);
   }
 
-  // todo 可删除多个节点，后面再做
-  // todo 删除后选择下一个节点
+  // todo 可删除多个节点，后面再做；删除后选择下一个节点
   public removeNode(): void {
     if (this.selections.length === 0) return;
 
@@ -119,10 +118,8 @@ class Tree {
     selection.setLabel(label);
   }
 
-  // todo 
-  public getData() {
-
-  }
+  // todo 将来用于离线应用
+  public generateData() {}
 
   private initNode({
     currentData,
@@ -160,18 +157,12 @@ class Tree {
     return node;
   }
 
-  private selectNode(node: Node, event: MouseEvent): void {
-    // todo 放在drag？
-    if (node.getDepthType() !== DepthType.root) {
-      event.stopPropagation();
-    }
-
-    // todo 补回来
+  private selectNode(node: Node): void {
     this.selections.forEach((selection) => {
-      selection.nodeShapeHandler.unSelect();
+      selection.shapeExports.unSelect();
     });
 
-    node.nodeShapeHandler.select();
+    node.shapeExports.select();
 
     this.selections = [node];
 
@@ -197,7 +188,10 @@ class Tree {
     });
 
     newNode.mousedown((event: MouseEvent) => {
-      this.selectNode(newNode, event);
+      if (newNode.getDepthType() !== DepthType.root) {
+        event.stopPropagation();
+      }
+      this.selectNode(newNode);
     });
 
     return newNode;

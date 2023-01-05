@@ -2,31 +2,34 @@ import Node from '../node/node';
 import Position from '../position';
 import { Direction } from '../types';
 import type { CreateSingleNodeFunc } from '../tree';
+import { DepthType } from '../helper';
 
-class DragPosition {
+// 改变父节点的类 
+class ChangeFather {
   public constructor(
     private readonly node: Node,
     private readonly newFather: Node,
     private readonly createSingleNode: CreateSingleNodeFunc,
   ) {
-    const position = new Position(this.node.getRoot());
+    const position = new Position(this.getRoot(this.node));
     this.init(position);
   }
 
   private init(position: Position) {
     const direction = this.newFather.direction || Direction.RIGHT;
 
+    // 递归创建新的节点
     const newNode = this.createNewNode({
       node: this.node,
       depth: this.newFather.depth + 1,
       direction,
       father: this.newFather,
     });
-    
     this.newFather.children?.push(newNode);
 
     const originDirection = this.node.direction;
 
+    // 删除
     this.node.remove();
 
     if (originDirection === direction) {
@@ -67,6 +70,14 @@ class DragPosition {
 
     return newNode;
   }
+
+  private getRoot(node: Node): Node | null {
+    let root: Node | null = node;
+    while (root && root.getDepthType() !== DepthType.root) {
+      root = root.father;
+    }
+    return root;
+  }
 }
 
-export default DragPosition;
+export default ChangeFather;

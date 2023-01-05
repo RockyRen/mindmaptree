@@ -15,7 +15,6 @@ export class GrandchildEdgeShape {
     this.shapeSet = this.draw(options);
   }
 
-  // todo 重构
   private draw({
     paper,
     sourceBBox,

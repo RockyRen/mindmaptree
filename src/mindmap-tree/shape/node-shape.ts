@@ -7,9 +7,6 @@ interface CustomAttr {
   unSelected: Partial<RaphaelAttributes>;
 }
 
-// export type RaphaelBaseElementCallback<T> = Parameters<RaphaelBaseElement[keyof T]>[0]
-
-// todo 这里可以统一一个泛型
 export type MousedownCallback = Parameters<RaphaelBaseElement['mousedown']>[0];
 export type UnMousedownCallback = Parameters<RaphaelBaseElement['unmousedown']>[0];
 export type DragCallbackList = Parameters<RaphaelBaseElement['drag']>;
@@ -56,6 +53,7 @@ export class NodeShape {
     this.shapeSet = this.paper.set();
 
     const hasValidPosition = (x !== undefined && y !== undefined);
+    // 如果初始化类是没有设置x或者y，则将shape移动到一个看不到的位置
     const shapeX = hasValidPosition ? x : invisibleX;
     const shapeY = hasValidPosition ? y : invisibleY;
 
@@ -93,7 +91,6 @@ export class NodeShape {
     return diff;
   }
 
-  // todo
   public translateTo(x: number, y: number) {
     const {
       x: oldX,
@@ -105,7 +102,6 @@ export class NodeShape {
 
     this.shapeSet.translate(dx, dy);
 
-    // todo
     this.shapeSet.show();
   }
 

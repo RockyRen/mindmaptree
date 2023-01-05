@@ -1,16 +1,16 @@
 import { RaphaelPaper, RaphaelAxisAlignedBoundingBox } from 'raphael';
-import { NodeShape, MousedownCallback, DragCallbackList } from '../shape/node-shape';
+import { NodeShape, MousedownCallback } from '../shape/node-shape';
 import { Direction } from '../types';
 import { getDepthType, DepthType } from '../helper';
 import Drag from '../drag/drag';
 import type { CreateSingleNodeFunc } from '../tree';
-import NodeShapeHandler from './node-shape-handler';
+import ShapeExports from './shape-exports';
 import ShapeGenerator from './shape-generator';
 import type { EdgeShape } from './shape-generator';
 
 // 节点类
 class Node {
-  public readonly nodeShapeHandler: NodeShapeHandler;
+  public readonly shapeExports: ShapeExports;
 
   private readonly dragHandler?: Drag;
   private readonly mousedownHandlers: MousedownCallback[] = [];
@@ -65,7 +65,7 @@ class Node {
       this.edgeShape = this.shapeGenerator.createEdge(this.nodeShape);
     }
 
-    this.nodeShapeHandler = new NodeShapeHandler(this, this.nodeShape);
+    this.shapeExports = new ShapeExports(this, this.nodeShape);
 
     if (this.getDepthType() !== DepthType.root) {
       this.dragHandler = new Drag(this, createSingleNode);
@@ -78,15 +78,6 @@ class Node {
   public get father() { return this._father; }
   public get label() { return this._label; }
   public get children() { return this._children; }
-
-  // todo
-  public getRoot(): Node | null {
-    let root: Node | null = this;
-    while (root && root.getDepthType() !== DepthType.root) {
-      root = root.father;
-    }
-    return root;
-  }
 
   public getDirectionChildren(direction: Direction | null): Node[] {
     return this.children?.filter((child) => child.direction === direction) || [];

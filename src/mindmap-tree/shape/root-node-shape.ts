@@ -21,7 +21,7 @@ const customAttr = {
 };
 
 const paddingWidth = 42;
-const rectHeight = 52;
+export const rectHeight = 52;
 
 export function createRootNodeShape(options: NodeShapeBaseOptions): NodeShape {
   return new NodeShape({

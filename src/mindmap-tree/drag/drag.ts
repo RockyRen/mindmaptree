@@ -1,7 +1,7 @@
 import Raphael, { RaphaelSet, RaphaelAxisAlignedBoundingBox } from 'raphael';
 import { DepthType } from '../helper';
 import Node from '../node/node';
-import DragPosition from './drag-position';
+import ChangeFather from './change-father';
 import type { CreateSingleNodeFunc } from '../tree';
 
 interface AddableNode {
@@ -9,28 +9,30 @@ interface AddableNode {
   node: Node;
 }
 
-// todo 这里是不是有weekmap比较好？
+// 节点拖拽类
 class Drag {
   private clonedNodeShapeSet: RaphaelSet | null = null;
   private lastOverlayNode?: Node;
   private lastDx: number = 0;
   private lastDy: number = 0;
   private addableNodeList: AddableNode[] = [];
+
   public constructor(
     private readonly node: Node,
     private readonly createSingleNode: CreateSingleNodeFunc,
   ) {
-    node.nodeShapeHandler.drag(this.move, this.start, this.end);
+    node.shapeExports.drag(this.move, this.start, this.end);
   }
 
   public unbind(): void {
-    this.node.nodeShapeHandler.undrag();
+    this.node.shapeExports.undrag();
   }
 
-  // todo 判断是点击还是拖拽
+  // todo 判断是点击还是拖拽。现在点击会出现闪烁问题
   private start = (): void => {
-    this.node.nodeShapeHandler.opacityAll();
-    this.clonedNodeShapeSet = this.node.nodeShapeHandler.cloneShape();
+    this.node.shapeExports.opacityAll();
+
+    this.clonedNodeShapeSet = this.node.shapeExports.cloneShape();
     this.clonedNodeShapeSet?.attr({
       opacity: 0.4,
     });
@@ -40,6 +42,7 @@ class Drag {
 
   // todo 是否要做节流？
   private move = (dx: number, dy: number): void => {
+    console.log(dx, dy);
     const offsetX = (dx - this.lastDx);
     const offsetY = (dy - this.lastDy);
 
@@ -59,8 +62,8 @@ class Drag {
       overlayNode?.id !== this.lastOverlayNode?.id
       && !isFather
     ) {
-      overlayNode?.nodeShapeHandler.overlay();
-      this.lastOverlayNode?.nodeShapeHandler.unOverlay();
+      overlayNode?.shapeExports.overlay();
+      this.lastOverlayNode?.shapeExports.unOverlay();
     }
 
     this.lastOverlayNode = overlayNode;
@@ -116,34 +119,25 @@ class Drag {
   }
 
   private end = (): void => {
-    // if (this.delayTimer) {
-    //   clearTimeout(this.delayTimer);
-    //   this.delayTimer = null;
-    //   return;
-    // }
-
-    this.node.nodeShapeHandler.unOpacityAll();
+    this.node.shapeExports.unOpacityAll();
 
     // todo 暂时不能改变同一father的变向
     const isFather = this.node.father?.id === this.lastOverlayNode?.id;
 
     if (this.lastOverlayNode && !isFather) {
-      this.lastOverlayNode.nodeShapeHandler.unOverlay();
-      new DragPosition(this.node, this.lastOverlayNode, this.createSingleNode);
+      this.lastOverlayNode.shapeExports.unOverlay();
+      new ChangeFather(this.node, this.lastOverlayNode, this.createSingleNode);
     }
 
     this.clonedNodeShapeSet?.remove();
     this.clonedNodeShapeSet = null;
 
-    // todo
     this.lastOverlayNode = undefined;
 
     this.lastDx = 0;
     this.lastDy = 0;
 
     this.addableNodeList = [];
-
-    // this.delayTimer = null;
   }
 }
 

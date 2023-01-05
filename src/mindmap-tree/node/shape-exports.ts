@@ -2,7 +2,8 @@ import { RaphaelSet } from 'raphael';
 import Node from './node';
 import { NodeShape, DragCallbackList } from '../shape/node-shape';
 
-class NodeShapeHandler {
+// 用于给外部暴露方法的节点shape方法类
+class ShapeExports {
   public constructor(
     private readonly node: Node,
     private readonly nodeShape: NodeShape) {
@@ -20,7 +21,7 @@ class NodeShapeHandler {
 
   public opacityAll(): void {
     const opacityInner = (node: Node): void => {
-      node.nodeShapeHandler.opacity();
+      node.shapeExports.opacity();
       node.children?.forEach((child) => opacityInner(child));
     }
 
@@ -29,7 +30,7 @@ class NodeShapeHandler {
 
   public unOpacityAll(): void {
     const unOpacityInner = (node: Node): void => {
-      node.nodeShapeHandler.unOpacity();
+      node.shapeExports.unOpacity();
       node.children?.forEach((child) => unOpacityInner(child));
     }
 
@@ -37,4 +38,4 @@ class NodeShapeHandler {
   }
 }
 
-export default NodeShapeHandler;
+export default ShapeExports;
