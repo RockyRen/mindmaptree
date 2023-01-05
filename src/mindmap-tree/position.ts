@@ -84,6 +84,7 @@ class Position {
     private readonly root: Node | null
   ) {}
 
+  // 拿到root节点，然后改变该方向所有子节点的位置
   public setPosition(direction: Direction): void {
     if (!this.root) {
       return;
@@ -120,6 +121,7 @@ class Position {
 
       const childY = startY + (useAreaHeight / 2) - (childNodeHeight / 2);
 
+      // console.log('t----', child, childX, childY);
       // 关键的移动
       child.translateTo(childX, childY);
 

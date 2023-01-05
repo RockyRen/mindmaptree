@@ -15,6 +15,7 @@ type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
 // todo 如果不是root，direction等数据是一定有的。是否应该区分RootNode和普通Node？？
 // readonly的属性值是public还是private好？
 // todo node的操作有可能影响到子节点
+// todo node节点最需要拆分
 class Node {
   private readonly paper: RaphaelPaper;
   public readonly id: string;
@@ -29,7 +30,7 @@ class Node {
 
   // todo 是否用null？还是undefined？
   public father: Node | null = null;
-  public children?: Node[];
+  public children: Node[];
   public constructor({
     paper,
     id,
@@ -39,6 +40,7 @@ class Node {
     x,
     y,
     father,
+    createNewNode,
   }: {
     paper: RaphaelPaper,
     id: string,
@@ -48,6 +50,7 @@ class Node {
     x?: number,
     y?: number,
     father: Node | null,
+    createNewNode: Function; // todo
   }) {
     this.paper = paper;
     this.id = id;
@@ -55,13 +58,14 @@ class Node {
     this.direction = direction;
     this.father = father;
     this.label = label; // todo label是否要存到Node上？？
+    this.children = [];
 
     this.nodeShape = this.createNode(x, y);
     if (x !== undefined || y !== undefined) {
       this.edgeShape = this.createEdge();
     }
 
-    this.dragHandler = new Drag(this);
+    this.dragHandler = new Drag(this, createNewNode);
   }
 
   // todo 名字
@@ -112,9 +116,6 @@ class Node {
 
   // todo 取个好听点的名字？还有如果要插入到前面或者中间怎么办？
   public pushChild(child: Node): void {
-    if (!this.children) {
-      this.children = [];
-    }
     this.children.push(child);
   }
 
@@ -242,6 +243,7 @@ class Node {
 
     this.label = label;
   }
+
 
   private createNode(x?: number, y?: number): NodeShape {
     const {

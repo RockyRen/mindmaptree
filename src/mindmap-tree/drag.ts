@@ -17,6 +17,7 @@ class Drag {
   private addableNodeList: AddableNode[] = [];
   public constructor(
     private readonly node: Node,
+    private readonly createNewNode: Function,
   ) {
     node.drag(this.move, this.start, this.end);
   }
@@ -25,6 +26,7 @@ class Drag {
     this.node.undrag();
   }
 
+  // todo 判断是点击还是拖拽
   private start = (): void => {
     this.node.opacityAll();
     this.clonedNodeShapeSet = this.node.cloneShape();
@@ -110,7 +112,7 @@ class Drag {
 
     if (this.lastOverlayNode) {
       this.lastOverlayNode.unOverlay();
-      new DragPosition(this.node, this.lastOverlayNode);
+      new DragPosition(this.node, this.lastOverlayNode, this.createNewNode);
     }
 
     this.clonedNodeShapeSet?.remove();

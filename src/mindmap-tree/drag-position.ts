@@ -7,36 +7,38 @@ class DragPosition {
   public constructor(
     private readonly node: Node,
     private readonly newFather: Node,
+    private readonly createNewNode: Function,
   ) {
     const position = new Position(this.node.getRoot());
-    this.remove(position);
-    this.add(position);
+    this.init(position);
   }
 
-  // 删除旧父节点的children
-  private remove(position: Position) {
-    const oldFather = this.node.father;
 
-    const removeIndex = oldFather?.children?.findIndex((node) => node.id === this.node.id)
-    if (removeIndex !== undefined && removeIndex > -1) {
-      oldFather?.children?.splice(removeIndex, 1);
-    }
-
-    position.setPosition(this.node.direction!);
-  }
-
-  // 父节点变为newFather，增加newFather的children
-  private add(position: Position) {
-    this.node.setFather(this.newFather);
-    this.newFather.children?.push(this.node);
-
-    // todo 后面处理root的方向
+  // todo 重新创建节点
+  // depth可能会改变
+  private init(position: Position) {
     const direction = this.newFather.direction || Direction.RIGHT;
-    this.node.resetAll(this.newFather.depth + 1, direction);
 
-    position.setPosition(direction);
+    const newNode = this.createNewNode({
+      node: this.node,
+      depth: this.newFather.depth + 1,
+      direction,
+      father: this.newFather,
+    });
+    
+    this.newFather.children?.push(newNode);
+
+    const originDirection = this.node.direction;
+
+    this.node.remove();
+
+    if (originDirection === direction) {
+      position.setPosition(direction);
+    } else {
+      position.setPosition(Direction.LEFT);
+      position.setPosition(Direction.RIGHT);
+    }
   }
-
 }
 
 export default DragPosition;

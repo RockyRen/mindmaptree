@@ -58,6 +58,60 @@ class Tree {
     this.position.setPosition(Direction.RIGHT);
   }
 
+  private createNewNode({
+    node,
+    depth,
+    direction,
+    father,
+  }: {
+    node: Node;
+    depth: number;
+    direction: Direction;
+    father: Node;
+  }): Node {
+    return this.createNewNodeInner({
+      node,
+      depth,
+      direction,
+      father, 
+    });
+  }
+
+  private createNewNodeInner({
+    node,
+    depth,
+    direction,
+    father,
+  }: {
+    node: Node;
+    depth: number;
+    direction: Direction;
+    father: Node;
+  }): Node {
+    const newNode = new Node({
+      paper: this.paper,
+      // id: node.id,
+      id: `${+new Date()}`,
+      depth,
+      label: node.label,
+      direction,
+      father,
+      createNewNode: this.createNewNode.bind(this),
+    });
+
+    node.children.forEach((oldChild) => {
+      const newChild = this.createNewNodeInner({
+        node: oldChild,
+        depth: depth + 1,
+        direction,
+        father: newNode
+      });
+      newNode.pushChild(newChild);
+    });
+
+    return newNode;
+  }
+
   public initNode({
     currentData,
     nodeDataList,
@@ -77,7 +131,10 @@ class Tree {
       label: currentData.label,
       direction: currentData.direction,
       father,
+      createNewNode: this.createNewNode.bind(this),
     });
+
+    // todo 这个mousedown应该在一个统一的createNode里面做
     node.mousedown((event: MouseEvent) => {
       this.selectNode(node, event);
     });
@@ -130,6 +187,7 @@ class Tree {
       label: '子主题',
       direction,
       father: selection,
+      createNewNode: this.createNewNode.bind(this),
     });
 
     newNode.mousedown((event: MouseEvent) => {
@@ -151,7 +209,7 @@ class Tree {
     const selection = this.selections[0];
 
     selection.remove();
-    
+
     this.position.setPosition(selection.direction!);
 
     this.selections = [];
@@ -184,6 +242,8 @@ class Tree {
 
     this.onLabelChange(node.label);
   }
+
+
 }
 
 export default Tree;
