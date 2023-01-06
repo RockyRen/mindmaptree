@@ -16,31 +16,41 @@ class Drag {
   private lastDx: number = 0;
   private lastDy: number = 0;
   private addableNodeList: AddableNode[] = [];
+  private delayTimer: ReturnType<typeof setTimeout> | null;
 
   public constructor(
     private readonly node: Node,
     private readonly createSingleNode: CreateSingleNodeFunc,
   ) {
+    this.delayTimer = null;
+    // 初始化时监听拖拽事件
     node.shapeExports.drag(this.move, this.start, this.end);
   }
 
+  // 取消拖拽事件
   public unbind(): void {
     this.node.shapeExports.undrag();
   }
 
-  // todo 判断是点击还是拖拽。现在点击会出现闪烁问题
   private start = (): void => {
-    this.node.shapeExports.opacityAll();
-
     this.clonedNodeShapeSet = this.node.shapeExports.cloneShape();
     this.clonedNodeShapeSet?.attr({
-      opacity: 0.4,
+      opacity: 0,
     });
+
+    // 在150毫秒后才改变节点原有样式，防止点击的时候的闪烁问题
+    this.delayTimer = setTimeout(() => {
+      this.node.shapeExports.opacityAll();
+      this.clonedNodeShapeSet?.attr({
+        opacity: 0.4,
+      });
+    }, 150);
 
     this.addableNodeList = this.getAddableNodeList();
   }
 
-  // todo 是否要做节流？
+  // todo 是否要做？
+  // todo 待做的性能优化：节流、遍历所有节点是否与拖拽节点重叠
   private move = (dx: number, dy: number): void => {
     const offsetX = (dx - this.lastDx);
     const offsetY = (dy - this.lastDy);
@@ -50,11 +60,8 @@ class Drag {
     this.lastDx = dx;
     this.lastDy = dy;
 
-    // todo 和可以变成父关系的节点重叠时，样式改变
-    // todo 可能有性能问题
     const overlayNode = this.getOverlayNode();
 
-    // todo 暂时不能改变同一father的变向
     const isFather = this.node.father?.id === overlayNode?.id;
 
     if (
@@ -66,7 +73,6 @@ class Drag {
     }
 
     this.lastOverlayNode = overlayNode;
-
   }
 
   private getOverlayNode(): Node | undefined {
@@ -83,15 +89,8 @@ class Drag {
     return overlayNode?.node;
   }
 
-  // todo 有没有更优雅的办法？
   private getAddableNodeList(): AddableNode[] {
-    // 获取root的node节点
-    let root: Node | null = this.node.father;
-
-    while (root && root.getDepthType() !== DepthType.root) {
-      root = root.father;
-    }
-
+    const root = this.node.getRoot();
     if (!root) {
       return [];
     }
@@ -101,7 +100,6 @@ class Drag {
     this.setaddableNodeList(root, this.node, addableNodeList);
 
     return addableNodeList;
-
   }
 
   private setaddableNodeList(currentNode: Node, targetNode: Node, addableNodeList: AddableNode[]): void {
@@ -118,9 +116,13 @@ class Drag {
   }
 
   private end = (): void => {
+    if (this.delayTimer) {
+      clearTimeout(this.delayTimer);
+      this.delayTimer = null;
+    }
+
     this.node.shapeExports.unOpacityAll();
 
-    // todo 暂时不能改变同一father的变向
     const isFather = this.node.father?.id === this.lastOverlayNode?.id;
 
     if (this.lastOverlayNode && !isFather) {

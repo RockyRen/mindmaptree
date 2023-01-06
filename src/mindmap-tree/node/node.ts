@@ -91,6 +91,14 @@ class Node {
     return getDepthType(this.depth);
   }
 
+  public getRoot(): Node | null {
+    let root: Node | null = this;
+    while (root && root.getDepthType() !== DepthType.root) {
+      root = root.father;
+    }
+    return root;
+  }
+
   public mousedown(callback: MousedownCallback) {
     this.nodeShape.mousedown(callback);
     this.mousedownHandlers.push(callback);

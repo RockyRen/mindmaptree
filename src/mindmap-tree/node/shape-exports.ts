@@ -24,7 +24,6 @@ class ShapeExports {
       node.shapeExports.opacity();
       node.children?.forEach((child) => opacityInner(child));
     }
-
     opacityInner(this.node);
   }
 
@@ -33,7 +32,6 @@ class ShapeExports {
       node.shapeExports.unOpacity();
       node.children?.forEach((child) => unOpacityInner(child));
     }
-
     unOpacityInner(this.node);
   }
 }

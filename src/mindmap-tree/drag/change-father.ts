@@ -11,7 +11,7 @@ class ChangeFather {
     private readonly newFather: Node,
     private readonly createSingleNode: CreateSingleNodeFunc,
   ) {
-    const position = new Position(this.getRoot(this.node));
+    const position = new Position(this.node.getRoot());
     this.init(position);
   }
 
@@ -69,14 +69,6 @@ class ChangeFather {
     });
 
     return newNode;
-  }
-
-  private getRoot(node: Node): Node | null {
-    let root: Node | null = node;
-    while (root && root.getDepthType() !== DepthType.root) {
-      root = root.father;
-    }
-    return root;
   }
 }
 
