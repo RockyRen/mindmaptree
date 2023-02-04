@@ -1,5 +1,9 @@
 .cache/
-dev/
 node_modules/
 .idea/
 dist/
+docs/
+.DS_Store
+package-lock.json
+core/README.md
+core/LICENSE

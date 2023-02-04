@@ -1,0 +1,32 @@
+{
+  "name": "mindmap-tree",
+  "version": "0.0.0-beta.4",
+  "description": "Mindmap implements by svg",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.umd.cjs",
+      "types": "./index.d.ts"
+    },
+    "./dist/": "./dist/",
+    "./style.css": "./dist/style.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RockyRen/mindmaptree.git"
+  },
+
+  "homepage": "https://github.com/RockyRen/mindmaptree#readme",
+  "bugs": {
+    "url": "https://github.com/RockyRen/mindmaptree/issues"
+  },
+  "keywords": [
+    "mindmap",
+    "mindmap-tree"
+  ],
+  "author": "RockyRen",
+  "license": "MIT"
+}
