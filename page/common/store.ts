@@ -22,6 +22,7 @@ class Store {
   public save(data: NodeDataMap): void {
     const strData = JSON.stringify(data);
     localStorage.setItem(`page-${pageId}`, strData);
+    console.log('save', strData);
   }
 }
 
