@@ -15,7 +15,7 @@ interface ViewportInteractionOptions {
 
 const zoomSpeed = 0.25;
 
-// viewport交互类，实际操作中用到
+// viewport interfaction, for operation
 class ViewportInteraction {
   private readonly viewport: Viewport;
   private readonly root: Node;

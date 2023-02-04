@@ -1,7 +1,8 @@
-import { RaphaelPaper } from "raphael";
+
 import Node from '../node/node';
 import DragTempNodeShape from "../shape/drag-temp-node-shape";
-import { HitArea } from "./drag-area";
+import type { RaphaelPaper } from "raphael";
+import type { HitArea } from "./drag-area";
 
 class DragTemp {
   private shape: DragTempNodeShape | null = null;

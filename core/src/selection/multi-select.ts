@@ -67,8 +67,6 @@ class MultiSelect {
     this.lastClientX = event.clientX;
     this.lastClientY = event.clientY;
 
-    // todo 如果在文本编辑状态，则不取消选择
-    // todo 这个取消可能和其他操作有冲突
     this.selection.empty();
   }
 
@@ -102,7 +100,7 @@ class MultiSelect {
 
       const selectedNodes = [];
 
-      // 按多选顺序增加
+      // multi select in order
       for (let i = 0; i < this.preSelectNodes.length; i++) {
         if (intersectNodes.includes(this.preSelectNodes[i])) {
           selectedNodes.push(this.preSelectNodes[i]);

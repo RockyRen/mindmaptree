@@ -14,12 +14,9 @@ interface DragTempNodeShapeOptions {
 
 const firstBoundaryOffset = 55;
 const boundaryYOffset = 14;
-
 const rectWidth = 50;
 const rectHeight = 13;
-
 const grandchildYOffset = 3;
-
 
 class DragTempNodeShape {
   private readonly paper: RaphaelPaper;
@@ -54,7 +51,6 @@ class DragTempNodeShape {
     } else if (targetBBox1 !== null && targetBBox2 === null) {
       cy = targetBBox1.y2 + yOffset;
 
-      // 由于grandchild节点的下线问题，所以向下偏移一点好看点。下同
       if (targetDepth > 1) cy += grandchildYOffset;
     } else if (targetBBox1 === null && targetBBox2 !== null) {
       cy = targetBBox2.y - yOffset;

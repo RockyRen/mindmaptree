@@ -10,7 +10,6 @@ class DragViewportHandler {
 
   public constructor(private readonly viewport: Viewport) { }
 
-  // clientX、clientY表示距离浏览器窗口的距离
   public handleMousedown = (clientX: number, clientY: number): void => {
     this.isStart = true;
     this.lastClientX = clientX;

@@ -39,7 +39,7 @@ class Redo {
       btnEl,
     } = createToolbarItem({
       iconName: 'redo',
-      tipLabel: '重做',
+      tipLabel: 'Redo',
     });
 
     btnEl.addEventListener('click', () => {

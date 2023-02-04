@@ -1,7 +1,7 @@
 import Node from '../node/node';
 import Position from '../position';
 import type { NodeDataMap } from '../data/data-proxy';
-import { CreateNodeFunc } from '../node/node-creator';
+import type { CreateNodeFunc } from '../node/node-creator';
 
 interface RenderNewParams {
   nodeDataMap: NodeDataMap;

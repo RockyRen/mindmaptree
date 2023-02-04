@@ -1,7 +1,7 @@
 {
   "name": "mindmap-tree",
   "version": "0.0.0-beta.4",
-  "description": "Mindmap implements by svg",
+  "description": "A Web-Based Javascript Mindmap implements by svg",
   "main": "dist/index.umd.js",
   "module": "dist/index.mjs",
   "types": "./index.d.ts",

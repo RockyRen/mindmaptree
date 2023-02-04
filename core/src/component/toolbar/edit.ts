@@ -40,7 +40,7 @@ class Edit {
       btnEl,
     } = createToolbarItem({
       iconName: 'edit',
-      tipLabel: '编辑',
+      tipLabel: 'Edit Text',
     });
 
     btnEl.addEventListener('click', () => {

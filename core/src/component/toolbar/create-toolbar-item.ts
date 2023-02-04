@@ -1,4 +1,5 @@
 import { h, MElement } from '../m-element';
+
 export const createToolbarItem = ({
   iconName,
   tipLabel,
@@ -16,7 +17,7 @@ export const createToolbarItem = ({
   );
   const el = h('div', 'toolbar-item').setChildren(
     btnEl,
-    h('div', 'toolbar-tip').setChild(tipLabel)
+    h('div', 'toolbar-tip').setChild(tipLabel),
   );
 
   return {

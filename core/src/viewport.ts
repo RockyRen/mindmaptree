@@ -1,6 +1,6 @@
-import { RaphaelPaper } from 'raphael';
 import PaperWrapper from './paper-wrapper';
 import EventEmitter from 'eventemitter3';
+import type { RaphaelPaper } from 'raphael';
 
 export interface Viewbox {
   x: number;
@@ -107,7 +107,6 @@ class Viewport {
     this.wrapperHeight = height;
   }
 
-  // 由clientX和clientY获取viewport的位置
   public getViewportPosition(clientX: number, clientY: number): {
     x: number;
     y: number;

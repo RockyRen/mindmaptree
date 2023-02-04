@@ -1,4 +1,3 @@
-import TextEditor from '../../text-editor';
 import ToolOperation from '../../tool-operation';
 import Selection from '../../selection/selection';
 import { MElement } from '../m-element';
@@ -8,19 +7,15 @@ class Delete {
   public readonly el: MElement;
   public readonly btnEl: MElement;
   private readonly toolOperation: ToolOperation;
-  private readonly textEditor: TextEditor;
   private readonly selection: Selection;
   constructor({
     toolOperation,
-    textEditor,
     selection,
   }: {
     toolOperation: ToolOperation;
-    textEditor: TextEditor;
     selection: Selection;
   }) {
     this.toolOperation = toolOperation;
-    this.textEditor = textEditor;
     this.selection = selection;
     const elements = this.element();
     this.el = elements.el;
@@ -45,7 +40,7 @@ class Delete {
       btnEl,
     } = createToolbarItem({
       iconName: 'delete',
-      tipLabel: '删除',
+      tipLabel: 'Delete',
     });
 
     btnEl.addEventListener('click', () => {

@@ -118,7 +118,7 @@ class NodeShapeStyle {
       labelBaseAttr: this.labelBaseAttr,
       borderBaseAttr: this.borderBaseAttr,
       rectBaseAttr: this.rectBaseAttr,
-    }
+    };
   }
 }
 

@@ -3,10 +3,10 @@ import Position from '../position';
 import Selection from '../selection/selection';
 import Viewport from '../viewport';
 import TreeRenderer from './tree-renderer';
-import type { NodeDataMap } from '../data/data-proxy';
 import NodeCreator from '../node/node-creator';
+import type { NodeDataMap } from '../data/data-proxy';
 
-// 思维导图树类，操作节点之间的关系
+// Tree class, for rendering tree
 class Tree {
   private readonly root: Node;
   private readonly position: Position;

@@ -1,8 +1,7 @@
-
 export interface NodeData {
   children: string[];
   label: string;
-  direction: number;
+  direction: -1 | 0 | 1;
   isRoot?: boolean;
   isExpand?: boolean;
 }
@@ -15,6 +14,7 @@ declare class MindmapTree {
     data?: NodeDataMap;
     isDebug?: boolean;
   })
+  public clear(): void
 }
 
 export default MindmapTree;

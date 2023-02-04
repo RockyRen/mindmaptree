@@ -1,9 +1,8 @@
-
-import { RaphaelPaper } from 'raphael';
 import EventEmitter from 'eventemitter3';
 import Node from '../node/node';
 import Viewport from '../viewport';
 import { generateId } from '../helper';
+import type { RaphaelPaper } from 'raphael';
 import type { NodeOptions, NodeEventMap, NodeEventNames } from '../node/node';
 
 export interface CreateNodeParams {
@@ -35,7 +34,7 @@ interface NodeCreatorEventMap {
 
 type NodeCreatorEventNames = keyof NodeCreatorEventMap;
 
-// 只能监听单个callback的事件
+// only support the events with one callback
 const nodeCreatorEventNames: NodeCreatorEventNames[] = ['mousedown', 'click', 'dblclick', 'mousedownExpander', 'dragEnd'];
 
 class NodeCreator {

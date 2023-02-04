@@ -3,9 +3,8 @@ import { DepthType } from '../helper';
 import { Direction } from '../types';
 
 class SelectionRemoveNext {
-  public constructor() {}
+  public constructor() { }
 
-  // todo 注释
   public getRemoveNextNode(selectNodes: Node[]): Node | null {
     if (selectNodes.length === 0) return null;
 
@@ -33,7 +32,6 @@ class SelectionRemoveNext {
       }
       if (downNode) return downNode;
 
-      // 如果是firstLevel的最后一个，则选择另一个方向的最后一个firstLevel节点
       if (curTopNode.getDepthType() === DepthType.firstLevel) {
         const oppositeDirection = curTopNode.direction === Direction.RIGHT ? Direction.LEFT : Direction.RIGHT;
         const oppositeBrothers = curTopNode.father!.getDirectionChildren(oppositeDirection);
@@ -58,10 +56,8 @@ class SelectionRemoveNext {
       if (selectNodes.includes(curNode)) {
         topNode = curNode;
       }
-
       curNode = curNode.father;
     }
-
 
     return topNode;
   }

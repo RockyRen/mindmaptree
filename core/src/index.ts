@@ -1,23 +1,23 @@
+
+import PaperWrapper from './paper-wrapper';
 import Tree from './tree/tree';
 import TreeOperation from './tree/tree-operation';
+import NodeCreator from './node/node-creator';
+import NodeInteraction from './node-interaction';
 import Viewport from './viewport';
+import ViewportInteraction from './viewport-interaction/viewport-interaction';
 import TextEditor from './text-editor';
 import Selection from './selection/selection';
 import MultiSelect from './selection/multi-select';
 import Keyboard from './keyboard/keyboard';
-import PaperWrapper from './paper-wrapper';
 import DataProxy, { getInitData } from './data/data-proxy';
-import type { NodeDataMap } from './data/data-proxy';
-import Toolbar from './component/toolbar/toolbar';
-import ViewportInteraction from './viewport-interaction/viewport-interaction';
-import NodeCreator from './node/node-creator';
-import NodeInteraction from './node-interaction';
 import { setConfig } from './config';
-import './index.less';
 import ToolOperation from './tool-operation';
+import Toolbar from './component/toolbar/toolbar';
 import ViewportScale from './component/viewport-scale/viewport-scale';
+import type { NodeDataMap } from './data/data-proxy';
+import './index.less';
 
-// 思维导图主入口 
 class MindmapTree {
   private readonly paperWrapper: PaperWrapper;
   private readonly viewportInteraction: ViewportInteraction;
@@ -45,13 +45,13 @@ class MindmapTree {
     });
     const initData = getInitData(data);
 
+    // render tree and create root
     this.tree = new Tree({
       viewport,
       data: initData,
       selection,
       nodeCreator: this.nodeCreator,
     });
-
     const root = this.tree.getRoot();
 
     const dataProxy = new DataProxy({
@@ -66,7 +66,6 @@ class MindmapTree {
       dataProxy,
       nodeCreator: this.nodeCreator,
     });
-
 
     const textEditor = new TextEditor({
       viewport,

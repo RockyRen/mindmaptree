@@ -1,22 +1,18 @@
 # mindmap-tree
 
-> A Web-Based Javascript Mindmap
-
-## Document
-* en
-* [zh-cn中文](https://github.com/RockyRen/mindmaptree/blob/master/wiki/README.zh.md)
-
+> 一个基于web(svg)的思维导图
+> 
 ## Demo
 [Demo](https://rockyren.github.io/mindmaptree/demo.html) 
 [中文Demo](https://rockyren.github.io/mindmaptree/demo.html)
 
-## Installation
+## 安装
 
 ```sh
 npm install -S mindmap-tree
 ```
 
-## Usage
+## 使用
 
 ```html
 <body>
@@ -33,19 +29,19 @@ new MindmapTree({
 });
 ```
 
-## Feature
+## 功能
 
-* Add & Delete Node
-* Edit Node Text
-* Undo & Redo
-* Change Scale
-* Drag Node to change Father
-* Keyboard operation
-* Multi select
-* Expand & Shrink Node
+* 添加 & 删除节点
+* 编辑节点文本
+* 撤销 & 重做
+* 修改视图scale
+* 拖拽改变节点关系
+* 键盘操作
+* 多选操作
+* 展开 & 收缩节点
 
 
-## Params
+## 参数
 
 ```js
 import MindmapTree from 'mindmap-tree';

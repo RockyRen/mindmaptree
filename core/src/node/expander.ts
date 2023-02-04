@@ -1,10 +1,11 @@
-import Node from './node';
-import ExpanderShape from '../shape/expander-shape';
-import { RaphaelPaper } from 'raphael';
-import Position from '../position';
-import type { TraverseFunc, TraverseOptions } from './node';
-import NodeShape from '../shape/node-shape';
+
 import EventEmitter from 'eventemitter3';
+import Position from '../position';
+import Node from './node';
+import NodeShape from '../shape/node-shape';
+import ExpanderShape from '../shape/expander-shape';
+import type { RaphaelPaper } from 'raphael';
+import type { TraverseFunc, TraverseOptions } from './node';
 
 export interface ExpanderEventMap {
   mousedownExpander: (newIsExpander: boolean) => void;
@@ -15,8 +16,8 @@ class Expander {
   private readonly position: Position;
   private readonly node: Node;
   private readonly nodeShape: NodeShape;
-  private readonly traverse: TraverseFunc;
   private readonly eventEmitter: EventEmitter<ExpanderEventMap>;
+  private readonly traverse: TraverseFunc;
   private expanderShape: ExpanderShape | null = null;
   private isExpand: boolean;
   public constructor({
@@ -40,7 +41,6 @@ class Expander {
     this.nodeShape = nodeShape;
     this.isExpand = isExpand;
     this.traverse = traverse;
-
     this.eventEmitter = new EventEmitter<ExpanderEventMap>();
   }
 
@@ -125,7 +125,6 @@ class Expander {
     expander.remove();
     removeEdgeShape();
   }
-
 }
 
 export default Expander;

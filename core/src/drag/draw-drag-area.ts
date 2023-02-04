@@ -1,8 +1,8 @@
-import { RaphaelPaper, RaphaelSet } from 'raphael';
-import type { Area } from './drag-area';
 import { getConfig } from '../config';
+import type { RaphaelPaper, RaphaelSet } from 'raphael';
+import type { Area } from './drag-area';
 
-// for debug
+// for debugging
 class DrawDragArea {
   private shapeSet: RaphaelSet | null = null;
   public constructor(

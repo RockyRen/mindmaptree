@@ -39,7 +39,7 @@ class Undo {
       btnEl,
     } = createToolbarItem({
       iconName: 'undo',
-      tipLabel: '撤销',
+      tipLabel: 'Undo',
     });
 
     btnEl.addEventListener('click', () => {

@@ -6,6 +6,10 @@ import NodeCreator from '../node/node-creator';
 import ChangeFatherOperation from './change-father-operation';
 import { Direction } from '../types';
 import type { ChangeFatherParams } from './change-father-operation';
+import { DepthType, getDepthType } from '../helper';
+
+const firstLevetNodeName = 'Main Topic';
+const grandchildNodeName = 'Subtopic';
 
 class TreeOperation {
   private readonly position: Position;
@@ -42,7 +46,7 @@ class TreeOperation {
     const selectNode = this.selection.getSingleSelectNode();
     if (!selectNode) return;
 
-    // 如果节点时根节点，则两边的节点平衡增加
+    // If node is root, then add node equally to each direction
     let direction = selectNode.direction;
     if (selectNode.isRoot()) {
       const directionCounts = selectNode.children?.reduce((counts: number[], child) => {
@@ -54,13 +58,13 @@ class TreeOperation {
         return counts;
       }, [0, 0]);
 
-      // 如果右边节点比左边多，则在左边增加
       direction = directionCounts[1] > directionCounts[0] ? Direction.LEFT : Direction.RIGHT;
     }
 
+    const depth = selectNode.depth + 1;
     const newNode = this.nodeCreator.createNode({
-      depth: selectNode.depth + 1,
-      label: '子主题',
+      depth,
+      label: getDepthType(depth) === DepthType.firstLevel ? firstLevetNodeName : grandchildNodeName,
       direction,
       father: selectNode,
     });
@@ -86,10 +90,11 @@ class TreeOperation {
 
     const direction = selectNode.direction!;
     const father = selectNode.father!;
+    const depth = selectNode.depth;
 
     const newNode = this.nodeCreator.createNode({
-      depth: selectNode.depth,
-      label: '子主题',
+      depth,
+      label: getDepthType(depth) === DepthType.firstLevel ? firstLevetNodeName : grandchildNodeName,
       direction,
       father,
     });
@@ -116,10 +121,7 @@ class TreeOperation {
     });
 
     this.position.reset();
-
-    // todo 暂时还没找到一个很好的多选删除节点，下一个选择节点的算法
     this.selection.select(removeNextNode !== null ? [removeNextNode] : []);
-
     this.dataProxy.resetData();
   }
 
