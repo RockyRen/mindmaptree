@@ -1,7 +1,7 @@
 
 import Node from '../node/node';
 import DragTempNodeShape from "../shape/drag-temp-node-shape";
-import type { RaphaelPaper } from "raphael";
+import type { RaphaelPaper, RaphaelAxisAlignedBoundingBox } from "raphael";
 import type { HitArea } from "./drag-area";
 
 class DragTemp {
@@ -32,8 +32,13 @@ class DragTemp {
         })
       } else {
         const children = father.getDirectionChildren(direction);
-        const targetBBox1 = children[childIndex - 1]?.getBBox() || null;
-        const targetBBox2 = children[childIndex]?.getBBox() || null;
+        let targetBBox1: RaphaelAxisAlignedBoundingBox | null = children[childIndex - 1]?.getBBox() || null;
+        let targetBBox2: RaphaelAxisAlignedBoundingBox | null = children[childIndex]?.getBBox() || null;
+
+        if (!father.isExpand) {
+          targetBBox1 = null;
+          targetBBox2 = null;
+        }
 
         this.shape = new DragTempNodeShape({
           paper: this.paper,
