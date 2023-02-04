@@ -2,7 +2,7 @@
 
 > A Web-Based Javascript Mindmap
 
-> ![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)
+![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)
 
 ## Document
 * en
