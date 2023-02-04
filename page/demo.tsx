@@ -1,9 +1,10 @@
 import MindemapTree from '../core/src/index';
-import './common/common.less';
-import { isDebug } from './common/is-debug';
+import { getQuery } from './common/utils';
+import Store from './common/store';
 import type { NodeDataMap } from '../core/src/data/data-proxy';
+import './common/common.less';
 
-const data: NodeDataMap = {
+const defaultData: NodeDataMap = {
   '1': {
     label: 'My Holiday',
     direction: 0,
@@ -48,9 +49,16 @@ const data: NodeDataMap = {
   },
 };
 
+const store = new Store();
 
-new MindemapTree({
+const data = store.getData() || defaultData;
+
+const mindmapTree = new MindemapTree({
   container: '#container',
+  isDebug: getQuery('debug') === '1',
   data,
-  isDebug,
+});
+
+mindmapTree.on('data', (data) => {
+  store.save(data);
 });

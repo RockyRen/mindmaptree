@@ -8,12 +8,19 @@ export interface NodeData {
 
 export type NodeDataMap = Record<string, NodeData>;
 
+export interface EventMap {
+  data: (data: NodeDataMap) => void;
+}
+
+export type EventNames = keyof EventMap;
+
 declare class MindmapTree {
   public constructor (options: {
     container: string | Element;
     data?: NodeDataMap;
     isDebug?: boolean;
   })
+  public on<T extends EventNames>(eventName: T, callback: EventMap[T]): void
   public clear(): void
 }
 
