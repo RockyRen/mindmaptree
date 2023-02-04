@@ -2,13 +2,15 @@
 
 > A Web-Based Javascript Mindmap
 
+> ![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)
+
 ## Document
 * en
 * [zh-cn中文](https://github.com/RockyRen/mindmaptree/blob/master/wiki/README.zh.md)
 
 ## Demo
-[Demo](https://rockyren.github.io/mindmaptree/demo.html) 
-[中文Demo](https://rockyren.github.io/mindmaptree/demo.html)
+* [Demo](https://rockyren.github.io/mindmaptree/demo.html) 
+* [中文Demo](https://rockyren.github.io/mindmaptree/demo.html)
 
 ## Installation
 

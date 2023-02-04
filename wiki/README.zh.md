@@ -1,10 +1,12 @@
 # mindmap-tree
 
 > 一个基于web(svg)的思维导图
-> 
+
+![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)
+
 ## Demo
-[Demo](https://rockyren.github.io/mindmaptree/demo.html) 
-[中文Demo](https://rockyren.github.io/mindmaptree/demo.html)
+* [Demo](https://rockyren.github.io/mindmaptree/demo.html) 
+* [中文Demo](https://rockyren.github.io/mindmaptree/demo.html)
 
 ## 安装
 
@@ -14,12 +16,14 @@ npm install -S mindmap-tree
 
 ## 使用
 
+html: 
 ```html
 <body>
   <div id="container" style="width:100vh;height:100vh;"></div>
 </body>
 ```
 
+js: 
 ```js
 import MindmapTree from 'mindmap-tree';
 import 'mindmap-tree/style.css';
@@ -30,7 +34,6 @@ new MindmapTree({
 ```
 
 ## 功能
-
 * 添加 & 删除节点
 * 编辑节点文本
 * 撤销 & 重做
