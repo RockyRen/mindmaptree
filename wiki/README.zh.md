@@ -1,37 +1,25 @@
-# mindmap-tree
+<h1 align="center">
+  Mindmap-Tree
+</h1>
 
-> 一个基于web(svg)的思维导图
+<h3 align="center">
+  一个基于web(svg)的思维导图
+</h3>
 
-![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)
+<p align="center">
+  <a href="https://www.npmjs.org/package/x-data-spreadsheet">
+    <img src="https://img.shields.io/npm/v/mindmap-tree" alt="npm" />
+  </a>
+  <a href="https://github.com/RockyRen/mindmaptree">
+    <img src="https://img.shields.io/github/license/RockyRen/mindmaptree" alt="ci" />
+  </a>
+</p>
+
+[![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)](https://rockyren.github.io/mindmaptree/demo.html)
 
 ## Demo
-* [Demo](https://rockyren.github.io/mindmaptree/demo.html) 
-* [中文Demo](https://rockyren.github.io/mindmaptree/demo.html)
+[Demo](https://rockyren.github.io/mindmaptree/demo.html) 
 
-## 安装
-
-```sh
-npm install -S mindmap-tree
-```
-
-## 使用
-
-html: 
-```html
-<body>
-  <div id="container" style="width:100vh;height:100vh;"></div>
-</body>
-```
-
-js: 
-```js
-import MindmapTree from 'mindmap-tree';
-import 'mindmap-tree/style.css';
-
-new MindmapTree({
-  container: '#container',
-});
-```
 
 ## 功能
 * 添加 & 删除节点
@@ -44,7 +32,21 @@ new MindmapTree({
 * 展开 & 收缩节点
 
 
-## 参数
+## 开始使用
+
+### 安装
+
+```sh
+npm install -S mindmap-tree
+```
+
+### 使用
+
+```html
+<body>
+  <div id="container" style="width:100vh;height:100vh;"></div>
+</body>
+```
 
 ```js
 import MindmapTree from 'mindmap-tree';
@@ -52,28 +54,28 @@ import 'mindmap-tree/style.css';
 
 new MindmapTree({
   container: '#container',
-  data: {
-      '1': {
-        label: 'My Holiday', // Node label
-        direction: 0,        // Node direction  1: right, 0: none, -1: left
-        isRoot: true,        // Is root node of not
-        children: ['2', '5', '7'], // children ids
-      },
-      '2': {
-        label: 'Morning',
-        direction: 1,
-        children: ['3'],
-        isExpand: false,    // Is expanding node or not, default value is true
-      },
-      '3': {
-        label: 'Read book',
-        direction: 1,
-        children: [],
-      },
-  }
 });
 ```
 
+### 参数
+
+MindmapTree constructor 参数:
+
+| Prop            | Type    | Default | Description                                            |
+|-----------------|:-------:|---------|--------------------------------------------------------|
+| **container**       | String \| Element   | ''      |   container的HTML元素     |
+| **data** | NodeDataMap   | Record<string, NodeData>      | 思维导图的初始化数据 |
+| **isDebug**    | Boolean   | false     | 是否调试  |
+
+NodeData params: 
+
+| Prop            | Type    | Default | Description                                            |
+|-----------------|:-------:|---------|--------------------------------------------------------|
+| **label**       | String   | ''      | 节点文本          |
+| **direction** | Number   |  0  |  节点方向, 1:右边, 0:无, -1:左边    |
+| **isRoot**    | Boolean   | false     | 是否根节点  |
+| **children**    | String[]   | []     | 子节点的id数组  |
+| **isExpand**    | Boolean   | true   | 是否展开节点  |
 
 ## License
 

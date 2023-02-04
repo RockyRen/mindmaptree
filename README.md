@@ -77,7 +77,7 @@ NodeData params:
 | Prop            | Type    | Default | Description                                            |
 |-----------------|:-------:|---------|--------------------------------------------------------|
 | **label**       | String   | ''      | Node label           |
-| **direction** | Number   |  0  |  Node direction, 1:right, 0:none, -1:lefet    |
+| **direction** | Number   |  0  |  Node direction, 1:right, 0:none, -1:left    |
 | **isRoot**    | Boolean   | false     | Is root node or not    |
 | **children**    | String[]   | []     | children ids    |
 | **isExpand**    | Boolean   | true   | To expand node or not    |
