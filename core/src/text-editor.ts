@@ -42,9 +42,8 @@ class TextEditor {
     selection.on('select', () => {
       const selectNodes = selection.getSelectNodes();
 
-      // 如果被选节点只有一个，且和上一个不一样，设置label，并且focus
+      // If selectNodes has only one and is different, then focus and set label
       if (selectNodes.length === 1 && this.node?.id !== selectNodes[0].id) {
-        console.log('focus & change----');
         this.setLabel();
 
         this.editorDom.focus();
@@ -53,10 +52,7 @@ class TextEditor {
 
         this.node = selectNodes[0];
         this.translate();
-      }
-      // 当被选节点存在，但是变多选或者不选时，设置label，并且blur
-      else if (this.node !== null && (selectNodes.length !== 1 || selectNodes[0].id !== this.node.id)) {
-        console.log('blur----');
+      } else if (this.node !== null && (selectNodes.length !== 1 || selectNodes[0].id !== this.node.id)) {
         this.setLabel();
 
         this.editorDom.innerText = '';
@@ -110,7 +106,6 @@ class TextEditor {
   private show(): void {
     if (this.node === null) return;
 
-    console.log('show----', this.node.id);
     const scale = this.viewport.getScale();
     const fontSize = fontSizeMap[this.node.getDepthType()] * scale;
     this.editorWrapperDom.style.zIndex = '3';
@@ -122,7 +117,6 @@ class TextEditor {
   }
 
   private hide(): void {
-    console.log('hide----');
     this.editorWrapperDom.style.zIndex = '-9999';
     this.isShow = false;
   }
@@ -155,12 +149,9 @@ class TextEditor {
   }
 
   private translate() {
-    if (this.node === null) {
-      return;
-    }
+    if (this.node === null) return;
 
     const { cx, cy } = this.node.getBBox();
-
     const { offsetX, offsetY } = this.viewport.getOffsetPosition(cx, cy);
     const scale = this.viewport.getScale();
 

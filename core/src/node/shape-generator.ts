@@ -1,18 +1,18 @@
 
 import Node from './node';
-import { RaphaelPaper } from 'raphael';
+import NodeShape from '../shape/node-shape';
 import { createFirstNodeShape } from '../shape/first-node-shape';
 import { createGrandchildNodeShape } from '../shape/grandchild-node-shape';
 import { createRootNodeShape } from '../shape/root-node-shape';
 import { createFirstEdgeShape, FirstEdgeShape } from '../shape/first-edge-shape';
 import { createGrandchildEdgeShape, GrandchildEdgeShape } from '../shape/grandchild-edge-shape';
-import NodeShape from '../shape/node-shape';
 import { getDepthType, DepthType } from '../helper';
 import { Direction } from '../types';
+import type { RaphaelPaper } from 'raphael';
 
 export type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
 
-// 节点shape生成类
+// generate Node and Edge for rendering
 class ShapeGenerator {
   private readonly paper: RaphaelPaper;
   private readonly depth: number;

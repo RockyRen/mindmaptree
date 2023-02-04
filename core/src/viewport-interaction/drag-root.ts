@@ -11,7 +11,6 @@ class DragRoot {
     this.dragViewportHandler = dragViewportHandler;
   }
 
-  // start的x，y代表浏览器视口的鼠标位置
   private start = (clientX: number, clientY: number, event: MouseEvent): void => {
     event.stopPropagation();
     this.isStart = true;

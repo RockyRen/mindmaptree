@@ -7,7 +7,6 @@ class ViewportResize {
   public constructor( paperWrapper: PaperWrapper, viewport: Viewport) {
     const wrapperDom = paperWrapper.getWrapperDom();
     const svgDom = paperWrapper.getSvgDom();
-
     this.wrapperDom = wrapperDom;
     
     this.resizeObserver = new ResizeObserver((entries) => {

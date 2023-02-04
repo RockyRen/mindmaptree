@@ -1,9 +1,9 @@
-import { RaphaelPaper, RaphaelSet, RaphaelElement, RaphaelAxisAlignedBoundingBox, RaphaelAttributes, RaphaelBaseElement } from 'raphael';
-import { Direction } from '../types';
 import ShapeEventEmitter from './common/shape-event-emitter';
 import NodeShapeStyle from './common/node-shape-style';
-import type { StyleType } from './common/node-shape-style';
+import { Direction } from '../types';
 import type { EventNames, EventArgs } from './common/shape-event-emitter';
+import type { RaphaelPaper, RaphaelSet, RaphaelElement, RaphaelAxisAlignedBoundingBox, RaphaelAttributes } from 'raphael';
+import type { StyleType } from './common/node-shape-style';
 
 const invisibleX = -999999;
 const invisibleY = -999999;
@@ -54,7 +54,7 @@ class NodeShape {
     this.rectHeight = rectHeight;
 
     const hasValidPosition = (x !== undefined && y !== undefined);
-    // 如果初始化类是没有设置x或者y，则将shape移动到一个看不到的位置
+    // If there are no x or y, then move shape to the invisible position.
     const shapeX = hasValidPosition ? x : invisibleX;
     const shapeY = hasValidPosition ? y : invisibleY;
 
@@ -72,7 +72,6 @@ class NodeShape {
       rectBaseAttr,
       borderBaseAttr,
     });
-
     this.nodeShapeStyle.setBaseStyle();
 
     this.labelShape.toFront();
@@ -80,7 +79,6 @@ class NodeShape {
     this.labelShape.node.style['user-select'] = 'none';
 
     this.setPosition(shapeX, shapeY);
-
     this.shapeEventEmitter = new ShapeEventEmitter(this.shapeSet);
 
     if (!hasValidPosition) {
@@ -120,9 +118,7 @@ class NodeShape {
 
     this.show();
 
-    if (dx === 0 && dy === 0) {
-      return;
-    }
+    if (dx === 0 && dy === 0) return;
 
     this.shapeSet.translate(dx, dy);
   }
@@ -216,14 +212,14 @@ class NodeShape {
   private initHover(): void {
     this.shapeEventEmitter.on('hover', () => {
       const curStyleType = this.nodeShapeStyle.getStyle();
-      if (curStyleType!== 'select' && curStyleType !== 'disable') {
+      if (curStyleType !== 'select' && curStyleType !== 'disable') {
         this.nodeShapeStyle.setStyle('hover');
         this.isHoverInCalled = true;
       }
 
     }, () => {
       const curStyleType = this.nodeShapeStyle.getStyle();
-      if (this.isHoverInCalled && curStyleType!== 'select' && curStyleType !== 'disable') {
+      if (this.isHoverInCalled && curStyleType !== 'select' && curStyleType !== 'disable') {
         this.nodeShapeStyle.setStyle('base');
         this.isHoverInCalled = false;
       }

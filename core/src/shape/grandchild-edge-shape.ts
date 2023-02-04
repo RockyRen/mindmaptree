@@ -1,6 +1,6 @@
-import { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelElement } from 'raphael';
 import { Direction } from '../types';
 import { drawGrandChildEdge } from './common/draw-edge';
+import type { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelElement } from 'raphael';
 
 interface GrandchildEdgeShapeOptions {
   paper: RaphaelPaper;

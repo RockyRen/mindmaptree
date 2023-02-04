@@ -21,4 +21,3 @@ export function createFirstNodeShape(options: NodeShapeOptions): NodeShape {
     rectHeight,
   });
 }
-

@@ -1,6 +1,6 @@
-import { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelElement } from 'raphael';
 import { Direction } from '../../types';
 import { expanderBoxWidth } from '../expander-shape';
+import type { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelElement } from 'raphael';
 
 export const drawFirstEdge = ({
   paper,
@@ -13,10 +13,10 @@ export const drawFirstEdge = ({
   targetBBox: RaphaelAxisAlignedBoundingBox;
   direction: Direction;
 }): RaphaelElement => {
-  // 起点
+  // start
   const x1 = sourceBBox.cx;
   const y1 = sourceBBox.cy;
-  // 终点
+  // end
   const x2 = direction === Direction.LEFT ? targetBBox.x2 : targetBBox.x;
   const y2 = targetBBox.cy;
 
@@ -98,4 +98,3 @@ const createConnectPathStr = (x1: number, y1: number, x2: number, y2: number): s
 
   return `M${x1} ${y1}C${control1X} ${control1Y} ${control2X} ${control2Y} ${x2} ${y2}`;
 };
-

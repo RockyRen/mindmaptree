@@ -23,7 +23,6 @@ class Snapshot<T> {
     return this.future.length > 0;
   }
 
-  // 撤销
   public undo(data: T): T | null {
     if (this.canUndo()) {
       this.future.unshift(JSON.stringify(data));
@@ -33,7 +32,6 @@ class Snapshot<T> {
     return null;
   }
 
-  // 重做
   public redo(data: T): T | null {
     if (this.canRedo()) {
       this.past.push(JSON.stringify(data));

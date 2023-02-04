@@ -1,10 +1,10 @@
 import Position from "../position";
+import DataProxy from "../data/data-proxy";
 import Node from '../node/node';
 import Selection from '../selection/selection';
 import { Direction } from '../types';
 import { generateId } from '../helper';
 import type { CreateNodeFunc } from '../node/node-creator';
-import DataProxy from "../data/data-proxy";
 
 export interface ChangeFatherParams {
   newFather: Node,
@@ -48,7 +48,7 @@ class ChangeFatherOperation {
       return this.cloneNode(node, newFather, direction);
     });
 
-    // 如果没有childIndex参数，就插入到father的最后面
+    // If childIndex is undefineed, then insert node to the end of father
     const newChildIndex = childIndex === undefined ? newFather.getDirectionChildren(direction).length : childIndex;
     newFather.spliceChild(newChildIndex, 0, direction, clonedNodes);
     newFather.changeExpand(true);
@@ -58,7 +58,7 @@ class ChangeFatherOperation {
     this.selection.select(clonedNodes);
     this.position.reset();
     this.dataProxy.resetData();
-  };
+  }
 
   private cloneNode(node: Node, father: Node, direction: Direction): Node {
     const clonedNode = this.createNode({

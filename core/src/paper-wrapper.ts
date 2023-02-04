@@ -1,4 +1,5 @@
-import Raphael, { RaphaelPaper } from 'raphael';
+import Raphael from 'raphael';
+import type { RaphaelPaper } from 'raphael';
 
 export const wrapperClassName = 'mindmap-graph';
 
@@ -48,7 +49,6 @@ class PaperWrapper {
     wrapperDom: HTMLDivElement;
    } {
     const containerDom = (typeof container === 'string' ? document.querySelector(container) : container) as HTMLElement;
-    console.log('containerDom---', containerDom);
     if (!containerDom) {
       throw new Error('container is not exist');
     }

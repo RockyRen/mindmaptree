@@ -1,7 +1,8 @@
 import Node from '../node/node';
 import EventEmitter from 'eventemitter3';
-import SelectionArrowNext, { ArrowType } from './selection-arrow-next';
+import SelectionArrowNext from './selection-arrow-next';
 import SelectionRemoveNext from './selection-remove-next';
+import type { ArrowType } from './selection-arrow-next';
 
 interface SelectionEventMap {
   'select': (nodes: Node[]) => void;
@@ -23,7 +24,6 @@ class Selection {
     this.isMultiClickMode = isMultiClickMode;
   }
 
-  // 选择节点：先取消之前节点的选择状态，再选择新的节点
   public select(nodes: Node[]): void {
     const clonedNodes = [...nodes];
     this.selectNodes.forEach((selection) => selection.setStyle('base'));
@@ -103,7 +103,7 @@ class Selection {
     return this.getTopNodesInner(root, selectNodeMap);
   }
 
-  public getRemoveNextNode(): Node| null {
+  public getRemoveNextNode(): Node | null {
     return this.selectionRemoveNext.getRemoveNextNode(this.selectNodes);
   }
 

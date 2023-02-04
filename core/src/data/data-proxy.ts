@@ -1,9 +1,9 @@
+import EventEmitter from 'eventemitter3';
+import Node from '../node/node';
+import Selection from '../selection/selection';
 import Snapshot from './snapshot';
 import { generateId } from '../helper';
 import { Direction } from '../types';
-import Selection from '../selection/selection';
-import Node from '../node/node';
-import EventEmitter from 'eventemitter3';
 
 export interface NodeData {
   children: string[];
@@ -28,7 +28,7 @@ export const getInitData = (data?: NodeDataMap): NodeDataMap => {
   const initData = data || {
     [generateId()]: {
       children: [],
-      label: '中心主题',
+      label: 'Central Topic',
       direction: Direction.NONE,
       isRoot: true,
     },
@@ -114,18 +114,12 @@ class DataProxy {
       ...this.data[nodeId],
       ...nodeData,
     };
-
-
-    console.log('set data', this.data);
   }
 
-  // todo resetData需要先记录reset之前的root，导致调用要调用两个方法
   public resetData(): void {
     const newData: NodeDataMap = {};
     this.resetDataInner(this.root, newData);
     this.data = newData;
-
-    console.log('reset data', this.data);
   }
 
   public addSnapshot(selectIds?: string[]): void {
@@ -133,7 +127,6 @@ class DataProxy {
       data: this.data,
       selectIds: selectIds || this.selection.getSelectIds(),
     });
-    this.eventEmitter.emit('changeData');
   }
 
   private resetDataInner(node: Node, nodeDataMap: NodeDataMap): void {

@@ -25,4 +25,11 @@ npm publish
 ```
 
 #### publish page
-It'll publish page after pushing master
+git checkout to `gh-pages` branch，then run：
+
+```sh
+npm run build
+git add .
+git commit -m "some commit"
+git push origin gh-pages
+```

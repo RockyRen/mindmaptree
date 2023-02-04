@@ -1,4 +1,4 @@
-import { RaphaelPaper, RaphaelElement, RaphaelAxisAlignedBoundingBox } from 'raphael';
+import type { RaphaelPaper, RaphaelElement, RaphaelAxisAlignedBoundingBox } from 'raphael';
 
 class MultiSelectShape {
   private startX: number = 0;

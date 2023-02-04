@@ -1,9 +1,8 @@
 import Node from './node/node';
 import { Direction } from './types';
 import { getNodeYGap, getNodeXGap } from './shape/gap';
-import { DepthType } from './helper';
 
-// 区域高度类，一个节点的区域高度由子节点的区域高度加上间隔组成
+// areaHeight is combined of all children node areaHeight
 class AreaHeight {
   private readonly areaHeightMap: Record<string, number> = {};
   public constructor() { }
@@ -13,7 +12,7 @@ class AreaHeight {
       return nodeHeight;
     }
 
-    // 如果有区域高度的缓存，则直接用缓存
+    // use cache
     const areaKey = `${node.id}_${direction}`;
     if (this.areaHeightMap[areaKey]) {
       return this.areaHeightMap[areaKey];
@@ -46,7 +45,7 @@ class AreaHeight {
   }
 }
 
-// 位置类，用于递归算出节点位置
+// set pall nodes' position
 class Position {
   private root: Node | null;
   public constructor(root?: Node | null) {
@@ -57,7 +56,6 @@ class Position {
     this.root = root;
   }
 
-  // 拿到root节点，然后改变该方向所有子节点的位置
   public reset(direction?: Direction): void {
     if (!this.root) {
       throw new Error('Position is called without root.');
@@ -105,7 +103,6 @@ class Position {
       const childX = direction === Direction.RIGHT ? (nodeBBox.x2 + xGap) : (nodeBBox.x - xGap - childBBox.width);
       const childY = startY + (targetAreaHeight / 2) - (childBBox.height / 2);
 
-      // 选出子节点的位置后，调用Node的translateTo方法移动节点
       child.translateTo(childX, childY);
 
       this.resetInner({ node: child, direction, areaHeightHandler });

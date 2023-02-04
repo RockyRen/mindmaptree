@@ -1,3 +1,9 @@
+import Selection from '../../selection/selection';
+import DataProxy from '../../data/data-proxy';
+import TextEditor from '../../text-editor';
+import ToolOperation from '../../tool-operation';
+import PaperWrapper from '../../paper-wrapper';
+import ViewportInteraction from '../../viewport-interaction/viewport-interaction';
 import { h, MElement } from '../m-element';
 import Undo from './undo';
 import Redo from './redo';
@@ -6,12 +12,7 @@ import AddBrother from './add-brother';
 import Edit from './edit';
 import Delete from './delete';
 import Target from './target';
-import Selection from '../../selection/selection';
-import DataProxy from '../../data/data-proxy';
-import TextEditor from '../../text-editor';
-import ToolOperation from '../../tool-operation';
-import PaperWrapper from '../../paper-wrapper';
-import ViewportInteraction from '../../viewport-interaction/viewport-interaction';
+
 
 class Toolbar {
   private readonly undo: Undo;
@@ -42,7 +43,7 @@ class Toolbar {
     this.addChildNode = new AddChild({ toolOperation, selection });
     this.addBrotherNode = new AddBrother({ toolOperation, selection });
     this.edit = new Edit({ textEditor, selection, });
-    this.delete = new Delete({ toolOperation, textEditor, selection });
+    this.delete = new Delete({ toolOperation, selection });
     this.target = new Target({ viewportInteraction });
 
     const items = [
@@ -62,17 +63,19 @@ class Toolbar {
 
     const el = h('div', 'toolbar');
 
+    // render toolbar
     items.forEach((item) => {
       el.setChildren(item);
     });
 
     wrapperDom.appendChild(el.getDom());
 
-    // todo seleciton和dataProxy可能同时触发
+    // change toolbar state when select change
     selection.on('select', () => {
       this.setState();
     });
 
+    // change toolbar state when data change
     dataProxy.on('changeData', () => {
       this.setState();
     });

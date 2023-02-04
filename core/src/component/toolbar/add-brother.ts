@@ -41,7 +41,7 @@ class AddChild {
       btnEl,
     } = createToolbarItem({
       iconName: 'add-brother',
-      tipLabel: '添加同级节点',
+      tipLabel: 'Add Topic',
     });
 
     btnEl.addEventListener('click', () => {

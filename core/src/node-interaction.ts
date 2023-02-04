@@ -33,7 +33,6 @@ class NodeInteraction {
         treeOperation.changeFather?.({
           newFather: hitArea.father,
           direction: hitArea.direction,
-          // todo 这里后面要改成多选
           nodes: [node],
           childIndex: hitArea.childIndex,
         });

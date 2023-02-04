@@ -26,7 +26,7 @@ class Target {
       btnEl,
     } = createToolbarItem({
       iconName: 'target',
-      tipLabel: '定位到中间',
+      tipLabel: 'Locate to center',
       isDisabled: false,
     });
 

@@ -6,14 +6,6 @@ export type ArrowType = 'ArrowUp' | 'ArrowRight' | 'ArrowDown' | 'ArrowLeft';
 class SelectionNext {
   public constructor() { }
 
-  public getRemoveNextNode(selectedNodes: Node[]): Node | null {
-    const lastSelectNode = selectedNodes[selectedNodes.length - 1];
-    if (!lastSelectNode) return null;
-
-
-    return null;
-  }
-
   public getArrowNextNode(node: Node, arrowType: ArrowType): Node | null {
     let nextNode: Node | null = null;
 

@@ -4,6 +4,7 @@ import { h, MElement } from '../m-element';
 
 const zoomSpeed = 0.25;
 
+// viewport scale component on bottom right corner
 class ViewportScale {
   private readonly viewport: Viewport;
   private readonly el: MElement;
@@ -26,7 +27,6 @@ class ViewportScale {
     viewport.on('changeScale', (scale: number) => {
       this.scaleLabelEl.setHtml(this.getScalePercent(scale));
     });
-
   }
 
   private element(): {
@@ -58,6 +58,7 @@ class ViewportScale {
       this.viewport.addScale(zoomSpeed);
     }, false);
 
+    // click number percent to restore to 100%
     scaleLabelEl.addEventListener('click', () => {
       this.viewport.setScale(1);
     }, false);

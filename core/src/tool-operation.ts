@@ -4,11 +4,10 @@ import Selection from './selection/selection';
 import DataProxy from './data/data-proxy';
 import TreeOperation from './tree/tree-operation';
 
-// Toolbar、子Toolbar和keyboard的公共操作
+// public operation of Toolbar, Sub Toolbar and keyboard
 class ToolOperation {
   private readonly root: Node;
   private readonly tree: Tree;
-  // private readonly textEditor: TextEditor;
   private readonly selection: Selection;
   private readonly dataProxy: DataProxy;
   private readonly treeOperation: TreeOperation;

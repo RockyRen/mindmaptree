@@ -1,9 +1,9 @@
 import Node from '../node/node';
 import { Direction } from '../types';
 import { getNodeYGap } from '../shape/gap';
-import { RaphaelPaper } from 'raphael';
 import DragTemp from './drag-temp';
 import DrawDragArea from './draw-drag-area';
+import type { RaphaelPaper } from 'raphael';
 
 interface AreaBox {
   x: number;
@@ -98,7 +98,7 @@ class DragArea {
     return null;
   }
 
-  // 是否命中被拖拽节点本身的区域
+  // Check if hit the dragging node or not
   private isOwnArea(father: Node, childIndex: number, direction: Direction): boolean {
     const brothers = this.node.father?.getDirectionChildren(direction);
     const currentNodeIndex = brothers?.findIndex((child) => child.id === this.node.id);
@@ -116,7 +116,7 @@ class DragArea {
     );
   }
 
-  // 层序遍历
+  // Sequence traversal
   private getAreaList(root: Node): Area[] {
     const areaList: Area[] = [];
 
@@ -141,7 +141,6 @@ class DragArea {
           direction,
         } = queue.shift()!;
 
-        // 如果拖拽的是当前节点，则该节点及其子节点都不纳入拖拽区域中
         if (this.node.id === current.id) {
           continue;
         }
@@ -225,7 +224,6 @@ class DragArea {
     return (getNodeYGap(node.depth) + patchY) / 2;
   }
 
-  // 获取子节点X轴：由最宽的子节点决定。如果没有子节点则用默认的宽度决定
   private getChildBoundaryX(node: Node, direction: Direction): number {
     const children = node.getDirectionChildren(direction);
 

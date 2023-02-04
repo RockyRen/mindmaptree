@@ -18,4 +18,3 @@ export function createGrandchildNodeShape(options: NodeShapeOptions): NodeShape 
     rectHeight,
   });
 }
-

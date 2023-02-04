@@ -8,9 +8,7 @@ class DragBackground {
   ) {
     this.svgDom = svgDom
     this.svgDom?.addEventListener('mousedown', this.handleMousedown);
-
     this.svgDom?.addEventListener('mousemove', this.handleMousemove);
-
     this.svgDom?.addEventListener('mouseup', this.handleMouseup);
   }
 
@@ -29,9 +27,7 @@ class DragBackground {
   }
 
   private handleMousedown = (event: MouseEvent): void => {
-    if (!this.able) {
-      return;
-    }
+    if (!this.able) return;
     this.dragViewportHandler.handleMousedown(event.clientX, event.clientY);
   }
 

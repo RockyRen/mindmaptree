@@ -1,20 +1,17 @@
-import { RaphaelPaper, RaphaelAxisAlignedBoundingBox } from 'raphael';
-import NodeShape from '../shape/node-shape';
-import { Direction } from '../types';
-import { getDepthType, DepthType } from '../helper';
-import Drag from '../drag/drag';
-import ShapeGenerator from './shape-generator';
-import type { EdgeShape } from './shape-generator';
 import Position from '../position';
-import Expander from './expander';
 import Viewport from '../viewport';
+import Expander from './expander';
+import Drag from '../drag/drag';
+import NodeShape from '../shape/node-shape';
+import ShapeGenerator from './shape-generator';
+import { getDepthType, DepthType } from '../helper';
+import { Direction } from '../types';
 import type { ExpanderEventMap } from './expander';
-import type {
-  EventNames as ShapeEventNames,
-  EventArgs as ShapeEventArgs,
-} from '../shape/common/shape-event-emitter';
+import type { RaphaelPaper, RaphaelAxisAlignedBoundingBox } from 'raphael';
 import type { DragEventMap } from '../drag/drag';
-import { StyleType } from '../shape/common/node-shape-style';
+import type { EdgeShape } from './shape-generator';
+import type { EventNames as ShapeEventNames, EventArgs as ShapeEventArgs } from '../shape/common/shape-event-emitter';
+import type { StyleType } from '../shape/common/node-shape-style';
 
 export interface TraverseOptions {
   node: Node;
@@ -49,7 +46,6 @@ export interface NodeOptions {
   viewport: Viewport;
 }
 
-// 节点类
 class Node {
   private readonly position: Position;
   private readonly shapeGenerator: ShapeGenerator;
@@ -91,6 +87,7 @@ class Node {
       father,
     });
 
+    // render node & edge
     this.nodeShape = this.shapeGenerator.createNode(x, y);
     if (x !== undefined || y !== undefined) {
       this.edgeShape = this.shapeGenerator.createEdge(this.nodeShape);
@@ -188,18 +185,16 @@ class Node {
     if (this.isRoot()) {
       let directionStart = -1;
       let directionIndex = 0;
-
       let i = 0;
+
       for (i = 0; i < this.children.length; i++) {
         if (this.children[i].direction !== direction) {
           continue;
         }
-
         if (start === directionIndex) {
           directionStart = i;
           break;
         }
-
         directionIndex++;
       }
 
@@ -233,13 +228,13 @@ class Node {
       const brothers = this.father?.children;
       if (!brothers) return;
 
-      // 删除关系
+      // Remove the relationship from father node's children
       const index = brothers?.findIndex((brother) => this.id === brother.id);
       if (index > -1) {
         brothers.splice(index, 1);
       }
 
-      // 如果兄弟节点数组为空，则删除父节点的expander
+      // If brothers is empty, then remove the expander of father
       if (brothers.length === 0) {
         this.father?.expander.remove();
       }

@@ -14,7 +14,7 @@ class MElement {
     return this.dom;
   }
 
-  public setChildren(...eles: MElement[]) {
+  public setChildren(...eles: MElement[]): MElement {
     eles.forEach(ele => this.setChild(ele));
     return this;
   }

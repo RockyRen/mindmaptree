@@ -1,12 +1,13 @@
-import { RaphaelPaper } from 'raphael';
+
+import EventEmitter from 'eventemitter3';
 import Node from '../node/node';
+import NodeShape from '../shape/node-shape';
 import Viewport from '../viewport';
 import DragArea, { HitArea } from './drag-area';
 import DragClonedNode from './drag-cloned-node';
+import type { RaphaelPaper } from 'raphael';
 import type { TraverseFunc } from '../node/node';
-import NodeShape from '../shape/node-shape';
 import type { StyleType } from '../shape/common/node-shape-style';
-import EventEmitter from 'eventemitter3';
 
 const validDiff = 2;
 
@@ -14,7 +15,7 @@ export interface DragEventMap {
   dragEnd: (hitArea: HitArea) => void;
 }
 
-// 节点拖拽类
+// Drag node to change father, except root node.
 class Drag {
   private readonly node: Node;
   private readonly viewport: Viewport;
@@ -54,7 +55,7 @@ class Drag {
     this.dragClonedNode = new DragClonedNode(nodeShape);
     this.eventEmitter = new EventEmitter<DragEventMap>();
 
-    // 初始化时监听拖拽事件
+    // init drag event
     nodeShape.on('drag', this.move, this.start, this.end);
   }
 
@@ -86,10 +87,9 @@ class Drag {
 
     if (!this.isStart) return;
 
-    // 点击的时候可能会有一个很短距离的移动，此时还不初始化
+    // Start initing when move the valid distance.
     if (!this.isMoveInited && (Math.abs(originDx) > validDiff || Math.abs(originDy) > validDiff)) {
       this.dragArea.init();
-
       this.dragClonedNode.init();
       this.dragClonedNode.translate(this.lastDx, this.lastDy);
 
@@ -115,21 +115,19 @@ class Drag {
       this.dragClonedNode.translate(offsetX, offsetY);
 
       const currentHitArea = this.dragArea.getCurrentHitArea();
-
       if (currentHitArea?.father.id !== this.hitFather?.id) {
         currentHitArea?.father.setStyle('overlay');
         this.hitFather?.setStyle('base');
       }
 
       this.hitFather = currentHitArea?.father || null;
-      
     }
-
 
     this.lastDx = dx;
     this.lastDy = dy;
   }
 
+  // clear data when mousedown
   private end = (): void => {
     this.isStart = false;
     this.startX = 0;

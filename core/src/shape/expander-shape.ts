@@ -1,6 +1,6 @@
-import { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelSet, RaphaelElement } from 'raphael';
 import { Direction } from '../types';
 import ShapeEventEmitter from './common/shape-event-emitter';
+import type { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelSet, RaphaelElement } from 'raphael';
 import type { EventNames, EventArgs } from './common/shape-event-emitter';
 
 const circleRadius = 5;
