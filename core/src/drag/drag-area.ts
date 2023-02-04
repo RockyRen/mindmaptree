@@ -74,7 +74,7 @@ class DragArea {
       const { node, areaBox, childrenYList, direction } = this.areaList[i];
 
       if (x >= areaBox.x && x <= areaBox.x2 && y >= areaBox.y && y <= areaBox.y2) {
-        if (!childrenYList || childrenYList.length === 0) {
+        if (!childrenYList || childrenYList.length === 0 || node.isExpand === false) {
           return {
             father: node,
             childIndex: 0,
@@ -141,7 +141,7 @@ class DragArea {
           direction,
         } = queue.shift()!;
 
-        if (this.node.id === current.id) {
+        if (this.node.id === current.id || current.father?.isExpand === false) {
           continue;
         }
 
@@ -166,8 +166,7 @@ class DragArea {
     let startY = 0;
     let endY = 0;
 
-
-    if (children.length === 0) {
+    if (children.length === 0 || !node.isExpand) {
       startY = nodeBBox.y;
       endY = nodeBBox.y2;
     } else {
@@ -190,7 +189,6 @@ class DragArea {
     if (node.isRoot()) {
       areaBox.x = direction === Direction.RIGHT ? nodeBBox.cx : childBoundaryX;
       areaBox.x2 = direction === Direction.RIGHT ? childBoundaryX : nodeBBox.cx;
-
     } else {
       areaBox.x = direction === Direction.RIGHT ? nodeBBox.x2 : childBoundaryX;
       areaBox.x2 = direction === Direction.RIGHT ? childBoundaryX : nodeBBox.x;
@@ -227,7 +225,7 @@ class DragArea {
   private getChildBoundaryX(node: Node, direction: Direction): number {
     const children = node.getDirectionChildren(direction);
 
-    if (children.length === 0) {
+    if (children.length === 0 || node.isExpand === false) {
       const nodeBBox = node.getBBox();
       return direction === Direction.RIGHT ? nodeBBox.x2 + leafAreaWidth : nodeBBox.x - leafAreaWidth;
     }

@@ -100,9 +100,9 @@ class Drag {
         edgeShape?.setStyle('disable');
       });
 
-      this.isMoveInited = true;
-
       document.body.style.cursor = 'grabbing';
+
+      this.isMoveInited = true;
     }
 
     if (this.isMoveInited) {

@@ -23,6 +23,7 @@ class DragViewportHandler {
     const dy = this.lastClientY - clientY;
 
     if (!this.isMoveInited && (Math.abs(dx) > validDiff || Math.abs(dy) > validDiff)) {
+      document.body.style.cursor = 'grabbing';
       this.isMoveInited = true;
     }
 
@@ -39,6 +40,8 @@ class DragViewportHandler {
     this.isMoveInited = false;
     this.lastClientX = 0;
     this.lastClientY = 0;
+
+    document.body.style.cursor = 'default';
   }
 }
 

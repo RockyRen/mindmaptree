@@ -71,7 +71,6 @@ class TextEditor {
     this.editorDom.addEventListener('input', (event: Event) => {
       // @ts-ignore
       const inputValue = event.data;
-      console.log('input', inputValue, this.isEditableKey(inputValue));
       if (!this.isShow) {
         if (this.isEditableKey(inputValue)) {
           this.show();
