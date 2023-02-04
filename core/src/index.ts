@@ -15,8 +15,14 @@ import { setConfig } from './config';
 import ToolOperation from './tool-operation';
 import Toolbar from './component/toolbar/toolbar';
 import ViewportScale from './component/viewport-scale/viewport-scale';
-import type { NodeDataMap } from './data/data-proxy';
+import type { NodeDataMap, DataProxyEventMap } from './data/data-proxy';
 import './index.less';
+
+export interface EventMap {
+  data: DataProxyEventMap['data'];
+}
+
+export type EventNames = keyof EventMap;
 
 class MindmapTree {
   private readonly paperWrapper: PaperWrapper;
@@ -25,6 +31,7 @@ class MindmapTree {
   private readonly keyboard: Keyboard;
   private readonly multiSelect: MultiSelect;
   private readonly nodeCreator: NodeCreator;
+  private readonly dataProxy: DataProxy;
   public constructor({
     container,
     data,
@@ -59,6 +66,7 @@ class MindmapTree {
       selection,
       root,
     });
+    this.dataProxy = dataProxy;
 
     const treeOperation = new TreeOperation({
       root,
@@ -124,6 +132,12 @@ class MindmapTree {
       paperWrapper: this.paperWrapper,
       viewport,
     });
+  }
+
+  public on<T extends EventNames>(eventName: T, callback: EventMap[T]): void {
+    if (eventName === 'data') {
+      this.dataProxy.on(eventName, callback);
+    }
   }
 
   public clear(): void {

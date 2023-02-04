@@ -13,7 +13,6 @@ import Edit from './edit';
 import Delete from './delete';
 import Target from './target';
 
-
 class Toolbar {
   private readonly undo: Undo;
   private readonly redo: Redo;
@@ -76,7 +75,7 @@ class Toolbar {
     });
 
     // change toolbar state when data change
-    dataProxy.on('changeData', () => {
+    dataProxy.on('data', () => {
       this.setState();
     });
   }

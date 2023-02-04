@@ -20,8 +20,8 @@ interface SnapshotData {
   selectIds: string[];
 }
 
-interface DataProxyEventMap {
-  changeData: () => void;
+export interface DataProxyEventMap {
+  data: (data: NodeDataMap) => void;
 }
 
 export const getInitData = (data?: NodeDataMap): NodeDataMap => {
@@ -48,7 +48,7 @@ class DataProxy {
   private readonly root: Node;
   private readonly eventEmitter: EventEmitter<DataProxyEventMap>;
   private data: NodeDataMap;
-  
+
   public constructor({
     data,
     selection,
@@ -78,7 +78,7 @@ class DataProxy {
     })!;
     this.data = snapshotData.data;
 
-    this.eventEmitter.emit('changeData');
+    this.eventEmitter.emit('data', this.data);
 
     return snapshotData;
   }
@@ -92,7 +92,7 @@ class DataProxy {
     })!;
     this.data = snapshotData.data;
 
-    this.eventEmitter.emit('changeData');
+    this.eventEmitter.emit('data', this.data);
 
     return snapshotData;
   }
@@ -114,12 +114,16 @@ class DataProxy {
       ...this.data[nodeId],
       ...nodeData,
     };
+
+    this.eventEmitter.emit('data', this.data);
   }
 
   public resetData(): void {
     const newData: NodeDataMap = {};
     this.resetDataInner(this.root, newData);
     this.data = newData;
+
+    this.eventEmitter.emit('data', this.data);
   }
 
   public addSnapshot(selectIds?: string[]): void {
