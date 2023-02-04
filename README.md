@@ -1,8 +1,21 @@
-# mindmap-tree
+<h1 align="center">
+  Mindmap-Tree
+</h1>
 
-> A Web-Based Javascript Mindmap
+<h3 align="center">
+  A Web-Based Javascript Mindmap
+</h3>
 
-![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)
+<p align="center">
+  <a href="https://www.npmjs.org/package/x-data-spreadsheet">
+    <img src="https://img.shields.io/npm/v/x-data-spreadsheet.svg" alt="npm" />
+  </a>
+  <a href="https://github.com/RockyRen/mindmaptree">
+    <img src="https://img.shields.io/github/license/myliang/x-spreadsheet.svg" alt="ci" />
+  </a>
+</p>
+
+[![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)](https://rockyren.github.io/mindmaptree/demo.html)
 
 ## Document
 * en
