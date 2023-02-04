@@ -5,7 +5,7 @@ set -e
 npm run build:core
 
 git checkout gh-pages
-git merge master -m
+git merge master
 
 npm run build
 
