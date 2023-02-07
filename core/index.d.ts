@@ -19,6 +19,7 @@ declare class MindmapTree {
     container: string | Element;
     data?: NodeDataMap;
     isDebug?: boolean;
+    scale?: number;
   })
   public on<T extends EventNames>(eventName: T, callback: EventMap[T]): void
   public clear(): void

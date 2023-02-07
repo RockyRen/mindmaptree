@@ -5,10 +5,13 @@ const pageId = getQuery('id');
 
 class Store {
   private readonly data: NodeDataMap | null = null;
-  public constructor() {
-
+  private pageKey: string = 'page';
+  public constructor(pageKey?: string) {
+    if (pageKey) {
+      this.pageKey = pageKey;
+    }
     if (pageId) {
-      const strData = localStorage.getItem(`page-${pageId}`) || '';
+      const strData = localStorage.getItem(`${this.pageKey}-${pageId}`) || '';
       if (strData) {
         this.data = JSON.parse(strData);
       }
@@ -21,7 +24,7 @@ class Store {
 
   public save(data: NodeDataMap): void {
     const strData = JSON.stringify(data);
-    localStorage.setItem(`page-${pageId}`, strData);
+    localStorage.setItem(`${this.pageKey}-${pageId}`, strData);
     console.log('save', strData);
   }
 }

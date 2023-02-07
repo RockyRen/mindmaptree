@@ -36,15 +36,17 @@ class MindmapTree {
     container,
     data,
     isDebug = false,
+    scale,
   }: {
     container: string | Element;
     data?: NodeDataMap;
     isDebug?: boolean;
+    scale?: number;
   }) {
     setConfig({ isDebug });
     this.paperWrapper = new PaperWrapper(container);
     const paper = this.paperWrapper.getPaper();
-    const viewport = new Viewport(this.paperWrapper);
+    const viewport = new Viewport(this.paperWrapper, scale);
     const selection = new Selection();
     this.nodeCreator = new NodeCreator({
       paper,
