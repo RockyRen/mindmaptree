@@ -10,7 +10,7 @@ export interface Viewbox {
 }
 
 interface ViewportEventMap {
-  changeScale: (scale: number) => void; 
+  changeScale: (scale: number) => void;
 }
 
 const maxScale = 3;
@@ -22,10 +22,15 @@ class Viewport {
   private readonly viewbox: Viewbox = { x: 0, y: 0, width: 0, height: 0 };
   private wrapperWidth: number;
   private wrapperHeight: number;
+  private scale: number = 1;
   public constructor(
     private readonly paperWrapper: PaperWrapper,
-    private scale: number = 1,
+    scale?: number,
   ) {
+    if (scale && Number.isFinite(scale)) {
+      this.scale = scale;
+    }
+
     this.paper = this.paperWrapper.getPaper();
     const paperSize = this.paperWrapper.getSize();
     this.wrapperWidth = paperSize.width;
@@ -33,12 +38,12 @@ class Viewport {
 
     this.eventEmitter = new EventEmitter<ViewportEventMap>();
 
-    if (scale > maxScale) {
-      scale = maxScale;
-    } else if (scale < minScale) {
-      scale = minScale;
+    if (this.scale > maxScale) {
+      this.scale = maxScale;
+    } else if (this.scale < minScale) {
+      this.scale = minScale;
     }
-    this.setScale(scale);
+    this.setScale(this.scale);
   }
 
   public getViewbox(): Viewbox {

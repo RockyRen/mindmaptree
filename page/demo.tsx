@@ -49,7 +49,7 @@ const defaultData: NodeDataMap = {
   },
 };
 
-const store = new Store();
+const store = new Store('demo');
 
 const data = store.getData() || defaultData;
 
@@ -57,6 +57,7 @@ const mindmapTree = new MindemapTree({
   container: '#container',
   isDebug: getQuery('debug') === '1',
   data,
+  scale: parseFloat(getQuery('scale')),
 });
 
 mindmapTree.on('data', (data) => {

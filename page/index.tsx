@@ -9,6 +9,7 @@ const mindmapTree = new MindemapTree({
   container: '#container',
   isDebug: getQuery('debug') === '1',
   data: store.getData() || undefined,
+  scale: parseFloat(getQuery('scale')),
 });
 
 mindmapTree.on('data', (data) => {

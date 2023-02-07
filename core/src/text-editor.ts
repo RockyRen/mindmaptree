@@ -19,8 +19,9 @@ class TextEditor {
   private readonly editorDom: HTMLDivElement;
   private readonly viewport: Viewport;
   private readonly dataProxy: DataProxy;
-  private isShow: boolean = false;
   private node: Node | null = null; // 当前操作的节点，需要看见的时候才算操作
+  private isShow: boolean = false;
+  private isComposition: boolean = false;
   public constructor({
     viewport,
     selection,
@@ -47,7 +48,6 @@ class TextEditor {
         this.setLabel();
 
         this.editorDom.focus();
-        this.editorDom.innerText = '';
         this.hide();
 
         this.node = selectNodes[0];
@@ -55,7 +55,6 @@ class TextEditor {
       } else if (this.node !== null && (selectNodes.length !== 1 || selectNodes[0].id !== this.node.id)) {
         this.setLabel();
 
-        this.editorDom.innerText = '';
         this.editorDom.blur();
         this.hide();
 
@@ -65,14 +64,22 @@ class TextEditor {
 
     this.editorDom.addEventListener('compositionstart', () => {
       if (!this.isShow) this.show();
+      this.isComposition = true;
+    });
+
+    this.editorDom.addEventListener('compositionend', () => {
+      this.isComposition = false;
     });
 
 
     this.editorDom.addEventListener('input', (event: Event) => {
       // @ts-ignore
       const inputValue = event.data;
+      console.log('input', inputValue);
       if (!this.isShow) {
-        if (this.isEditableKey(inputValue)) {
+        if (/\s/.test(inputValue)) {
+          this.showBySelectionLabel();
+        } else if (this.isEditableKey(inputValue)) {
           this.show();
         } else {
           this.editorDom.innerText = '';
@@ -96,9 +103,15 @@ class TextEditor {
   }
 
   public finishEdit(): void {
+    if (this.isComposition) return;
     this.setLabel();
-    this.editorDom.innerText = '';
     this.hide();
+  }
+
+  public hide(): void {
+    this.editorWrapperDom.style.zIndex = '-9999';
+    this.editorDom.innerText = '';
+    this.isShow = false;
   }
 
   // todo 名字有问题
@@ -115,10 +128,7 @@ class TextEditor {
     this.isShow = true;
   }
 
-  private hide(): void {
-    this.editorWrapperDom.style.zIndex = '-9999';
-    this.isShow = false;
-  }
+
 
   private initTextEditorElement(paperWrapper: PaperWrapper): {
     editorWrapperDom: HTMLDivElement;
@@ -144,7 +154,7 @@ class TextEditor {
 
   private isEditableKey(key: string): boolean {
     const editableOtherKeys = ['`', '-', '=', '[', ']', '\\', ';', '\'', ',', '.', '/'];
-    return /^[\w\s]$/.test(key) || editableOtherKeys.includes(key);
+    return /^[\w]$/.test(key) || editableOtherKeys.includes(key);
   }
 
   private translate() {
