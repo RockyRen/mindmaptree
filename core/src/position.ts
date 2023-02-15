@@ -45,7 +45,7 @@ class AreaHeight {
   }
 }
 
-// set pall nodes' position
+// set all nodes' position
 class Position {
   private root: Node | null;
   public constructor(root?: Node | null) {
