@@ -75,7 +75,6 @@ class TextEditor {
     this.editorDom.addEventListener('input', (event: Event) => {
       // @ts-ignore
       const inputValue = event.data;
-      console.log('input', inputValue);
       if (!this.isShow) {
         if (/\s/.test(inputValue)) {
           this.showBySelectionLabel();
@@ -127,8 +126,6 @@ class TextEditor {
 
     this.isShow = true;
   }
-
-
 
   private initTextEditorElement(paperWrapper: PaperWrapper): {
     editorWrapperDom: HTMLDivElement;

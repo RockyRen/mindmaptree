@@ -47,7 +47,6 @@ class MindmapTree {
     this.paperWrapper = new PaperWrapper(container);
     const paper = this.paperWrapper.getPaper();
     const viewport = new Viewport(this.paperWrapper, scale);
-    const selection = new Selection();
     this.nodeCreator = new NodeCreator({
       paper,
       viewport,
@@ -58,10 +57,11 @@ class MindmapTree {
     this.tree = new Tree({
       viewport,
       data: initData,
-      selection,
       nodeCreator: this.nodeCreator,
     });
     const root = this.tree.getRoot();
+
+    const selection = new Selection();
 
     const dataProxy = new DataProxy({
       data: initData,

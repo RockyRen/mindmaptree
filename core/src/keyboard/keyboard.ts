@@ -37,7 +37,6 @@ class Keyboard {
   }: KeyboardOptions): void => {
     const { key, ctrlKey, shiftKey, metaKey } = event;
 
-    console.log('key', key);
     if (textEditor.isShowing()) {
       switch (key) {
         case 'Escape': {
