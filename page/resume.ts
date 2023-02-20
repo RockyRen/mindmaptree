@@ -5,7 +5,7 @@ import './common/common.less';
 import { isMobile } from '../core/src/helper';
 
 if (isMobile) {
-  showMobileAlert('移动端不支持多数功能，请到PC端体验');
+  showMobileAlert('移动端不支持多数功能2，请到PC端体验');
 }
 
 initPage({
