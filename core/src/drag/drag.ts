@@ -5,6 +5,7 @@ import NodeShape from '../shape/node-shape';
 import Viewport from '../viewport';
 import DragArea, { HitArea } from './drag-area';
 import DragClonedNode from './drag-cloned-node';
+import { isMobile } from '../helper';
 import type { RaphaelPaper } from 'raphael';
 import type { TraverseFunc } from '../node/node';
 import type { StyleType } from '../shape/common/node-shape-style';
@@ -55,8 +56,10 @@ class Drag {
     this.dragClonedNode = new DragClonedNode(nodeShape);
     this.eventEmitter = new EventEmitter<DragEventMap>();
 
-    // init drag event
-    nodeShape.on('drag', this.move, this.start, this.end);
+    if (!isMobile) {
+      // init drag event
+      nodeShape.on('drag', this.move, this.start, this.end);
+    }
   }
 
   public clear(): void {

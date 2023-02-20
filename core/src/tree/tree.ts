@@ -3,7 +3,7 @@ import Position from '../position';
 import Viewport from '../viewport';
 import TreeRenderer from './tree-renderer';
 import NodeCreator from '../node/node-creator';
-import type { NodeDataMap } from '../data/data-proxy';
+import type { NodeDataMap } from '../types';
 
 // Tree class, for rendering tree
 class Tree {

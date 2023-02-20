@@ -1,11 +1,12 @@
 import { Direction } from '../types';
 import ShapeEventEmitter from './common/shape-event-emitter';
+import { isMobile } from '../helper';
 import type { RaphaelPaper, RaphaelAxisAlignedBoundingBox, RaphaelSet, RaphaelElement } from 'raphael';
 import type { EventNames, EventArgs } from './common/shape-event-emitter';
 
-const circleRadius = 5;
-const operationWidth = 3;
-const circlePositionOffset = 2;
+const circleRadius = isMobile ? 7 : 5;
+const operationWidth = circleRadius * 0.6;
+const circlePositionOffset = isMobile ? 3 : 2;
 
 export const expanderBoxWidth = circleRadius * 2 + circlePositionOffset + 3;
 

@@ -1,4 +1,5 @@
 import Raphael from 'raphael';
+import { isMobile } from './helper';
 import type { RaphaelPaper } from 'raphael';
 
 export const wrapperClassName = 'mindmap-graph';
@@ -47,7 +48,7 @@ class PaperWrapper {
   private initGraphElement(container: string | Element): {
     containerDom: HTMLElement;
     wrapperDom: HTMLDivElement;
-   } {
+  } {
     const containerDom = (typeof container === 'string' ? document.querySelector(container) : container) as HTMLElement;
     if (!containerDom) {
       throw new Error('container is not exist');
@@ -61,7 +62,7 @@ class PaperWrapper {
     backgroundDom.className = 'mindmap-graph-background';
 
     const wrapperDom = document.createElement('div');
-    wrapperDom.className = wrapperClassName;
+    wrapperDom.className = `${wrapperClassName}${isMobile ? ' mobile' : ''}`;
     containerDom.appendChild(wrapperDom);
     containerDom.appendChild(backgroundDom);
 

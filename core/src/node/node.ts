@@ -12,6 +12,7 @@ import type { DragEventMap } from '../drag/drag';
 import type { EdgeShape } from './shape-generator';
 import type { EventNames as ShapeEventNames, EventArgs as ShapeEventArgs } from '../shape/common/shape-event-emitter';
 import type { StyleType } from '../shape/common/node-shape-style';
+import type { ImageData } from '../types';
 
 export interface TraverseOptions {
   node: Node;
@@ -27,6 +28,7 @@ export interface NodeEventMap {
   click: ShapeEventArgs<'click'>;
   dblclick: ShapeEventArgs<'dblclick'>;
   drag: ShapeEventArgs<'drag'>;
+  touchstart: ShapeEventArgs<'touchstart'>;
   mousedownExpander: [ExpanderEventMap['mousedownExpander']];
   dragEnd: [DragEventMap['dragEnd']];
 };
@@ -44,6 +46,7 @@ export interface NodeOptions {
   father?: Node | null;
   isExpand?: boolean;
   viewport: Viewport;
+  imageData?: ImageData | null;
 }
 
 class Node {
@@ -56,6 +59,7 @@ class Node {
   private readonly nodeShape: NodeShape;
   private readonly expander: Expander;
   private readonly drag: Drag | null = null;
+  private readonly _imageData: ImageData | null = null;
   private _label: string;
   private _children: Node[];
   private edgeShape: EdgeShape | null = null;
@@ -71,6 +75,7 @@ class Node {
     father = null,
     isExpand,
     viewport,
+    imageData,
   }: NodeOptions) {
     this._id = id;
     this._depth = depth;
@@ -78,6 +83,7 @@ class Node {
     this._father = father || null;
     this._label = label;
     this._children = [];
+    this._imageData = imageData || null;
 
     this.shapeGenerator = new ShapeGenerator({
       paper,
@@ -85,6 +91,7 @@ class Node {
       label,
       direction,
       father,
+      imageData,
     });
 
     // render node & edge
@@ -122,6 +129,7 @@ class Node {
   public get label() { return this._label; }
   public get children() { return this._children; }
   public get isExpand() { return this.expander.getIsExpand(); }
+  public get imageData() { return this._imageData; }
 
   public getDirectionChildren(direction: Direction): Node[] {
     return this.children?.filter((child) => {
@@ -131,6 +139,10 @@ class Node {
 
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.nodeShape.getBBox()!;
+  }
+
+  public getLabelBBox(): RaphaelAxisAlignedBoundingBox {
+    return this.nodeShape.getLabelBBox();
   }
 
   public getDepthType(): DepthType {
@@ -150,7 +162,7 @@ class Node {
   }
 
   public on<T extends NodeEventNames>(eventName: T, ...args: NodeEventMap[T]): void {
-    const shapeEventNames: NodeEventNames[] = ['mousedown', 'click', 'dblclick', 'drag'];
+    const shapeEventNames: NodeEventNames[] = ['mousedown', 'click', 'dblclick', 'drag', 'touchstart'];
     const expanderEventNames: NodeEventNames[] = ['mousedownExpander'];
     const dragEventNames: NodeEventNames[] = ['dragEnd'];
 
@@ -260,6 +272,10 @@ class Node {
 
   public nodeShapeToFront(): void {
     this.nodeShape.toFront();
+  }
+
+  public isInvisible(): boolean {
+    return this.nodeShape.isInvisible();
   }
 
   private traverse(node: Node, callback: (options: TraverseOptions) => void): void {

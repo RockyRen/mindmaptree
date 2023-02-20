@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "start": "vite -c ./build/page-vite.config.ts",
-    "copy:wiki-img": "copy ./wiki/*.jpg ./docs/assets/",
-    "build": "vite build -c ./build/page-vite.config.ts && npm run copy:wiki-img",
+    "copy:page": "copy ./wiki/*.jpg ./docs/assets/ && copy ./wiki/*.pdf ./docs/assets/",
+    "build": "vite build -c ./build/page-vite.config.ts && npm run copy:page",
     "copy:core": "copy README.md core & copy LICENSE core",
     "build:core": "npm run copy:core & vite build -c ./build/core-vite.config.ts"
   },

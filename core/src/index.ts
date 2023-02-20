@@ -15,14 +15,24 @@ import { setConfig } from './config';
 import ToolOperation from './tool-operation';
 import Toolbar from './component/toolbar/toolbar';
 import ViewportScale from './component/viewport-scale/viewport-scale';
-import type { NodeDataMap, DataProxyEventMap } from './data/data-proxy';
+import SelectionBoundaryMove from './selection/selection-boundary-move';
+import type { DataProxyEventMap } from './data/data-proxy';
+import type { NodeDataMap } from './types';
 import './index.less';
+import './mobile.less';
 
 export interface EventMap {
   data: DataProxyEventMap['data'];
 }
 
 export type EventNames = keyof EventMap;
+
+export interface MindmapTreeOptions {
+  container: string | Element;
+  data?: NodeDataMap;
+  isDebug?: boolean;
+  scale?: number;
+}
 
 class MindmapTree {
   private readonly paperWrapper: PaperWrapper;
@@ -37,12 +47,7 @@ class MindmapTree {
     data,
     isDebug = false,
     scale,
-  }: {
-    container: string | Element;
-    data?: NodeDataMap;
-    isDebug?: boolean;
-    scale?: number;
-  }) {
+  }: MindmapTreeOptions) {
     setConfig({ isDebug });
     this.paperWrapper = new PaperWrapper(container);
     const paper = this.paperWrapper.getPaper();
@@ -76,6 +81,8 @@ class MindmapTree {
       dataProxy,
       nodeCreator: this.nodeCreator,
     });
+
+    new SelectionBoundaryMove(selection, viewport);
 
     const textEditor = new TextEditor({
       viewport,

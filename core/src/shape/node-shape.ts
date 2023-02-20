@@ -1,9 +1,11 @@
 import ShapeEventEmitter from './common/shape-event-emitter';
 import NodeShapeStyle from './common/node-shape-style';
 import { Direction } from '../types';
+import { isMobile } from '../helper';
 import type { EventNames, EventArgs } from './common/shape-event-emitter';
 import type { RaphaelPaper, RaphaelSet, RaphaelElement, RaphaelAxisAlignedBoundingBox, RaphaelAttributes } from 'raphael';
 import type { StyleType } from './common/node-shape-style';
+import type { ImageData } from '../types';
 
 const invisibleX = -999999;
 const invisibleY = -999999;
@@ -22,6 +24,7 @@ export interface NodeShapeOptions {
   labelBaseAttr?: Partial<RaphaelAttributes>;
   rectBaseAttr?: Partial<RaphaelAttributes>;
   borderBaseAttr?: Partial<RaphaelAttributes>;
+  imageData?: ImageData | null;
 }
 
 class NodeShape {
@@ -30,10 +33,12 @@ class NodeShape {
   private readonly borderShape: RaphaelElement;
   private readonly labelShape: RaphaelElement;
   private readonly rectShape: RaphaelElement;
+  private readonly imageShape: RaphaelElement | null = null;
   private readonly paddingWidth: number;
   private readonly rectHeight: number;
   private readonly shapeEventEmitter: ShapeEventEmitter;
   private readonly nodeShapeStyle: NodeShapeStyle;
+  private readonly imageData: ImageData | null = null;
   private label: string;
   private isHide: boolean = false;
   private isHoverInCalled: boolean = false;
@@ -47,6 +52,7 @@ class NodeShape {
     labelBaseAttr,
     rectBaseAttr,
     borderBaseAttr,
+    imageData,
   }: NodeShapeOptions) {
     this.paper = paper;
     this.label = label;
@@ -62,6 +68,12 @@ class NodeShape {
     this.borderShape = paper.rect(shapeX, shapeY, 0, 0, 4);
     this.rectShape = paper.rect(shapeX, shapeY, 0, 0, 4);
     this.shapeSet = paper.set().push(this.labelShape).push(this.borderShape).push(this.rectShape);
+
+    if (imageData) {
+      this.imageShape = paper.image(imageData.src, shapeX, shapeY, imageData.width, imageData.height);
+      this.shapeSet.push(this.imageShape);
+    }
+    this.imageData = imageData || null;
 
     this.nodeShapeStyle = new NodeShapeStyle({
       shapeSet: this.shapeSet,
@@ -90,6 +102,10 @@ class NodeShape {
 
   public getBBox(): RaphaelAxisAlignedBoundingBox {
     return this.rectShape.getBBox();
+  }
+
+  public getLabelBBox(): RaphaelAxisAlignedBoundingBox {
+    return this.labelShape.getBBox();
   }
 
   public setLabel(label: string, direction?: Direction): void {
@@ -177,6 +193,11 @@ class NodeShape {
     this.labelShape.toFront();
   }
 
+  public isInvisible(): boolean {
+    const bbox = this.getBBox();
+    return bbox.x === invisibleX && bbox.y === invisibleY;
+  }
+
   private shapeTranslateTo(shape: RaphaelElement | RaphaelSet, x: number, y: number): void {
     const { x: oldX, y: oldY } = shape.getBBox();
     const dx = x - oldX;
@@ -188,35 +209,54 @@ class NodeShape {
   }
 
   private setPosition(x: number, y: number): void {
-    const { labelShape, borderShape, rectShape, paddingWidth, rectHeight } = this;
+    const { labelShape, borderShape, rectShape, imageShape, paddingWidth, rectHeight, imageData } = this;
+
     const labelBBox = labelShape.getBBox();
-    const rectWidth = labelBBox.width + paddingWidth;
+    const paddingHeight = rectHeight - labelBBox.height;
+
+    const leftShape = imageData?.toward === 'right' ? labelShape : imageShape;
+    const rightShape = imageData?.toward === 'right' ? imageShape : labelShape;
+    const defaultBBox = { x: 0, y: 0, width: 0, height: 0 };
+    const leftBBox = leftShape?.getBBox() || defaultBBox;
+    const rightBBox = rightShape?.getBBox() || defaultBBox;
+
+    let imageGap = 0;
+    if (imageShape) {
+      imageGap = (imageData?.gap !== undefined &&  imageData?.gap >= 0) ? imageData?.gap : 8;
+    }
+
+    const contentWidth = leftBBox.width + rightBBox.width + paddingWidth + imageGap;
+    const contentHeight = paddingHeight + Math.max(leftBBox.height, rightBBox.height);
 
     rectShape.attr({
-      width: rectWidth,
-      height: rectHeight,
+      width: contentWidth,
+      height: contentHeight,
     });
 
     borderShape.attr({
-      width: rectWidth + borderPadding,
-      height: rectHeight + borderPadding,
+      width: contentWidth + borderPadding,
+      height: contentHeight + borderPadding,
     });
 
-    const rectBBox = rectShape.getBBox();
+    const leftShapeX = x + (paddingWidth / 2);
+    const leftShapeY = y + ((contentHeight - leftBBox.height) / 2);
+    const rightShapeX = leftShapeX + leftBBox.width + imageGap;
+    const rightShapeY = y + ((contentHeight - rightBBox.height) / 2)
 
-    this.shapeTranslateTo(labelShape, x + (rectBBox.width - labelBBox.width) / 2, y + (rectBBox.height - labelBBox.height) / 2);
-    this.shapeTranslateTo(rectShape, x, y);
     this.shapeTranslateTo(borderShape, x - borderPadding / 2, y - borderPadding / 2);
+    leftShape && this.shapeTranslateTo(leftShape, leftShapeX, leftShapeY);
+    rightShape && this.shapeTranslateTo(rightShape, rightShapeX, rightShapeY);
   }
 
   private initHover(): void {
+    if (isMobile) return;
+
     this.shapeEventEmitter.on('hover', () => {
       const curStyleType = this.nodeShapeStyle.getStyle();
       if (curStyleType !== 'select' && curStyleType !== 'disable') {
         this.nodeShapeStyle.setStyle('hover');
         this.isHoverInCalled = true;
       }
-
     }, () => {
       const curStyleType = this.nodeShapeStyle.getStyle();
       if (this.isHoverInCalled && curStyleType !== 'select' && curStyleType !== 'disable') {

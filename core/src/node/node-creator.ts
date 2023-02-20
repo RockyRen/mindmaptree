@@ -4,6 +4,7 @@ import Viewport from '../viewport';
 import { generateId } from '../helper';
 import type { RaphaelPaper } from 'raphael';
 import type { NodeOptions, NodeEventMap, NodeEventNames } from '../node/node';
+import type { ImageData } from '../types';
 
 export interface CreateNodeParams {
   id?: NodeOptions['id'];
@@ -14,6 +15,7 @@ export interface CreateNodeParams {
   y?: NodeOptions['y'];
   father?: NodeOptions['father'];
   isExpand?: NodeOptions['isExpand'];
+  imageData?: ImageData;
 }
 
 export type CreateNodeFunc = (params: CreateNodeParams) => Node;
@@ -28,6 +30,7 @@ interface NodeCreatorEventMap {
   mousedown: NodeCreatorCallback<'mousedown'>;
   click: NodeCreatorCallback<'click'>;
   dblclick: NodeCreatorCallback<'dblclick'>;
+  touchstart: NodeCreatorCallback<'touchstart'>;
   mousedownExpander: NodeCreatorCallback<'mousedownExpander'>;
   dragEnd: NodeCreatorCallback<'dragEnd'>;
 }
@@ -35,7 +38,7 @@ interface NodeCreatorEventMap {
 type NodeCreatorEventNames = keyof NodeCreatorEventMap;
 
 // only support the events with one callback
-const nodeCreatorEventNames: NodeCreatorEventNames[] = ['mousedown', 'click', 'dblclick', 'mousedownExpander', 'dragEnd'];
+const nodeCreatorEventNames: NodeCreatorEventNames[] = ['mousedown', 'click', 'dblclick', 'touchstart', 'mousedownExpander', 'dragEnd'];
 
 class NodeCreator {
   private readonly paper: RaphaelPaper;
@@ -62,6 +65,7 @@ class NodeCreator {
     y,
     father,
     isExpand,
+    imageData,
   }: CreateNodeParams): Node => {
     const newNode = new Node({
       paper: this.paper,
@@ -74,6 +78,7 @@ class NodeCreator {
       father,
       isExpand,
       viewport: this.viewport,
+      imageData,
     });
 
     nodeCreatorEventNames.forEach((eventName) => {

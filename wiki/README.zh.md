@@ -18,7 +18,7 @@
 [![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)](https://rockyren.github.io/mindmaptree/demo.html)
 
 ## Demo
-[Demo](https://rockyren.github.io/mindmaptree/demo.html) 
+[Demo](https://rockyren.github.io/mindmaptree/resume.html) 
 
 
 ## 功能

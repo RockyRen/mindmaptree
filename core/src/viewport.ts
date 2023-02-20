@@ -89,7 +89,6 @@ class Viewport {
     const viewbox = this.viewbox;
     viewbox.x = viewbox.x + (dx / this.scale);
     viewbox.y = viewbox.y + (dy / this.scale);
-
     this.setViewBox();
   }
 
@@ -97,7 +96,6 @@ class Viewport {
     const viewbox = this.viewbox;
     viewbox.x = x;
     viewbox.y = y;
-
     this.setViewBox();
   }
 
