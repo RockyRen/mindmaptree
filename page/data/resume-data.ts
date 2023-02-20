@@ -1,3 +1,9 @@
+// @ts-ignore
+import advancedImage from '../img/resume/advanced.png';
+// @ts-ignore
+import baseballImage from '../img/resume/baseball.png';
+// @ts-ignore
+import frontImage from '../img/resume/front.gif';
 import type { NodeDataMap } from '../../core/src/types';
 
 export const data: NodeDataMap = {
@@ -54,7 +60,7 @@ export const data: NodeDataMap = {
     "imageData": {
       "width": 138,
       "height": 203.4,
-      "src": "/mindmaptree/img/resume/baseball.png",
+      "src": baseballImage,
       "toward": "left"
     }
   },
@@ -371,7 +377,7 @@ export const data: NodeDataMap = {
     "imageData": {
       "width": 64,
       "height": 35.2,
-      "src": "/mindmaptree/img/resume/advanced.png",
+      "src": advancedImage,
       "toward": "left",
       "gap": 0
     }
@@ -626,7 +632,7 @@ export const data: NodeDataMap = {
     "imageData": {
       "width": 150,
       "height": 130,
-      "src": "/mindmaptree/img/resume/front.gif",
+      "src": frontImage,
       "toward": "right"
     }
   },

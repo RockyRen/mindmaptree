@@ -7,7 +7,7 @@
 </h3>
 
 <p align="center">
-  <a href="https://www.npmjs.org/package/x-data-spreadsheet">
+  <a href="https://www.npmjs.com/package/mindmap-tree">
     <img src="https://img.shields.io/npm/v/mindmap-tree" alt="npm" />
   </a>
   <a href="https://github.com/RockyRen/mindmaptree">
