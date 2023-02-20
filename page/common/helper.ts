@@ -9,8 +9,9 @@ export const getQuery = (key: string): string => {
 export const createGithubLink = () => {
   const githubLink = document.createElement('div');
   githubLink.classList.add('github-link');
-  const githubIcon = document.createElement('div');
+  const githubIcon = document.createElement('a');
   githubIcon.classList.add('github-icon');
+  githubIcon.href = 'https://github.com/RockyRen/mindmaptree';
 
   if (isMobile) {
     githubLink.classList.add('mobile');

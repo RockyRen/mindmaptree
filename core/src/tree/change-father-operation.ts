@@ -69,6 +69,7 @@ class ChangeFatherOperation {
       father,
       isExpand: node.isExpand,
       imageData: node.imageData || undefined,
+      link: node.link,
     });
 
     node.children.forEach((child) => {

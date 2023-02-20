@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "vite -c ./build/page-vite.config.ts",
-    "copy:page": "copy ./wiki/*.jpg ./docs/assets/ && copy ./wiki/*.pdf ./docs/assets/",
+    "copy:page": "copy ./wiki/*.jpg ./docs/assets/ && copy ./wiki/*.pdf ./docs/assets/ && copy ./wiki/*.png ./docs/assets/",
     "build": "vite build -c ./build/page-vite.config.ts && npm run copy:page",
     "copy:core": "copy README.md core & copy LICENSE core",
     "build:core": "npm run copy:core & vite build -c ./build/core-vite.config.ts"

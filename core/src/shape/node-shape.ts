@@ -25,6 +25,7 @@ export interface NodeShapeOptions {
   rectBaseAttr?: Partial<RaphaelAttributes>;
   borderBaseAttr?: Partial<RaphaelAttributes>;
   imageData?: ImageData | null;
+  link?: string;
 }
 
 class NodeShape {
@@ -53,6 +54,7 @@ class NodeShape {
     rectBaseAttr,
     borderBaseAttr,
     imageData,
+    link,
   }: NodeShapeOptions) {
     this.paper = paper;
     this.label = label;
@@ -74,6 +76,18 @@ class NodeShape {
       this.shapeSet.push(this.imageShape);
     }
     this.imageData = imageData || null;
+
+    if (link) {
+      const mousedownEventName = isMobile ? 'touchstart' : 'mousedown';
+      this.labelShape[mousedownEventName](() => {
+        window.location.href = link;
+      });
+      this.labelShape.attr({
+        stroke: '#3498DB',
+      });
+      // @ts-ignore
+      this.labelShape.node.style.cursor = 'pointer';
+    }
 
     this.nodeShapeStyle = new NodeShapeStyle({
       shapeSet: this.shapeSet,

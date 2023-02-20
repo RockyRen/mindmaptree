@@ -47,6 +47,7 @@ export interface NodeOptions {
   isExpand?: boolean;
   viewport: Viewport;
   imageData?: ImageData | null;
+  link?: string;
 }
 
 class Node {
@@ -60,6 +61,7 @@ class Node {
   private readonly expander: Expander;
   private readonly drag: Drag | null = null;
   private readonly _imageData: ImageData | null = null;
+  private readonly _link: string = '';
   private _label: string;
   private _children: Node[];
   private edgeShape: EdgeShape | null = null;
@@ -76,6 +78,7 @@ class Node {
     isExpand,
     viewport,
     imageData,
+    link,
   }: NodeOptions) {
     this._id = id;
     this._depth = depth;
@@ -84,6 +87,7 @@ class Node {
     this._label = label;
     this._children = [];
     this._imageData = imageData || null;
+    this._link = link || '';
 
     this.shapeGenerator = new ShapeGenerator({
       paper,
@@ -92,6 +96,7 @@ class Node {
       direction,
       father,
       imageData,
+      link,
     });
 
     // render node & edge
@@ -130,6 +135,7 @@ class Node {
   public get children() { return this._children; }
   public get isExpand() { return this.expander.getIsExpand(); }
   public get imageData() { return this._imageData; }
+  public get link() { return this._link; }
 
   public getDirectionChildren(direction: Direction): Node[] {
     return this.children?.filter((child) => {

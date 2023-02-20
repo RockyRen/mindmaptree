@@ -1,10 +1,14 @@
-body {
+html, body {
   margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #container {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 .github-link {
@@ -14,6 +18,7 @@ body {
   z-index: 3;
 
   .github-icon {
+    display: block;
     width: 30px;
     height: 30px;
     background-image: url('../img/github.svg');

@@ -138,6 +138,10 @@ class DataProxy {
       nodeDataMap[node.id].imageData = node.imageData;
     }
 
+    if (node.link) {
+      nodeDataMap[node.id].link = node.link;
+    }
+
     node.children.forEach((child) => {
       this.resetDataInner(child, nodeDataMap);
     });

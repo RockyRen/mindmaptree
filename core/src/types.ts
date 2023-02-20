@@ -19,6 +19,7 @@ export interface NodeData {
   isRoot?: boolean;
   isExpand?: boolean;
   imageData?: ImageData;
+  link?: string;
 }
 
 export type NodeDataMap = Record<string, NodeData>;
