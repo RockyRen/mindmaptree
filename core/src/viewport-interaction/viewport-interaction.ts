@@ -6,6 +6,7 @@ import DragRoot from './drag-root';
 import DragBackground from './drag-background';
 import ViewportWheel from './viewport-wheel';
 import ViewportResize from './viewport-resize';
+import { isMobile } from '../helper';
 
 interface ViewportInteractionOptions {
   paperWrapper: PaperWrapper;
@@ -19,7 +20,6 @@ const zoomSpeed = 0.25;
 class ViewportInteraction {
   private readonly viewport: Viewport;
   private readonly root: Node;
-  private readonly dragRoot: DragRoot;
   private readonly dragBackground: DragBackground;
   private readonly viewportWheel: ViewportWheel;
   private readonly viewportResize: ViewportResize;
@@ -34,7 +34,6 @@ class ViewportInteraction {
     this.root = root;
 
     const dragResult = this.initDrag(options);
-    this.dragRoot = dragResult.dragRoot;
     this.dragBackground = dragResult.dragBackground;
 
     const wrapperDom = paperWrapper.getWrapperDom();
@@ -87,7 +86,7 @@ class ViewportInteraction {
     const svgDom = paperWrapper.getSvgDom();
 
     const dragRoot = new DragRoot(root, dragViewportHandler);
-    const dragBackground = new DragBackground(svgDom, dragViewportHandler);
+    const dragBackground = new DragBackground(svgDom, dragViewportHandler, isMobile);
 
     return {
       dragRoot,

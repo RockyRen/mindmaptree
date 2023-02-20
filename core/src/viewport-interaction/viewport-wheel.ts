@@ -25,9 +25,7 @@ class ViewportWheel {
     event.preventDefault();
     event.stopPropagation();
 
-    const isZoom = `${event.deltaY}`.includes('.') || this.isMoveZoom;
-
-    if (isZoom) {
+    if (event.ctrlKey || this.isMoveZoom) {
       const speed = 0.02;
       const dScale = -Math.floor(event.deltaY) * speed;
       this.viewport.addScale(dScale);

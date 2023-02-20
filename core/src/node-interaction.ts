@@ -5,6 +5,7 @@ import TextEditor from "./text-editor";
 import { HitArea } from "./drag/drag-area";
 import DataProxy from "./data/data-proxy";
 import TreeOperation from "./tree/tree-operation";
+import { isMobile } from './helper';
 
 class NodeInteraction {
   public constructor({
@@ -20,7 +21,10 @@ class NodeInteraction {
     dataProxy: DataProxy;
     treeOperation: TreeOperation;
   }) {
-    nodeCreator.on('mousedown', (node: Node) => {
+    const mousedownName = isMobile ? 'touchstart' : 'mousedown';
+
+    nodeCreator.on(mousedownName, (node: Node, event: MouseEvent) => {
+      event.stopPropagation();
       selection.selectSingle(node);
     });
 

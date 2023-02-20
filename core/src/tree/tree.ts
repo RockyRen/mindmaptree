@@ -1,30 +1,25 @@
 import Node from '../node/node';
 import Position from '../position';
-import Selection from '../selection/selection';
 import Viewport from '../viewport';
 import TreeRenderer from './tree-renderer';
 import NodeCreator from '../node/node-creator';
-import type { NodeDataMap } from '../data/data-proxy';
+import type { NodeDataMap } from '../types';
 
 // Tree class, for rendering tree
 class Tree {
   private readonly root: Node;
   private readonly position: Position;
-  private readonly selection: Selection;
   private readonly treeRenderer: TreeRenderer;
   private readonly nodeCreator: NodeCreator;
   public constructor({
     data,
     viewport,
-    selection,
     nodeCreator,
   }: {
     data: NodeDataMap;
     viewport: Viewport;
-    selection: Selection,
     nodeCreator: NodeCreator;
   }) {
-    this.selection = selection;
     this.nodeCreator = nodeCreator;
 
     this.root = this.createRoot(data, viewport);

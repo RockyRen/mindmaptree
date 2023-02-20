@@ -1,6 +1,6 @@
 import Node from '../node/node';
 import Position from '../position';
-import type { NodeDataMap } from '../data/data-proxy';
+import type { NodeDataMap } from '../types';
 import type { CreateNodeFunc } from '../node/node-creator';
 
 interface RenderNewParams {
@@ -120,6 +120,7 @@ class TreeRenderer {
       direction: nodeData.direction,
       father,
       isExpand: nodeData.isExpand,
+      imageData: nodeData['imageData'],
     });
 
     nodeData.children.forEach((childId) => {

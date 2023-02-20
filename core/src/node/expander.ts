@@ -6,6 +6,7 @@ import NodeShape from '../shape/node-shape';
 import ExpanderShape from '../shape/expander-shape';
 import type { RaphaelPaper } from 'raphael';
 import type { TraverseFunc, TraverseOptions } from './node';
+import { isMobile } from '../helper';
 
 export interface ExpanderEventMap {
   mousedownExpander: (newIsExpander: boolean) => void;
@@ -103,7 +104,9 @@ class Expander {
       isExpand: this.isExpand,
       direction: this.node.direction!,
     });
-    this.expanderShape?.on('mousedown', (event: MouseEvent) => {
+
+    const mousedownName = isMobile ? 'touchstart' : 'mousedown';
+    this.expanderShape?.on(mousedownName, (event: MouseEvent) => {
       event.stopPropagation();
       const newIsExpand = !this.isExpand;
       this.changeExpand(newIsExpand);

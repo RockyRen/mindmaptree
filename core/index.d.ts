@@ -1,9 +1,18 @@
+export interface ImageData {
+  src: string;
+  width: number;
+  height: number;
+  gap?: number;
+  toward: 'left' | 'right';
+}
+
 export interface NodeData {
   children: string[];
   label: string;
   direction: -1 | 0 | 1;
   isRoot?: boolean;
   isExpand?: boolean;
+  imageData?: ImageData;
 }
 
 export type NodeDataMap = Record<string, NodeData>;
@@ -15,7 +24,7 @@ export interface EventMap {
 export type EventNames = keyof EventMap;
 
 declare class MindmapTree {
-  public constructor (options: {
+  public constructor(options: {
     container: string | Element;
     data?: NodeDataMap;
     isDebug?: boolean;

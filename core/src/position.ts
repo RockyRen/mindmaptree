@@ -6,7 +6,7 @@ import { getNodeYGap, getNodeXGap } from './shape/gap';
 class AreaHeight {
   private readonly areaHeightMap: Record<string, number> = {};
   public constructor() { }
-  public getAreaHeight(node: Node, direction: Direction) {
+  public getAreaHeight(node: Node, direction: Direction): number {
     const nodeHeight = node.getBBox().height;
     if (!node.isExpand) {
       return nodeHeight;
@@ -25,27 +25,30 @@ class AreaHeight {
     if (children.length === 0) {
       areaHeight = nodeHeight;
     } else {
-      const childrenAreaHeight = children.reduce((total, child) => {
-        const childAreaHeight = this.getAreaHeight(child, direction);
-        return total + childAreaHeight;
-      }, 0);
+      areaHeight = this.getChildrenAreaHeight(children, direction);
 
-      const childGap = getNodeYGap(node.depth + 1);
-
-      areaHeight = childrenAreaHeight + (children.length - 1) * childGap;
-
-      if (areaHeight < nodeHeight) {
-        return nodeHeight;
-      }
+      areaHeight = Math.max(areaHeight, nodeHeight);
     }
 
     this.areaHeightMap[node.id] = areaHeight;
 
     return areaHeight;
   }
+  public getChildrenAreaHeight(children: Node[], direction: Direction): number {
+    if (children.length === 0) return 0;
+
+    const childrenAreaHeight = children.reduce((total, child) => {
+      const childAreaHeight = this.getAreaHeight(child, direction);
+      return total + childAreaHeight;
+    }, 0);
+
+    const childGap = getNodeYGap(children[0].depth + 1);
+
+    return childrenAreaHeight + (children.length - 1) * childGap;
+  }
 }
 
-// set pall nodes' position
+// set all nodes' position
 class Position {
   private root: Node | null;
   public constructor(root?: Node | null) {
@@ -85,32 +88,28 @@ class Position {
     }
 
     const childDepth = node.depth + 1;
-
-    let areaHeight = areaHeightHandler.getAreaHeight(node, direction);
     const yGap = getNodeYGap(childDepth);
-    const nodeBBox = node.getBBox();
-    let startY = nodeBBox.cy - (areaHeight / 2);
-
     const children = node.getDirectionChildren(direction);
+    const nodeBBox = node.getBBox();
+    const childrenAreaHeight = areaHeightHandler.getChildrenAreaHeight(children, direction);
+    let startY = nodeBBox.cy - (childrenAreaHeight / 2);
 
     children.forEach((child) => {
       const childAreaHeight = areaHeightHandler.getAreaHeight(child, direction);
-      let targetAreaHeight = children.length === 1 ? areaHeight : childAreaHeight;
 
       const childBBox = child.getBBox();
       const xGap = getNodeXGap(childDepth);
 
       const childX = direction === Direction.RIGHT ? (nodeBBox.x2 + xGap) : (nodeBBox.x - xGap - childBBox.width);
-      const childY = startY + (targetAreaHeight / 2) - (childBBox.height / 2);
+      const childY = startY + (childAreaHeight / 2) - (childBBox.height / 2);
 
       child.translateTo(childX, childY);
 
       this.resetInner({ node: child, direction, areaHeightHandler });
 
-      startY += targetAreaHeight + yGap;
+      startY += childAreaHeight + yGap;
     });
   }
 }
 
 export default Position;
-

@@ -9,6 +9,7 @@ import { createGrandchildEdgeShape, GrandchildEdgeShape } from '../shape/grandch
 import { getDepthType, DepthType } from '../helper';
 import { Direction } from '../types';
 import type { RaphaelPaper } from 'raphael';
+import type { ImageData } from '../types';
 
 export type EdgeShape = FirstEdgeShape | GrandchildEdgeShape;
 
@@ -19,24 +20,28 @@ class ShapeGenerator {
   private readonly label: string;
   private readonly father: Node | null = null;
   private readonly direction: Direction;
+  private readonly imageData: ImageData | null = null;
   public constructor({
     paper,
     depth,
     label,
     direction,
     father,
+    imageData,
   }: {
     paper: RaphaelPaper,
     depth: number,
     label: string,
     direction: Direction,
     father: Node | null,
+    imageData?: ImageData | null;
   }) {
     this.paper = paper;
     this.depth = depth;
     this.label = label;
     this.father = father;
     this.direction = direction;
+    this.imageData = imageData || null;
   }
 
   public createNode(x?: number, y?: number): NodeShape {
@@ -44,6 +49,7 @@ class ShapeGenerator {
       paper,
       depth,
       label,
+      imageData,
     } = this;
 
     const nodeOptions = {
@@ -51,6 +57,7 @@ class ShapeGenerator {
       x,
       y,
       label,
+      imageData,
     };
 
     const depthType = getDepthType(depth);

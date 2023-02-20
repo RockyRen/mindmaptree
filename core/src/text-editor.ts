@@ -7,6 +7,7 @@ import { fontSize as grandchildFontSize } from './shape/grandchild-node-shape';
 import { DepthType } from './helper';
 import DataProxy from './data/data-proxy';
 import PaperWrapper from './paper-wrapper';
+import { isMobile } from './helper';
 
 const fontSizeMap = {
   [DepthType.root]: rootFontSize,
@@ -39,6 +40,10 @@ class TextEditor {
     const doms = this.initTextEditorElement(paperWrapper);
     this.editorWrapperDom = doms.editorWrapperDom;
     this.editorDom = doms.editorDom;
+
+    if (isMobile) {
+      return;
+    }
 
     selection.on('select', () => {
       const selectNodes = selection.getSelectNodes();
@@ -75,7 +80,6 @@ class TextEditor {
     this.editorDom.addEventListener('input', (event: Event) => {
       // @ts-ignore
       const inputValue = event.data;
-      console.log('input', inputValue);
       if (!this.isShow) {
         if (/\s/.test(inputValue)) {
           this.showBySelectionLabel();
@@ -128,8 +132,6 @@ class TextEditor {
     this.isShow = true;
   }
 
-
-
   private initTextEditorElement(paperWrapper: PaperWrapper): {
     editorWrapperDom: HTMLDivElement;
     editorDom: HTMLDivElement;
@@ -160,7 +162,7 @@ class TextEditor {
   private translate() {
     if (this.node === null) return;
 
-    const { cx, cy } = this.node.getBBox();
+    const { cx, cy } = this.node.getLabelBBox();
     const { offsetX, offsetY } = this.viewport.getOffsetPosition(cx, cy);
     const scale = this.viewport.getScale();
 

@@ -1,5 +1,5 @@
-import { getQuery } from './utils';
-import type { NodeDataMap } from '../../core/src/data/data-proxy';
+import { getQuery } from './helper';
+import type { NodeDataMap } from '../../core/src/types';
 
 const pageId = getQuery('id');
 

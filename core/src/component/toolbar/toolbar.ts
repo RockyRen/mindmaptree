@@ -12,6 +12,7 @@ import AddBrother from './add-brother';
 import Edit from './edit';
 import Delete from './delete';
 import Target from './target';
+import { isMobile } from '../../helper';
 
 class Toolbar {
   private readonly undo: Undo;
@@ -45,6 +46,8 @@ class Toolbar {
     this.delete = new Delete({ toolOperation, selection });
     this.target = new Target({ viewportInteraction });
 
+    const emptyEl = h('div');
+
     const items = [
       this.undo.el,
       this.redo.el,
@@ -52,7 +55,7 @@ class Toolbar {
       this.addChildNode.el,
       this.addBrotherNode.el,
       this.buildDivider(),
-      this.edit.el,
+      isMobile ? emptyEl : this.edit.el,
       this.delete.el,
       this.buildDivider(),
       this.target.el,

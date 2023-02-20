@@ -1,6 +1,6 @@
 import { RaphaelSet, RaphaelElement, RaphaelBaseElement } from 'raphael';
 
-export type EventNames = 'mousedown' | 'click' | 'dblclick' | 'drag' | 'hover';
+export type EventNames = 'mousedown' | 'click' | 'dblclick' | 'drag' | 'hover' | 'touchstart';
 export type EventArgs<EventName extends EventNames> = Parameters<RaphaelBaseElement[EventName]>;
 
 type EventArgsMap = Partial<{

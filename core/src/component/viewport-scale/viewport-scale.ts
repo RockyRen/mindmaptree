@@ -20,7 +20,7 @@ class ViewportScale {
     const elements = this.element();
     this.el = elements.el;
     this.scaleLabelEl = elements.scaleLabelEl;
-    
+
     const wrapperDom = paperWrapper.getWrapperDom();
     wrapperDom.appendChild(this.el.getDom());
 

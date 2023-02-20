@@ -68,6 +68,7 @@ class ChangeFatherOperation {
       direction,
       father,
       isExpand: node.isExpand,
+      imageData: node.imageData || undefined,
     });
 
     node.children.forEach((child) => {

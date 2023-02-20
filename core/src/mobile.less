@@ -1,0 +1,50 @@
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile.mindmap-graph .toolbar {
+  .toolbar-item {
+    .toolbar-btn {
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      &:active {
+        background-color: transparent;
+      }
+    }
+
+    &:hover .toolbar-tip {
+      display: none;
+    }
+  }
+}
+
+.mobile.mindmap-graph .viewport-scale-controller {
+  right: auto;
+  left: 50%;
+  bottom: 23px;
+  transform: translateX(-50%);
+  height: 60px;
+
+  .scale-label {
+    width: 64px;
+    font-size: 18px;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .scale-btn {
+    .scale-btn-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}

@@ -5,6 +5,7 @@ import Node from '../node/node';
 import Selection from './selection';
 import PaperWrapper from '../paper-wrapper';
 import ToolOperation from '../tool-operation';
+import { isMobile } from '../helper';
 
 const validDiff = 2;
 
@@ -39,9 +40,13 @@ class MultiSelect {
     this.selection = selection;
     this.toolOperation = toolOperation;
 
-    this.svgDom?.addEventListener('mousedown', this.handleMousedown);
-    this.svgDom?.addEventListener('mousemove', this.handleMousemove);
-    this.svgDom?.addEventListener('mouseup', this.handleMouseup);
+    if (isMobile) {
+      this.svgDom?.addEventListener('touchstart', this.handleTouchstart, false);
+    } else {
+      this.svgDom?.addEventListener('mousedown', this.handleMousedown);
+      this.svgDom?.addEventListener('mousemove', this.handleMousemove);
+      this.svgDom?.addEventListener('mouseup', this.handleMouseup);
+    }
   }
 
   public disable(): void {
@@ -53,9 +58,17 @@ class MultiSelect {
   }
 
   public clear(): void {
-    this.svgDom?.removeEventListener('mousedown', this.handleMousedown);
-    this.svgDom?.removeEventListener('mousemove', this.handleMousemove);
-    this.svgDom?.removeEventListener('mouseup', this.handleMouseup);
+    if (isMobile) {
+      this.svgDom?.removeEventListener('touchstart', this.handleTouchstart, false);
+    } else {
+      this.svgDom?.removeEventListener('mousedown', this.handleMousedown);
+      this.svgDom?.removeEventListener('mousemove', this.handleMousemove);
+      this.svgDom?.removeEventListener('mouseup', this.handleMouseup);
+    }
+  }
+
+  private handleTouchstart = (): void => {
+    this.selection.empty();
   }
 
   private handleMousedown = (event: MouseEvent): void => {

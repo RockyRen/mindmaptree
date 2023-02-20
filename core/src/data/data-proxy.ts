@@ -4,16 +4,8 @@ import Selection from '../selection/selection';
 import Snapshot from './snapshot';
 import { generateId } from '../helper';
 import { Direction } from '../types';
+import type { NodeData, NodeDataMap } from '../types';
 
-export interface NodeData {
-  children: string[];
-  label: string;
-  direction: Direction;
-  isRoot?: boolean;
-  isExpand?: boolean;
-}
-
-export type NodeDataMap = Record<string, NodeData>;
 
 interface SnapshotData {
   data: NodeDataMap;
@@ -141,6 +133,10 @@ class DataProxy {
       isRoot: node.isRoot(),
       isExpand: node.isExpand,
     };
+
+    if (node.imageData) {
+      nodeDataMap[node.id].imageData = node.imageData;
+    }
 
     node.children.forEach((child) => {
       this.resetDataInner(child, nodeDataMap);

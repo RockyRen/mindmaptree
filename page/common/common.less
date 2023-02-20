@@ -7,15 +7,56 @@ body {
   height: 100vh;
 }
 
-.github-icon {
+.github-link {
   position: fixed;
   right: 30px;
   top: 30px;
   z-index: 3;
-  width: 30px;
-  height: 30px;
-  background-image: url('../img/github.svg');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  cursor: pointer;
+
+  .github-icon {
+    width: 30px;
+    height: 30px;
+    background-image: url('../img/github.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    cursor: pointer;
+  }
+
+  &.mobile {
+    top: auto;
+    right: 25px;
+    bottom: 38px;
+  }
+}
+
+
+.mobile-alert {
+  position: fixed;
+  z-index: 3;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  background-color: #f4eaff;
+  padding: 10px 8px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: opacity 0.3s;
+  opacity: 1;
+  .mobile-alert-icon {
+    width: 25px;
+    height: 25px;
+    margin-right: 8px;
+  }
+  .mobile-alert-text {
+    color: #25252d;
+    flex: 1;
+  }
+  .mobile-alert-close {
+    width: 25px;
+    height: 25px;
+    margin-left: 8px;
+  }
 }

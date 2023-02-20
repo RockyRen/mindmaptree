@@ -13,13 +13,15 @@
   <a href="https://github.com/RockyRen/mindmaptree">
     <img src="https://img.shields.io/github/license/RockyRen/mindmaptree" alt="ci" />
   </a>
+
+</p>
+
+<p align="center">
+  <a href="https://github.com/RockyRen/mindmaptree/blob/master/wiki/README.zh.md">简体中文文档</a>
 </p>
 
 [![mindmap-tree demo](https://rockyren.github.io/mindmaptree/assets/wiki/demo.jpg)](https://rockyren.github.io/mindmaptree/demo.html)
 
-## Document
-* en
-* [zh-cn中文](https://github.com/RockyRen/mindmaptree/blob/master/wiki/README.zh.md)
 
 ## Demo
 [Demo](https://rockyren.github.io/mindmaptree/demo.html) 
@@ -66,21 +68,21 @@ new MindmapTree({
 
 MindmapTree constructor options:
 
-| Prop            | Type    | Default | Description                                            |
-|-----------------|:-------:|---------|--------------------------------------------------------|
-| **container**       | String \| Element   | ''      | HTML element of container             |
-| **data** | NodeDataMap   | Record<string, NodeData>      | Initial data of mindmap          |
-| **isDebug**    | Boolean   | false     | Is debug or not      |
+| Prop          |       Type        | Default                  | Description               |
+| ------------- | :---------------: | ------------------------ | ------------------------- |
+| **container** | String \| Element | ''                       | HTML element of container |
+| **data**      |    NodeDataMap    | Record<string, NodeData> | Initial data of mindmap   |
+| **isDebug**   |      Boolean      | false                    | Is debug or not           |
 
 NodeData params: 
 
-| Prop            | Type    | Default | Description                                            |
-|-----------------|:-------:|---------|--------------------------------------------------------|
-| **label**       | String   | ''      | Node label           |
-| **direction** | Number   |  0  |  Node direction, 1:right, 0:none, -1:left    |
-| **isRoot**    | Boolean   | false     | Is root node or not    |
-| **children**    | String[]   | []     | children ids    |
-| **isExpand**    | Boolean   | true   | To expand node or not    |
+| Prop          |   Type   | Default | Description                              |
+| ------------- | :------: | ------- | ---------------------------------------- |
+| **label**     |  String  | ''      | Node label                               |
+| **direction** |  Number  | 0       | Node direction, 1:right, 0:none, -1:left |
+| **isRoot**    | Boolean  | false   | Is root node or not                      |
+| **children**  | String[] | []      | children ids                             |
+| **isExpand**  | Boolean  | true    | To expand node or not                    |
 
 ## License
 
