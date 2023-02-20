@@ -16,6 +16,7 @@ export interface CreateNodeParams {
   father?: NodeOptions['father'];
   isExpand?: NodeOptions['isExpand'];
   imageData?: ImageData;
+  link?: string;
 }
 
 export type CreateNodeFunc = (params: CreateNodeParams) => Node;
@@ -66,6 +67,7 @@ class NodeCreator {
     father,
     isExpand,
     imageData,
+    link,
   }: CreateNodeParams): Node => {
     const newNode = new Node({
       paper: this.paper,
@@ -79,6 +81,7 @@ class NodeCreator {
       isExpand,
       viewport: this.viewport,
       imageData,
+      link,
     });
 
     nodeCreatorEventNames.forEach((eventName) => {

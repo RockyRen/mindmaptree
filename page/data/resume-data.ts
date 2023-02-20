@@ -5,6 +5,7 @@ import baseballImage from '../img/resume/baseball.png';
 // @ts-ignore
 import frontImage from '../img/resume/front.gif';
 import type { NodeDataMap } from '../../core/src/types';
+import { isMobile } from '../../core/src/helper';
 
 export const data: NodeDataMap = {
   "1": {
@@ -735,7 +736,8 @@ export const data: NodeDataMap = {
     "label": "https://rockyren.github.io/mindmaptree/assets/wiki/resume.pdf",
     "direction": 1,
     "isRoot": false,
-    "isExpand": true
+    "isExpand": true,
+    "link": isMobile ? "https://rockyren.github.io/mindmaptree/assets/wiki/resume.png" : "https://rockyren.github.io/mindmaptree/assets/wiki/resume.pdf"
   },
   "f8681079-195ae1784be0": {
     "children": [

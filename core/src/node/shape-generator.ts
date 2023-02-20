@@ -21,6 +21,7 @@ class ShapeGenerator {
   private readonly father: Node | null = null;
   private readonly direction: Direction;
   private readonly imageData: ImageData | null = null;
+  private readonly link: string = '';
   public constructor({
     paper,
     depth,
@@ -28,6 +29,7 @@ class ShapeGenerator {
     direction,
     father,
     imageData,
+    link,
   }: {
     paper: RaphaelPaper,
     depth: number,
@@ -35,6 +37,7 @@ class ShapeGenerator {
     direction: Direction,
     father: Node | null,
     imageData?: ImageData | null;
+    link?: string;
   }) {
     this.paper = paper;
     this.depth = depth;
@@ -42,6 +45,7 @@ class ShapeGenerator {
     this.father = father;
     this.direction = direction;
     this.imageData = imageData || null;
+    this.link = link || '';
   }
 
   public createNode(x?: number, y?: number): NodeShape {
@@ -50,6 +54,7 @@ class ShapeGenerator {
       depth,
       label,
       imageData,
+      link,
     } = this;
 
     const nodeOptions = {
@@ -58,6 +63,7 @@ class ShapeGenerator {
       y,
       label,
       imageData,
+      link,
     };
 
     const depthType = getDepthType(depth);

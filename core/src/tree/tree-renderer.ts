@@ -120,7 +120,8 @@ class TreeRenderer {
       direction: nodeData.direction,
       father,
       isExpand: nodeData.isExpand,
-      imageData: nodeData['imageData'],
+      imageData: nodeData.imageData,
+      link: nodeData.link,
     });
 
     nodeData.children.forEach((childId) => {

@@ -27,4 +27,5 @@ export const initPage = ({
   mindmapTree.on('data', (data) => {
     store.save(data);
   });
+  
 };
