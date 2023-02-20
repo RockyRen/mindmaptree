@@ -1,1 +1,0 @@
-import{S as n,M as o,g as e}from"./common-04ac8719.js";const a=new n,s=new o({container:"#container",isDebug:e("debug")==="1",data:a.getData()||void 0,scale:parseFloat(e("scale"))});s.on("data",t=>{a.save(t)});
