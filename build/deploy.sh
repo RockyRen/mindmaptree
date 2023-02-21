@@ -7,6 +7,7 @@ npm run build:core
 git checkout gh-pages
 git merge master
 
+rm -R docs/
 npm run build
 
 git add .

@@ -28,3 +28,7 @@ export const mobileCheck = function() {
 };
 
 export const isMobile = mobileCheck();
+
+export const isWindows = (): boolean => {
+  return navigator.platform.indexOf('Win') > -1
+};
