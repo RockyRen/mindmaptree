@@ -80,7 +80,8 @@ class Keyboard {
           viewportInteraction.zoomOut();
           break;
         }
-        case 'Meta': {
+        case 'Meta':
+        case 'Alt': {
           selection.setIsMultiClickMode(true);
           multiSelect.disable();
           viewportInteraction.enableBackgroundDrag();
@@ -129,7 +130,8 @@ class Keyboard {
     viewportInteraction,
   }: KeyboardOptions): void => {
     switch (event.key) {
-      case 'Meta': {
+      case 'Meta':
+      case 'Alt': {
         selection.setIsMultiClickMode(false);
         multiSelect.enable();
         viewportInteraction.disableBackgroundDrag();
