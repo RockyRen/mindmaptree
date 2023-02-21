@@ -129,8 +129,7 @@ class DragArea {
     }, {
       node: root,
       direction: Direction.LEFT
-    }
-      ];
+    }];
 
     while (queue.length > 0) {
       const queueLength = queue.length;

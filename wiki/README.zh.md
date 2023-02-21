@@ -20,6 +20,8 @@
 ## Demo
 [Demo](https://rockyren.github.io/mindmaptree/resume.html) 
 
+## 相关文章
+* [Web思维导图实现与前端架构思考](https://juejin.cn/post/7202495679405654075)
 
 ## 功能
 * 添加 & 删除节点

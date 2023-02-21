@@ -4,6 +4,7 @@ import Selection from '../selection/selection';
 import MultiSelect from '../selection/multi-select';
 import ViewportInteraction from '../viewport-interaction/viewport-interaction';
 import ToolOperation from '../tool-operation';
+import { isWindows } from '../helper';
 import type { ArrowType } from '../selection/selection-arrow-next';
 
 interface KeyboardOptions {
@@ -52,7 +53,9 @@ class Keyboard {
       return;
     }
 
-    if (metaKey && shiftKey) {
+    const realCtrlKey = isWindows() ? ctrlKey : metaKey;
+
+    if (realCtrlKey && shiftKey) {
       switch (key) {
         // ctrl + shift + z
         case 'z': {
@@ -60,7 +63,7 @@ class Keyboard {
           break;
         }
       }
-    } else if (metaKey && !shiftKey) {
+    } else if (realCtrlKey && !shiftKey) {
       switch (key) {
         // ctrl + z
         case 'z': {
