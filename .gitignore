@@ -7,3 +7,4 @@ docs/
 package-lock.json
 core/README.md
 core/LICENSE
+.turbo/
