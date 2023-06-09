@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "turbo run dev --filter=page",
     "copy:page": "copy ./wiki/*.jpg ./docs/assets/ && copy ./wiki/*.pdf ./docs/assets/ && copy ./wiki/*.png ./docs/assets/",
-    "build": "turbo run build && npm run copy:page",
+    "build": "turbo run build --force && npm run copy:page",
     "dev:core": "turbo run dev --filter=mindmap-tree",
     "build:core": "turbo run build --filter=mindmap-tree",
     "dev:server": "turbo run dev --filter=server",
