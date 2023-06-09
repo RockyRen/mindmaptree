@@ -3,11 +3,13 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "start": "turbo run start --filter=page",
+    "dev": "turbo run dev --filter=page",
     "copy:page": "copy ./wiki/*.jpg ./docs/assets/ && copy ./wiki/*.pdf ./docs/assets/ && copy ./wiki/*.png ./docs/assets/",
     "build": "turbo run build --filter=page && npm run copy:page",
-    "start:core": "turbo run start --filter=mindmap-tree",
-    "build:core": "turbo run build --filter=mindmap-tree"
+    "dev:core": "turbo run dev --filter=mindmap-tree",
+    "build:core": "turbo run build --filter=mindmap-tree",
+    "dev:server": "turbo run dev --filter=server",
+    "build:server": "turbo run build --filter=server"
   },
   "repository": {
     "type": "git",
