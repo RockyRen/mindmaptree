@@ -19,9 +19,9 @@ class ShapeGenerator {
   private readonly depth: number;
   private readonly label: string;
   private readonly father: Node | null = null;
-  private readonly direction: Direction;
   private readonly imageData: ImageData | null = null;
   private readonly link: string = '';
+  private direction: Direction;
   public constructor({
     paper,
     depth,
@@ -108,6 +108,10 @@ class ShapeGenerator {
     }
 
     return null;
+  }
+
+  public changeDirection(direction: Direction) {
+    this.direction = direction;
   }
 }
 

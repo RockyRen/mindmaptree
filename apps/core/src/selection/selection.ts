@@ -14,7 +14,7 @@ class Selection {
   private readonly selectionRemoveNext: SelectionRemoveNext;
   private readonly eventEmitter: EventEmitter<SelectionEventMap>;
   private isMultiClickMode: boolean = false;
-  public constructor() {
+  public constructor(private root: Node) {
     this.selectionArrowNext = new SelectionArrowNext();
     this.selectionRemoveNext = new SelectionRemoveNext();
     this.eventEmitter = new EventEmitter<SelectionEventMap>();
@@ -75,10 +75,6 @@ class Selection {
     return this.selectNodes;
   }
 
-  public getSelectIds(): string[] {
-    return this.selectNodes.map((node) => node.id);
-  }
-
   public getSingleSelectNode(): Node | null {
     if (this.selectNodes.length !== 1) {
       return null;
@@ -86,42 +82,32 @@ class Selection {
     return this.selectNodes[0];
   }
 
-  public getTopNodes = (): Node[] => {
-    if (this.selectNodes.length === 0) return [];
-
-    const selectNodeMap = this.selectNodes.reduce<Record<string, Node>>((map, item) => {
-      map[item.id] = item;
-      return map;
-    }, {});
-
-    const root = this.selectNodes[0].getRoot();
-
-    if (!root || selectNodeMap[root.id]) {
-      return [];
-    }
-
-    return this.getTopNodesInner(root, selectNodeMap);
-  }
-
   public getRemoveNextNode(): Node | null {
     return this.selectionRemoveNext.getRemoveNextNode(this.selectNodes);
   }
 
-  private getTopNodesInner(node: Node, selectNodeMap: Record<string, Node>): Node[] {
-    if (!node.isRoot() && selectNodeMap[node.id]) {
-      return [node];
-    }
+  public selectByIds(selectIds: string[]) {
+    const nodeMap = this.getNodeMap();
+    const selectNodes = selectIds.map((nodeId) => nodeMap[nodeId])
+      .filter((node) => !!node) || [];
+      
+    this.select(selectNodes);
+  }
 
-    let removeTopNodes: Node[] = [];
+  // todo 抽象
+  private getNodeMap = (): Record<string, Node> => {
+    const nodeMap: Record<string, Node> = {};
+    this.getNodeMapInner(this.root, nodeMap);
+    return nodeMap;
+  }
 
-    node.children && node.children.forEach((child) => {
-      const childRemoveTopNodes = this.getTopNodesInner(child, selectNodeMap);
-      if (childRemoveTopNodes.length > 0) {
-        removeTopNodes = removeTopNodes.concat(childRemoveTopNodes);
-      }
+  private getNodeMapInner = (node: Node, nodeMap: Record<string, Node>): void => {
+    if (!node) return;
+    nodeMap[node.id] = node;
+
+    node.children?.forEach((child) => {
+      this.getNodeMapInner(child, nodeMap) !== null;
     });
-
-    return removeTopNodes;
   }
 }
 

@@ -9,7 +9,7 @@ export const initPage = ({
 }: {
   pageName?: string;
   options?: Partial<MindmapTreeOptions>;
-}): void => {
+}): MindemapTree => {
   createGithubLink();
 
   const store = new Store(pageName);
@@ -24,7 +24,9 @@ export const initPage = ({
     data,
   });
 
-  mindmapTree.on('data', (data) => {
+  mindmapTree.on('data', ({ data }) => {
     store.save(data);
   });
+
+  return mindmapTree;
 };

@@ -56,11 +56,15 @@ class TreeRenderer {
     const nodeData = nodeDataMap[sourceId];
 
     if (nodeData.label !== currentNode.label) {
-      currentNode.setLabel(nodeData.label, false);
+      currentNode.setLabel(nodeData.label);
     }
 
     if (nodeData.isExpand !== currentNode.isExpand) {
-      currentNode.changeExpand(nodeData.isExpand!, false);
+      currentNode.changeExpand(nodeData.isExpand!);
+    }
+
+    if (nodeData.direction !== currentNode.direction) {
+      currentNode.changeDirection(nodeData.direction);
     }
 
     const oldChildren = currentNode.children;
@@ -85,7 +89,7 @@ class TreeRenderer {
         ? this.renderWithRelativeNode({
           nodeDataMap,
           sourceId: childId,
-          relativeNode: childRelativeNode,
+          relativeNode: childRelativeNode!,
           depth: depth + 1,
         })
         : this.renderNew({
