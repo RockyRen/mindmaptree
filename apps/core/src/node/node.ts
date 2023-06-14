@@ -1,8 +1,8 @@
-import Position from '../position';
 import Viewport from '../viewport';
 import Expander from './expander';
 import Drag from '../drag/drag';
 import NodeShape from '../shape/node-shape';
+import CollaborateShape from '../shape/collaborate-shape';
 import ShapeGenerator from './shape-generator';
 import { getDepthType, DepthType } from '../helper';
 import { Direction } from '../types';
@@ -51,11 +51,10 @@ export interface NodeOptions {
 }
 
 class Node {
-  private readonly position: Position;
+  private readonly paper: RaphaelPaper;
   private readonly shapeGenerator: ShapeGenerator;
   private readonly _id: string;
   private readonly _depth: number;
-  private readonly _direction: Direction;
   private readonly _father: Node | null = null;
   private readonly nodeShape: NodeShape;
   private readonly expander: Expander;
@@ -63,8 +62,10 @@ class Node {
   private readonly _imageData: ImageData | null = null;
   private readonly _link: string = '';
   private _label: string;
+  private _direction: Direction;
   private _children: Node[];
   private edgeShape: EdgeShape | null = null;
+  private collaborateShape: CollaborateShape | null = null;
 
   public constructor({
     paper,
@@ -80,6 +81,7 @@ class Node {
     imageData,
     link,
   }: NodeOptions) {
+    this.paper = paper;
     this._id = id;
     this._depth = depth;
     this._direction = direction;
@@ -115,11 +117,8 @@ class Node {
       });
     }
 
-    this.position = new Position(this.getRoot());
-
     this.expander = new Expander({
       paper,
-      position: this.position,
       node: this,
       nodeShape: this.nodeShape,
       isExpand: isExpand === undefined ? true : isExpand,
@@ -192,43 +191,14 @@ class Node {
     this.children.push(child);
   }
 
-  public insertAfterChild(relativeChild: Node, child: Node): void {
-    const relativeIndex = this.children.findIndex((itemChild) => itemChild.id === relativeChild.id);
-    if (relativeIndex > -1) {
-      this.children.splice(relativeIndex + 1, 0, child);
-    }
-  }
-
-  public spliceChild(start: number, deleteCount: number, direction: Direction, nodes: Node[]): void {
-    if (this.isRoot()) {
-      let directionStart = -1;
-      let directionIndex = 0;
-      let i = 0;
-
-      for (i = 0; i < this.children.length; i++) {
-        if (this.children[i].direction !== direction) {
-          continue;
-        }
-        if (start === directionIndex) {
-          directionStart = i;
-          break;
-        }
-        directionIndex++;
-      }
-
-      if (directionStart === -1) {
-        directionStart = i;
-      }
-
-      this.children.splice(directionStart, deleteCount, ...nodes);
-    } else {
-      this.children.splice(start, deleteCount, ...nodes);
-    }
-  }
-
-  public changeExpand(isExpand: boolean, isResetPosition: boolean = true): void {
+  public changeExpand(isExpand: boolean): void {
     if (isExpand === undefined) return;
-    this.expander.changeExpand(isExpand, isResetPosition);
+    this.expander.changeExpand(isExpand);
+  }
+
+  public changeDirection(direction: Direction): void {
+    this._direction = direction;
+    this.shapeGenerator.changeDirection(direction);
   }
 
   public translateTo(x: number, y: number) {
@@ -263,13 +233,14 @@ class Node {
       curNode.removeEdgeShape();
       curNode.expander.remove();
       curNode.drag?.clear();
+      curNode.collaborateShape?.remove();
     });
   }
 
-  public setLabel(label: string, isResetPosition: boolean = true): void {
+  public setLabel(label: string): void {
     this._label = label;
     this.nodeShape.setLabel(label, this.direction);
-    isResetPosition && this.position.reset(this.direction);
+    this.collaborateShape?.setPosition(this.getBBox());
   }
 
   public setStyle(styleType: StyleType): void {
@@ -282,6 +253,19 @@ class Node {
 
   public isInvisible(): boolean {
     return this.nodeShape.isInvisible();
+  }
+
+  public setCollaborateStyle(style: { color: string; name: string; } | null): void {
+    if (style) {
+      this.collaborateShape = new CollaborateShape({
+        paper: this.paper,
+        nodeBBox: this.getBBox(),
+        name: style.name,
+        color: style.color,
+      });
+    } else {
+      this.collaborateShape?.remove();
+    }
   }
 
   private traverse(node: Node, callback: (options: TraverseOptions) => void): void {

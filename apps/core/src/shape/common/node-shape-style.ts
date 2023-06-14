@@ -31,6 +31,7 @@ class NodeShapeStyle {
   private readonly labelBaseAttr: Partial<RaphaelAttributes>;
   private readonly rectBaseAttr: Partial<RaphaelAttributes>;
   private readonly borderBaseAttr: Partial<RaphaelAttributes>;
+  private collaborateStyle: { name: string; color: string; } | null = null;
   private styleType: StyleType = 'base';
   public constructor({
     shapeSet,
@@ -63,6 +64,7 @@ class NodeShapeStyle {
     this.borderShape.attr(this.borderBaseAttr);
     this.rectShape.attr(this.rectBaseAttr);
   }
+
   public setStyle(styleType: StyleType): void {
     switch (styleType) {
       case 'select': {

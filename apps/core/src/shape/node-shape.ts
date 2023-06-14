@@ -69,7 +69,10 @@ class NodeShape {
     this.labelShape = paper.text(shapeX, shapeY, label);
     this.borderShape = paper.rect(shapeX, shapeY, 0, 0, 4);
     this.rectShape = paper.rect(shapeX, shapeY, 0, 0, 4);
-    this.shapeSet = paper.set().push(this.labelShape).push(this.borderShape).push(this.rectShape);
+    this.shapeSet = paper.set()
+      .push(this.labelShape)
+      .push(this.borderShape)
+      .push(this.rectShape);
 
     if (imageData) {
       this.imageShape = paper.image(imageData.src, shapeX, shapeY, imageData.width, imageData.height);
@@ -236,7 +239,7 @@ class NodeShape {
 
     let imageGap = 0;
     if (imageShape) {
-      imageGap = (imageData?.gap !== undefined &&  imageData?.gap >= 0) ? imageData?.gap : 8;
+      imageGap = (imageData?.gap !== undefined && imageData?.gap >= 0) ? imageData?.gap : 8;
     }
 
     const contentWidth = leftBBox.width + rightBBox.width + paddingWidth + imageGap;

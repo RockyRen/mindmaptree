@@ -1,4 +1,4 @@
-import DataProxy from '../../data/data-proxy';
+import DataHandler from '../../data/data-handler';
 import ToolOperation from '../../tool-operation';
 import { MElement } from '../m-element';
 import { createToolbarItem } from './create-toolbar-item';
@@ -6,24 +6,24 @@ import { createToolbarItem } from './create-toolbar-item';
 class Redo {
   public readonly el: MElement;
   public readonly btnEl: MElement;
-  private readonly dataProxy: DataProxy;
+  private readonly dataHandler: DataHandler;
   private readonly toolOperation: ToolOperation;
   constructor({
     toolOperation,
-    dataProxy,
+    dataHandler,
   }: {
     toolOperation: ToolOperation;
-    dataProxy: DataProxy;
+    dataHandler: DataHandler;
   }) {
     this.toolOperation = toolOperation;
-    this.dataProxy = dataProxy;
+    this.dataHandler = dataHandler;
     const elements = this.element();
     this.el = elements.el;
     this.btnEl = elements.btnEl;
   }
 
   public setState(): void {
-    if (this.dataProxy.canRedo()) {
+    if (this.dataHandler.canRedo()) {
       this.btnEl.removeClass('disabled');
     } else {
       this.btnEl.addClass('disabled');

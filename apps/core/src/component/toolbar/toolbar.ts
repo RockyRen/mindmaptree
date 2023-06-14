@@ -1,5 +1,5 @@
 import Selection from '../../selection/selection';
-import DataProxy from '../../data/data-proxy';
+import DataHandler from '../../data/data-handler';
 import TextEditor from '../../text-editor';
 import ToolOperation from '../../tool-operation';
 import PaperWrapper from '../../paper-wrapper';
@@ -27,19 +27,19 @@ class Toolbar {
     paperWrapper,
     toolOperation,
     selection,
-    dataProxy,
+    dataHandler,
     textEditor,
     viewportInteraction,
   }: {
     toolOperation: ToolOperation;
     selection: Selection;
-    dataProxy: DataProxy;
+    dataHandler: DataHandler;
     textEditor: TextEditor;
     paperWrapper: PaperWrapper;
     viewportInteraction: ViewportInteraction;
   }) {
-    this.undo = new Undo({ toolOperation, dataProxy });
-    this.redo = new Redo({ toolOperation, dataProxy });
+    this.undo = new Undo({ toolOperation, dataHandler });
+    this.redo = new Redo({ toolOperation, dataHandler });
     this.addChildNode = new AddChild({ toolOperation, selection });
     this.addBrotherNode = new AddBrother({ toolOperation, selection });
     this.edit = new Edit({ textEditor, selection, });
@@ -78,8 +78,10 @@ class Toolbar {
     });
 
     // change toolbar state when data change
-    dataProxy.on('data', () => {
-      this.setState();
+    dataHandler.on('data', () => {
+      setTimeout(() => {
+        this.setState();
+      }, 0);
     });
   }
 

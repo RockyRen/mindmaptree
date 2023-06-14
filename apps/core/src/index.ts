@@ -1,7 +1,6 @@
-
+import * as Y from 'yjs';
 import PaperWrapper from './paper-wrapper';
 import Tree from './tree/tree';
-import TreeOperation from './tree/tree-operation';
 import NodeCreator from './node/node-creator';
 import NodeInteraction from './node-interaction';
 import Viewport from './viewport';
@@ -10,19 +9,21 @@ import TextEditor from './text-editor';
 import Selection from './selection/selection';
 import MultiSelect from './selection/multi-select';
 import Keyboard from './keyboard/keyboard';
-import DataProxy, { getInitData } from './data/data-proxy';
 import { setConfig } from './config';
 import ToolOperation from './tool-operation';
 import Toolbar from './component/toolbar/toolbar';
 import ViewportScale from './component/viewport-scale/viewport-scale';
 import SelectionBoundaryMove from './selection/selection-boundary-move';
-import type { DataProxyEventMap } from './data/data-proxy';
+import DataHandler, { getInitialData } from './data/data-handler';
+import AwarenessHandler from './awareness-handler';
+import type { Awareness } from "y-protocols/awareness";
+import type { DataHandlerEventMap } from './data/data-handler';
 import type { NodeDataMap } from './types';
 import './index.less';
 import './mobile.less';
 
 export interface EventMap {
-  data: DataProxyEventMap['data'];
+  data: DataHandlerEventMap['data'];
 }
 
 export type EventNames = keyof EventMap;
@@ -32,6 +33,7 @@ export interface MindmapTreeOptions {
   data?: NodeDataMap;
   isDebug?: boolean;
   scale?: number;
+  ydoc?: Y.Doc;
 }
 
 class MindmapTree {
@@ -41,13 +43,9 @@ class MindmapTree {
   private readonly keyboard: Keyboard;
   private readonly multiSelect: MultiSelect;
   private readonly nodeCreator: NodeCreator;
-  private readonly dataProxy: DataProxy;
-  public constructor({
-    container,
-    data,
-    isDebug = false,
-    scale,
-  }: MindmapTreeOptions) {
+  private readonly dataHandler: DataHandler;
+  private readonly selection: Selection;
+  public constructor({ container, data, isDebug = false, scale, ydoc, }: MindmapTreeOptions) {
     setConfig({ isDebug });
     this.paperWrapper = new PaperWrapper(container);
     const paper = this.paperWrapper.getPaper();
@@ -56,38 +54,33 @@ class MindmapTree {
       paper,
       viewport,
     });
-    const initData = getInitData(data);
 
-    // render tree and create root
+    const initialData = getInitialData(data);
+
     this.tree = new Tree({
       viewport,
-      data: initData,
+      data: initialData,
       nodeCreator: this.nodeCreator,
     });
     const root = this.tree.getRoot();
 
-    const selection = new Selection();
+    const selection = new Selection(root);
+    this.selection = selection;
 
-    const dataProxy = new DataProxy({
-      data: initData,
-      selection,
-      root,
+    const dataHandler = new DataHandler(selection, initialData, ydoc);
+    this.dataHandler = dataHandler;
+
+    dataHandler.on('data', ({ data, preSelectIds }) => {
+      this.tree.render(data);
+      if (preSelectIds.length > 0) {
+        this.selection.selectByIds(preSelectIds);
+      }
     });
-    this.dataProxy = dataProxy;
-
-    const treeOperation = new TreeOperation({
-      root,
-      selection,
-      dataProxy,
-      nodeCreator: this.nodeCreator,
-    });
-
-    new SelectionBoundaryMove(selection, viewport);
 
     const textEditor = new TextEditor({
       viewport,
       selection,
-      dataProxy,
+      dataHandler,
       paperWrapper: this.paperWrapper,
     });
 
@@ -95,9 +88,10 @@ class MindmapTree {
       nodeCreator: this.nodeCreator,
       selection,
       textEditor,
-      dataProxy,
-      treeOperation,
+      dataHandler,
     });
+
+    new SelectionBoundaryMove(selection, viewport);
 
     this.viewportInteraction = new ViewportInteraction({
       paperWrapper: this.paperWrapper,
@@ -109,8 +103,7 @@ class MindmapTree {
       root,
       tree: this.tree,
       selection,
-      dataProxy,
-      treeOperation,
+      dataHandler,
     });
 
     this.multiSelect = new MultiSelect({
@@ -132,7 +125,7 @@ class MindmapTree {
       paperWrapper: this.paperWrapper,
       toolOperation,
       selection,
-      dataProxy,
+      dataHandler,
       textEditor,
       viewportInteraction: this.viewportInteraction,
     });
@@ -145,7 +138,7 @@ class MindmapTree {
 
   public on<T extends EventNames>(eventName: T, callback: EventMap[T]): void {
     if (eventName === 'data') {
-      this.dataProxy.on(eventName, callback);
+      this.dataHandler.on(eventName, callback);
     }
   }
 
@@ -156,6 +149,10 @@ class MindmapTree {
     this.viewportInteraction.clear();
     this.multiSelect.clear();
     this.keyboard.clear();
+  }
+
+  public bindAwareness(awareness: Awareness): void {
+    new AwarenessHandler(awareness, this.selection, this.tree.getRoot(), this.paperWrapper);
   }
 }
 

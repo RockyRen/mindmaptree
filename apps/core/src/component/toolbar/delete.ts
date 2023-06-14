@@ -23,7 +23,7 @@ class Delete {
   }
 
   public setState(): void {
-    const selectNodes = this.selection.getTopNodes();
+    const selectNodes = this.selection.getSelectNodes();
     if (selectNodes.length > 0) {
       this.btnEl.removeClass('disabled');
     } else {

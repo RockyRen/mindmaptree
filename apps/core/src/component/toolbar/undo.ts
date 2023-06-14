@@ -1,4 +1,4 @@
-import DataProxy from '../../data/data-proxy';
+import DataHandler from '../../data/data-handler';
 import ToolOperation from '../../tool-operation';
 import { MElement } from '../m-element';
 import { createToolbarItem } from './create-toolbar-item';
@@ -7,15 +7,15 @@ class Undo {
   public readonly el: MElement;
   public readonly btnEl: MElement;
   private readonly toolOperation: ToolOperation;
-  private readonly dataProxy: DataProxy;
+  private readonly dataHandler: DataHandler;
   constructor({
-    dataProxy,
+    dataHandler,
     toolOperation,
   }: {
-    dataProxy: DataProxy;
+    dataHandler: DataHandler;
     toolOperation: ToolOperation;
   }) {
-    this.dataProxy = dataProxy;
+    this.dataHandler = dataHandler;
     this.toolOperation = toolOperation;
     const elements = this.element();
     this.el = elements.el;
@@ -23,7 +23,7 @@ class Undo {
   }
 
   public setState(): void {
-    if (this.dataProxy.canUndo()) {
+    if (this.dataHandler.canUndo()) {
       this.btnEl.removeClass('disabled');
     } else {
       this.btnEl.addClass('disabled');

@@ -3,8 +3,7 @@ import Node from './node/node';
 import Selection from './selection/selection';
 import TextEditor from "./text-editor";
 import { HitArea } from "./drag/drag-area";
-import DataProxy from "./data/data-proxy";
-import TreeOperation from "./tree/tree-operation";
+import DataHandler from './data/data-handler';
 import { isMobile } from './helper';
 
 class NodeInteraction {
@@ -12,14 +11,12 @@ class NodeInteraction {
     nodeCreator,
     selection,
     textEditor,
-    dataProxy,
-    treeOperation,
+    dataHandler,
   }: {
     nodeCreator: NodeCreator;
     selection: Selection;
     textEditor: TextEditor;
-    dataProxy: DataProxy;
-    treeOperation: TreeOperation;
+    dataHandler: DataHandler;
   }) {
     const mousedownName = isMobile ? 'touchstart' : 'mousedown';
 
@@ -34,19 +31,19 @@ class NodeInteraction {
 
     nodeCreator.on('dragEnd', (node: Node, hitArea: HitArea) => {
       if (hitArea !== null && !hitArea.isOwnArea) {
-        treeOperation.changeFather?.({
-          newFather: hitArea.father,
+        dataHandler.changeFather({
+          selectionId: node.id,
+          newFatherId: hitArea.father.id,
           direction: hitArea.direction,
-          nodes: [node],
           childIndex: hitArea.childIndex,
         });
       }
     });
 
     nodeCreator.on('mousedownExpander', (node: Node, isExpand) => {
-      dataProxy.setData(node.id, {
+      dataHandler.update(node.id, {
         isExpand,
-      });
+      })
       selection.select([node]);
     });
   }

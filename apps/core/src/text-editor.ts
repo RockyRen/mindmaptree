@@ -5,7 +5,7 @@ import { fontSize as rootFontSize } from './shape/root-node-shape';
 import { fontSize as firstNodeFontSize } from './shape/first-node-shape';
 import { fontSize as grandchildFontSize } from './shape/grandchild-node-shape';
 import { DepthType } from './helper';
-import DataProxy from './data/data-proxy';
+import DataHandler from './data/data-handler';
 import PaperWrapper from './paper-wrapper';
 import { isMobile } from './helper';
 
@@ -19,23 +19,23 @@ class TextEditor {
   private readonly editorWrapperDom: HTMLDivElement;
   private readonly editorDom: HTMLDivElement;
   private readonly viewport: Viewport;
-  private readonly dataProxy: DataProxy;
+  private readonly dataHandler: DataHandler;
   private node: Node | null = null; // 当前操作的节点，需要看见的时候才算操作
   private isShow: boolean = false;
   private isComposition: boolean = false;
   public constructor({
     viewport,
     selection,
-    dataProxy,
+    dataHandler,
     paperWrapper,
   }: {
     viewport: Viewport;
     selection: Selection;
-    dataProxy: DataProxy;
+    dataHandler: DataHandler;
     paperWrapper: PaperWrapper;
   }) {
     this.viewport = viewport;
-    this.dataProxy = dataProxy;
+    this.dataHandler = dataHandler;
 
     const doms = this.initTextEditorElement(paperWrapper);
     this.editorWrapperDom = doms.editorWrapperDom;
@@ -118,7 +118,7 @@ class TextEditor {
     this.isShow = false;
   }
 
-  // todo 名字有问题
+
   private show(): void {
     if (this.node === null) return;
 
@@ -177,8 +177,9 @@ class TextEditor {
   private setLabel(): void {
     const newLabel = this.editorDom.innerText;
     if (this.node !== null && this.isShow && newLabel !== this.node.label) {
-      this.node.setLabel(newLabel);
-      this.dataProxy.setData(this.node.id, { label: newLabel }, [this.node.id])
+      this.dataHandler.update(this.node.id, {
+        label: newLabel,
+      });
     }
   }
 }

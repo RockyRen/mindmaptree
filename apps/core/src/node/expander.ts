@@ -14,7 +14,6 @@ export interface ExpanderEventMap {
 
 class Expander {
   private readonly paper: RaphaelPaper;
-  private readonly position: Position;
   private readonly node: Node;
   private readonly nodeShape: NodeShape;
   private readonly eventEmitter: EventEmitter<ExpanderEventMap>;
@@ -23,21 +22,18 @@ class Expander {
   private isExpand: boolean;
   public constructor({
     paper,
-    position,
     node,
     nodeShape,
     isExpand,
     traverse,
   }: {
     paper: RaphaelPaper;
-    position: Position;
     node: Node;
     nodeShape: NodeShape;
     isExpand: boolean;
     traverse: TraverseFunc;
   }) {
     this.paper = paper;
-    this.position = position;
     this.node = node;
     this.nodeShape = nodeShape;
     this.isExpand = isExpand;
@@ -49,7 +45,7 @@ class Expander {
     return this.isExpand;
   }
 
-  public changeExpand(newIsExpand: boolean, isResetPosition: boolean = true): void {
+  public changeExpand(newIsExpand: boolean): void {
     if (this.isExpand === newIsExpand) return;
 
     if (this.node.children.length === 0) {
@@ -65,8 +61,6 @@ class Expander {
         this.traverse(child, this.hideNode);
       });
     }
-
-    isResetPosition && this.position.reset(this.node.direction);
   }
 
   public create(): void {

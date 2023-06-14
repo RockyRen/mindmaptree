@@ -11,5 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "tsconfig": "workspace:*"
+  },
+  "dependencies": {
+    "y-webrtc": "^10.2.5",
+    "yjs": "^13.6.2"
   }
 }

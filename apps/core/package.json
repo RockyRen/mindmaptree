@@ -22,7 +22,6 @@
     "type": "git",
     "url": "git+https://github.com/RockyRen/mindmaptree.git"
   },
-
   "homepage": "https://github.com/RockyRen/mindmaptree#readme",
   "bugs": {
     "url": "https://github.com/RockyRen/mindmaptree/issues"
@@ -38,7 +37,9 @@
     "raphael": "^2.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "y-protocols": "^1.0.5",
+    "yjs": "^13.6.2"
   },
   "devDependencies": {
     "@types/raphael": "^2.3.3",
@@ -46,8 +47,8 @@
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^3.1.0",
     "less": "^4.1.3",
+    "tsconfig": "workspace:*",
     "typescript": "^4.9.5",
-    "vite": "^4.1.1",
-    "tsconfig": "workspace:*"
+    "vite": "^4.1.1"
   }
 }
